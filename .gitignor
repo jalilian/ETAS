@@ -1,0 +1,9 @@
+#History files
+*.Rhistory
+
+# R-studio project files
+*.Rproj
+
+# C object files
+src/*o
+
