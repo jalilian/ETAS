@@ -1,0 +1,17 @@
+{
+    "contents" : "\ndecluster <- function(theta, rbwd, revents, rpoly, tperiod)\n{\n  tht <- sqrt(theta)\n  storage.mode(revents) <- storage.mode(rpoly) <- \"double\"\n  cdeclust <- .Call(\"declust\", as.double(tht), as.double(rbwd),\n                    revents, rpoly, as.double(tperiod), PACKAGE=\"ETAS\")\n  list(revents=cdeclust[[1]], integ0=cdeclust[[2]])\n}\n\n",
+    "created" : 1452026403769.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1966279212",
+    "id" : "6B79F50C",
+    "lastKnownWriteTime" : 1451949904,
+    "path" : "~/Dropbox/RCodes/RpkgETAS/ETAS/R/decluster.R",
+    "project_path" : "R/decluster.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
