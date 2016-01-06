@@ -2,7 +2,11 @@
 .Rhistory
 
 # R-studio project files
-.Rproj
+ETAS.Rproj
+
+# others
+.Rdata
+.Rproj.user
 
 # C object files
 src/*o
