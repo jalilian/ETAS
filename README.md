@@ -6,7 +6,7 @@ The Epidemic Type Aftershock Sequence (ETAS) model is a spatio-temporal marked p
 
 ## Installation
 
-To install the package, run the following is R:
+To install the package, run the following in R:
  
 ```R
 require(devtools)
