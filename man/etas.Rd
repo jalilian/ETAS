@@ -2,9 +2,10 @@
 \alias{etas}
 \title{Fit the space-time ETAS model to data}
 \description{
-  A function to fit the space-time version of the Epidemic Type Aftershock
-  Sequence (ETAS) model to a catalog of earthquakes (a spatio-temporal point
-  pattern) and perform a stochastic declustering method.
+  A function to fit the space-time version of the Epidemic Type
+  Aftershock Sequence (ETAS) model to a catalog of earthquakes
+  (a spatio-temporal point pattern) and perform a stochastic
+  declustering method.
 }
 \usage{
  etas(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
@@ -156,7 +157,6 @@
 \examples{
   # fitting the ETAS model to an Iranian catalog
 
-  data(iran.quakes)
   summary(iran.quakes)
 
   # preparing the catalog
@@ -198,7 +198,8 @@
   jap.fit <- etas(jap.cat, param0=param00)}
 }
 
-\author{Abdollah Jalilian \email{jalilian@razi.ac.ir}
+\author{Abdollah Jalilian
+  \email{jalilian@razi.ac.ir}
 }
 \keyword{spatial}
 \keyword{math}

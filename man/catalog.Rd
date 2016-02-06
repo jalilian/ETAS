@@ -31,7 +31,7 @@
   A character string or an object that can be converted to
   date-time by \code{as.POSIXlt}. The default \code{NULL} sets it
   to the date-time of the last event.}
-  \item{study.length}{A single numeric value specifying the lnegth
+  \item{study.length}{A single numeric value specifying the length
   of the study period in decimal days. Incompatible with
   \code{study.end}: either \code{study.end} or \code{study.length}
   can be specified, but not both.}
@@ -63,7 +63,7 @@
 \details{
   The \code{data} is required to have at least 5 columns with names
   \code{date}, \code{time}, \code{lat}, \code{long} and \code{mag}
-  containing, respectively, the the date, time, latitude, longitude
+  containing, respectively, the date, time, latitude, longitude
   and magnitude of each event in the catalog.
 
   The geographical study region can be rectangular or polygonal:
@@ -101,6 +101,12 @@
 \seealso{
   \code{etas}.
 }
+\references{
+  Zhuang, J. (2012). Long-term earthquake forecasts based on the
+  epidemic-type aftershock sequence (ETAS) model for short-term
+  clustering. \emph{Research in Geophysics}, \bold{2}(1), 8.
+}
+
 \examples{
   data(iran.quakes)
   summary(iran.quakes)

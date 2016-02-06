@@ -2,18 +2,18 @@ Package: ETAS
 Type: Package
 Title: Modeling Earthquake Data Using ETAS Model
 Version: 0.2
-Date: 2016-01-04
-Authors@R: person("Abdollah", "Jalilian",
-                   role = c("aut", "cre"),
-                   email="jalilian@razi.ac.ir")
-Author: Abdollah Jalilian [aut, cre], based on
-        Fortran code by Jiancang Zhuang
+Date: 2016-02-04
+Author: Abdollah Jalilian [aut, cre], Jiancang Zhuang [ctb]
 Maintainer: Abdollah Jalilian <jalilian@razi.ac.ir>
-Description: A package for fitting the space-time Epidemic Type
-        Aftershock Sequence (ETAS) model to earthquake catalogs.
+Description: Fitting the space-time Epidemic Type
+        Aftershock Sequence (ETAS) model to earthquake catalogs
+        using a stochastic declustering approach.
         The ETAS model is a spatio-temporal marked point process
         model and a special case of the Hawcks process.
-Depends: R (>= 3.1.0)
+        The package is based on Fortran code by Jiancang Zhuang
+        (available at http://bemlar.ism.ac.jp/zhuang/software.html),
+        which is translated into C such that it can be called from R.
+Depends: R (>= 3.1.0), maps
 Imports:
   spatstat
 License: GPL (>= 2)

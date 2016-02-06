@@ -43,32 +43,22 @@
 
 \seealso{
   \code{\link{etas}}
-
-  \code{\link{ppx}}
+  \code{\link{catalog}}
 }
 \examples{
 
-  data(iran.quakes)
   iran.cat <- catalog(iran.quakes, time.begin="1973/01/01",
-     study.start="1985/01/01", study.end="2016/01/01",
+     study.start="1996/01/01", study.end="2016/01/01",
      lat.range=c(25, 42), long.range=c(42, 63), mag.threshold=4.5)
 
-  param00 <- c(0.592844590,
-    0.204288231,
-    0.022692883,
-    1.495169224,
-    1.109752319,
-    0.001175925,
-    1.860044210,
-    1.041549634)
+  param <- c(0.46, 0.23, 0.022, 2.8, 1.12, 0.012, 2.4, 0.35)
 
   \dontrun{
-  lambda(50435, 40.12, 34.5, param00, iran.cat)
-  }
+  lambda(15706, 40.12, 34.5, param, iran.cat)}
+
 }
 \author{Abdollah Jalilian
   \email{jalilian@razi.ac.ir}
-  \url{http://www.razi.ac.ir/jalilian/}
 }
 \keyword{spatial}
 \keyword{math}

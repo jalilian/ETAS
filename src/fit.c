@@ -21,7 +21,7 @@ void linear(SEXP rdata,
 {
   if (verbose == 1)
     Rprintf("\n\tstart linear search along the specified direction ...\n");
-
+  R_CheckUserInterrupt();
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     xNew[8], a1, a2, a3, b1, b2;
 
@@ -337,6 +337,7 @@ SEXP fit(SEXP theta, SEXP rdata, SEXP rverbose)
 
   for (int iter = 1; iter < 10; iter++)
     {
+      R_CheckUserInterrupt();
       for (int ic = 0; ic < 8; ic++)
 	{
 	  if (ic > 0 || iter > 1)
@@ -469,6 +470,8 @@ SEXP fit(SEXP theta, SEXP rdata, SEXP rverbose)
           linear(rdata, tht, s, &ed, verbose, &ramda);
           if (verbose == 1)
 	    Rprintf("\tBack to Davidon-Fletcher-Powell Procedure: ramda = %f\n", ramda);
+
+    R_CheckUserInterrupt();
 
 	  s1 = 0.0;
 	  for (int i = 0; i < 8; i++)

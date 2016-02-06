@@ -3,5 +3,12 @@ exportPattern("^[[:alpha:]]+")
 S3method(print, catalog)
 S3method(plot, catalog)
 S3method(print, etas)
+S3method(plot, etas)
 
 useDynLib(ETAS)
+
+importFrom("graphics", "abline", "axis", "dotchart", "layout", "par",
+           "plot", "points", "polygon")
+importFrom("stats", "density", "lm", "plot.ts")
+importFrom("utils", "installed.packages")
+importFrom("maps", "map")

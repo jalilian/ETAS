@@ -55,7 +55,6 @@
 }
 \author{Abdollah Jalilian
   \email{jalilian@razi.ac.ir}
-  \url{http://www.razi.ac.ir/jalilian/}
 }
 \keyword{spatial}
 \keyword{attribute}

@@ -172,10 +172,10 @@ print.catalog <- function (x, ...)
 {
   cat("earthquake catalog:\n  time begin", as.character(x$time.begin),
       "\n  study period:", as.character(x$study.start),
-      " to ", as.character(x$study.end), "(", x$rtperiod[2], "days)")
+      " to ", as.character(x$study.end), "(T =", diff(x$rtperiod), "days)")
   cat("\ngeographical region:\n  ")
   switch(x$region.win$type, rectangle={
-    cat("  rextangular = [", x$region.poly$long[1], ",", x$region.poly$long[2],
+    cat("  rectangular = [", x$region.poly$long[1], ",", x$region.poly$long[2],
         "] x [", x$region.poly$lat[1], x$region.poly$lat[2], "]\n")
   }, polygonal={
     cat("  polygonal with vertices:\n")
@@ -192,28 +192,55 @@ print.catalog <- function (x, ...)
 plot.catalog <- function(x, ...)
 {
   oldpar <- par(no.readonly = TRUE)
-  par(mfrow=c(2, 2), mar=c(4, 4.1, 1, 1))
+  lymat <- matrix(c(1, 1, 2, 1, 1, 3, 4, 5, 6), 3, 3)
+  layout(lymat)
+  #par(mfrow=c(2, 2), mar=c(4, 4.1, 1, 1))
+  par(mar=c(4, 4.25, 1, 1))
   plot(x$longlat.coord$long, x$longlat.coord$lat, xlab="long", ylab="lat", col=8,
-       cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]), asp=TRUE)
+       cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]), asp=TRUE, axes=FALSE)
+  map('world', add=TRUE, col="grey50")
+  axis(1); axis(2)
   ok <- x$revents[, 5] == 1
   points(x$longlat.coord$long[ok], x$longlat.coord$lat[ok], col=4,
          cex=2 * (x$revents[ok, 4] + 0.1)/max(x$revents[ok, 4]))
   polygon(x$region.poly$long, x$region.poly$lat, border=2)
+  #
   mbk <- seq(0, max(x$revents[, 4]), 0.1) + x$mag.threshold
   mct <- cut(x$revents[, 4] + x$mag.threshold, mbk)
-  plot(mbk[-length(mbk)], as.numeric(table(mct)), type="b",
-       xlab="mag", ylab="number of events", axes=FALSE)
+  mcc <- log10(rev(cumsum(rev(table(mct)))))
+  plot(mbk[-length(mbk)], mcc, type="b",
+       xlab="mag", ylab=expression(log[10]*N[mag]), axes=FALSE)
+  abline(lm(mcc ~ mbk[-length(mbk)]), col=4, lty=4)
   axis(1); axis(2)
+  #
   tbk <- seq(0, max(x$revents[, 1]), l=100)
   tct <- cut(x$revents[, 1], tbk)
-  plot(tbk[-length(tbk)], cumsum(table(tct)), type="l",
-       xlab="time", ylab="number of events", axes=FALSE)
+  tcc <- (cumsum(table(tct)))
+  plot(tbk[-length(tbk)], tcc, type="l",
+       xlab="time", ylab=expression(log[10]*N[t]), axes=FALSE)
+  tok <- (tbk[-length(tbk)] >= x$rtperiod[1]) & (tbk[-length(tbk)] <= x$rtperiod[2])
+  abline(lm(tcc[tok] ~ tbk[-length(tbk)][tok]), col=4, lty=4)
   axis(1); axis(2)
   abline(v=x$rtperiod[1], col=2, lty=2)
   abline(v=x$rtperiod[2], col=2, lty=2)
+  #
   plot(x$revents[, 1], x$revents[, 3], xlab="time", ylab="lat",
-       cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]), col=8)
+       cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]), col=8, axes=FALSE)
   points(x$revents[ok, 1], x$revents[ok, 3], col=4,
          cex=2 * (x$revents[ok, 4] + 0.1)/max(x$revents[ok, 4]))
+  axis(1); axis(2)
+  #
+  plot(x$revents[, 1], x$longlat.coord$long, xlab="time", ylab="long",
+       cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]), col=8, axes=FALSE)
+  points(x$revents[ok, 1], x$longlat.coord$long[ok], col=4,
+         cex=2 * (x$revents[ok, 4] + 0.1)/max(x$revents[ok, 4]))
+  axis(1); axis(2)
+  #
+  plot(x$revents[, 1], x$revents[, 4] + x$mag.threshold, xlab="time",
+       ylab="mag", pch=20, cex=0.5, col=8, axes=FALSE)
+  points(x$revents[ok, 1], x$revents[ok, 4] + x$mag.threshold, col=4, pch=20, cex=0.5)
+  axis(1); axis(2)
+  #
+  layout(1)
   par(oldpar)
 }

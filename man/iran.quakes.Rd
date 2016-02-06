@@ -4,7 +4,7 @@
 \title{An Iranian Earthquake Catalog}
 \description{
   A data frame with 5970 rows and 5 columns giving occurrence date, time,
-  longitude, latitude and magnitude of shalow earthquakes (depth < 100 km)
+  longitude, latitude and magnitude of shallow earthquakes (depth < 100 km)
   occurred since 1973-01-01 till 2016-01-01 in Iran and its vicinity
   (40-65E and 22-42N). Only earthquakes with magnitude greater than
   or equal to 4.5 are included.
