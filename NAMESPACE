@@ -1,0 +1,7 @@
+exportPattern("^[[:alpha:]]+")
+
+S3method(print, catalog)
+S3method(plot, catalog)
+S3method(print, etas)
+
+useDynLib(ETAS)

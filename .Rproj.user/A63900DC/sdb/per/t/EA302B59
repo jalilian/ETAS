@@ -1,0 +1,16 @@
+{
+    "contents" : "\nrates <- function(theta, object, bwd, dimyx=NULL,\n                  method=\"zhuang\", plot.it=TRUE)\n{\n  xx <- object$longlat$long\n  yy <- object$longlat$lat\n  win <- spatstat::owin(poly=list(x=object$region.poly$long,\n                                  y=object$region.poly$lat))\n  tperiod <- object$rtperiod\n  revents <- object$revents\n  bk <- revents[, 6]\n  pb <- revents[, 7]\n  lam <- revents[, 8]\n\n  switch(method, spatstat={\n    Xg <- spatstat::ppp(xx, yy, window=spatstat::owin(range(xx), range(yy)))\n    total.im <- density(Xg, weights=rep(1/diff(tperiod), Xg$n), dimyx)[win]\n    spatstat::marks(Xg) <- bk\n    bkgd.im <-  spatstat::smooth.ppp(Xg, weights=bk/diff(tperiod))[win]\n    spatstat::marks(Xg) <- lam - bk\n    clust.im <- spatstat::smooth.ppp(Xg,\n                                     weights=rep(1/diff(tperiod), Xg$n))[win]\n    spatstat::marks(Xg) <- lam\n    lambd.im <- spatstat::smooth.ppp(Xg)[win]\n  }, zhuang={\n    if (is.null(dimyx))\n      dimyx <- c(128, 128)\n    if (!is.numeric(dimyx) || length(dimyx) != 2)\n      stop(paste(sQuote(dimyx), \"must be a numeric vector of length 2.\"))\n    gr <- spatstat::gridcenters(spatstat::boundingbox(win), dimyx[2], dimyx[1])\n    gx <- gr$x\n    gy <- gr$y\n    out1 <- out2 <- out3 <- out4 <- numeric(length(gx))\n    for (i in 1:length(gx))\n    {\n      r2 <- (xx - gx[i])^2 + (yy - gy[i])^2\n      s1 <- exp(-r2/(2 * bwd^2)) / (2 * pi * bwd^2)\n      s2 <- pb *  s1\n      s1 <- sum(s1)/diff(tperiod)\n      s2 <- sum(s2)/diff(tperiod)\n      out1[i] <- s1\n      out2[i] <- s2\n      out3[i] <- s1 - s2\n      lamb <- theta[1] * s2 + lambdax(tperiod[2], gx[i], gy[i], theta, revents)\n      out4[i] <- lamb\n    }\n    total.im <- spatstat::as.im(list(x=unique(gx), y=unique(gy),\n                                     z=matrix(out1, nrow=dimyx[1], ncol=dimyx[2])))\n    bkgd.im <-  spatstat::as.im(list(x=unique(gx), y=unique(gy),\n                                     z=matrix(out2, nrow=dimyx[1], ncol=dimyx[2])))\n    clust.im <- spatstat::as.im(list(x=unique(gx), y=unique(gy),\n                                     z=matrix(out3,, nrow=dimyx[1], ncol=dimyx[2])))\n    lambd.im <- spatstat::as.im(list(x=unique(gx), y=unique(gy),\n                                     z=matrix(out4, nrow=dimyx[1], ncol=dimyx[2])))\n  })\n  if (plot.it)\n  {\n    dev.new()\n    par(mfrow=c(2, 2), mar=c(1.5, 1.5, 2, 3))\n    plot(total.im, main=\"total spatial seismicity rate\", axes=TRUE,ribsep=0.1)\n    plot(bkgd.im, main=\"background seismicity rate\", axes=TRUE, ribsep=0.1)\n    plot(clust.im, main=\"clustering rate\", axes=TRUE, ribsep=0.1)\n    plot(lambd.im, main=\"conditional intensity\", axes=TRUE, ribsep=0.1)\n  }\n  return(list(total.im, bkgd.im, clust.im, lambd.im))\n}\n",
+    "created" : 1451987850980.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2979941179",
+    "id" : "EA302B59",
+    "lastKnownWriteTime" : 1452068276,
+    "path" : "~/Dropbox/RCodes/RpkgETAS/ETAS/R/rates.R",
+    "project_path" : "R/rates.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

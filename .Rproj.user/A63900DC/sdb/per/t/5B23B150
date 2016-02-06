@@ -1,0 +1,16 @@
+{
+    "contents" : "\netasfit <- function(theta, revents, rpoly, tperiod, integ0, verbose)\n{\n  tht <- sqrt(theta)\n  storage.mode(revents) <- storage.mode(rpoly) <- \"double\"\n  rdata <- list(revents, rpoly, as.double(tperiod), as.double(integ0))\n  cfit <- .Call(\"fit\", as.double(tht), rdata, as.integer(verbose), PACKAGE=\"ETAS\")\n  list(estimate=cfit[[1]]^2, loglik=cfit[[2]], gradient=cfit[[3]], aic=cfit[[4]])\n}\n\n",
+    "created" : 1451986223972.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2331541098",
+    "id" : "5B23B150",
+    "lastKnownWriteTime" : 1340420886,
+    "path" : "~/Dropbox/RCodes/RpkgETAS/ETAS/R/etasfit.R",
+    "project_path" : "R/etasfit.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
