@@ -1,6 +1,7 @@
 \name{ETAS-internal}
 \title{Internal ETAS functions}
 \alias{rates.inter}
+\alias{probs}
 \alias{lambdax}
 \alias{etasfit}
 \alias{decluster}
@@ -14,6 +15,7 @@
 \usage{
 rates.inter(theta, object, bwd, dimyx=NULL,
             method="zhuang", plot.it=TRUE)
+probs(fit)
 lambdax(rt, rx, ry, theta, revents)
 etasfit(theta, revents, rpoly, tperiod, integ0, verbose)
 decluster(theta, rbwd, revents, rpoly, tperiod)
