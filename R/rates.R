@@ -72,3 +72,15 @@ rates.inter <- function(theta, object, bwd, dimyx=NULL,
   else
     return(out)
 }
+
+probs <- function(fit)
+{
+  spatstat::verifyclass(fit, "etas")
+  object <- fit$object
+
+  xx <- object$longlat$long
+  yy <- object$longlat$lat
+
+  pb <- object$revents[, 7]
+  return(data.frame(long=xx, lat=yy, prob=pb))
+}
