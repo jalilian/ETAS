@@ -3,7 +3,8 @@
 \alias{methods.etas}
 \title{Class of Fitted ETAS Models}
 \description{
-  A class \code{etas} to represent a fitted ETAS model. The output of \code{\link{etas}}.
+  A class \code{etas} to represent a fitted ETAS model.
+  The output of \code{\link{etas}}.
 }
 \details{
   An object of class \code{etas} represents an ETAS model
@@ -50,7 +51,7 @@
 
   # fitting the model
   \dontrun{
-  res <- etas(ir.cat, param0=param01, no.itr=5)
+  res <- etas(ir.cat, param0=param01)
   }
 }
 \author{Abdollah Jalilian

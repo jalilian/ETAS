@@ -29,8 +29,26 @@
   The ANSS Comprehensive Catalog (ComCat):
   \url{http://earthquake.usgs.gov/earthquakes/search/}
 }
-\references{
-  Jalilian, A. (2016). Modeling Earthquakes of Iran.
+%\references{
+%  Jalilian, A. (2017). Modeling Earthquakes of Iran by ETAS model. \emph{submitted}.
+%}
+\examples{
+  summary(iran.quakes)
+
+  gregion <- list(lat = c(26, 25, 29, 38, 35), long = c(52, 59, 58, 45, 43))
+  # creat an earthquake catalog
+  iran.cat <- catalog(iran.quakes, study.start = "1991/01/01",
+     study.end = "2011/01/01", region.poly = gregion, mag.threshold = 4.5)
+
+
+  \dontrun{
+  plot(iran.cat)
+  iran.fit <- etas(iran.cat)}
+
+  zagros <- list(lat = c(27, 26, 29, 29, 35, 33),
+     long = c(52, 58, 58, 54, 48, 46))
+  iran.cat <- catalog(iran.quakes, study.start = "1991/01/01",
+     study.end = "2011/01/01", region.poly = zagros, mag.threshold = 4)
 }
 \keyword{datasets}
 \keyword{spatial}

@@ -15,7 +15,7 @@
            conditional intensity is to be computed at.}
   \item{y}{A numeric value. The y-coordinate of the location that the
            conditional intensity is to be computed at.}
-  \item{param}{Vector of model paramters.}
+  \item{param}{Vector of model parameters.}
   \item{object}{An object of class \code{"catalog"} containing an
   earthquake catalog dataset.}
 }
@@ -29,16 +29,17 @@
       \sum_{t_i < t} k(m_i)g(t - t_i)f(x - x_i, y - y_i|m_i).}{sum[t[i] < t] k(m[i]) g(t - t[i]) f(x - x[i], y - y[i]|m[i]).}
 }
 \references{
-  Zhuang, J., Ogata, Y. and Vere-Jones, D. (2005).
-  Diagnostic analysis of space-time branching processes for earthquakes.
-  Lecture Note in Statistics: \emph{Case Studies in Spatial Point Process Models}
-  (Baddeley, A., Gregori, P., Mateu, J., Stoica, R. and Stoyan, D.),
-  Springer-Verlag, New York, \bold{185}, 276--292.
-
-  Zhuang, J., Ogata, Y. and Vere-Jones, D. (2002).
-  Stochastic declustering of space-time earthquake occurrences.
+  Zhuang J, Ogata Y, Vere-Jones D (2002).
+  Stochastic Declustering of Space-Time Earthquake Occurrences.
   \emph{Journal of the American Statistical Association},
-  \bold{97}, 369--380.
+  \bold{97}(458), 369--380.
+  \href{http://dx.doi.org/10.1198/016214502760046925}{doi:10.1198/016214502760046925}.
+
+  Zhuang J, Ogata Y, Vere-Jones D (2006).
+  Diagnostic Analysis of Space-Time Branching Processes for Earthquakes.
+  In \emph{Case Studies in Spatial Point Process Modeling},
+  pp. 275--292. Springer Nature.
+  \href{http://dx.doi.org/10.1007/0-387-31144-0_15}{doi:10.1007/0-387-31144-0_15}.
 }
 
 \seealso{
