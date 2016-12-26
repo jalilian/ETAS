@@ -12,26 +12,26 @@ double dq_fr(double r, double w[]);
 
 // *******************************************************************************
 
-double lambdaj(double *theta, 
-               int j, 
+double clambdaj(double *theta,
+               int j,
                double *t,
                double *x,
                double *y,
                double *m,
                double *bk);
 
-void lambdajGr(double *theta, 
+void clambdajGr(double *theta,
                int j,
                double *t,
                double *x,
                double *y,
                double *m,
-               double *bk, 
-	       double *fv, 
+               double *bk,
+	       double *fv,
 	       double *dfv);
 
-double integj(double *theta, 
-              int j, 
+double cintegj(double *theta,
+              int j,
               double *t,
               double *x,
               double *y,
@@ -42,7 +42,7 @@ double integj(double *theta,
               double *tstart2,
               double *tlength);
 
-void integjGr(double *theta, 
+void cintegjGr(double *theta,
               int j,
               double *t,
               double *x,
@@ -52,8 +52,8 @@ void integjGr(double *theta,
               double *px,
               double *py,
               double *tstart2,
-              double *tlength, 
-              double *fv, 
+              double *tlength,
+              double *fv,
 	      double *dfv);
 
 // *******************************************************************************

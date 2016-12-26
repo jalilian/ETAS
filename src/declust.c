@@ -22,7 +22,7 @@ double pGauss(double r, double w[])
 
 // *******************************************************************************
 
-SEXP declust(SEXP theta,
+SEXP cdeclust(SEXP theta,
              SEXP rbwd,
              SEXP revents,
              SEXP rpoly,
@@ -88,7 +88,7 @@ SEXP declust(SEXP theta,
     {
       w[0] = bwd[i];
       s += pb[i] * polyinteg(pGauss, w, &np, px, py, x[i], y[i]);
-      lam[i] = lambdaj(tht,i, t, x, y, m, bk);
+      lam[i] = clambdaj(tht,i, t, x, y, m, bk);
       events[6 * N + i] = (tht[0] * tht[0] * bk[i]) / lam[i];
       events[7 * N + i] = lam[i];
     }

@@ -7,20 +7,18 @@
 
 // *******************************************************************************
 
-double loglkhd(double *tht, SEXP rdata, int verbose);
-void loglkhdGr(double *tht, SEXP rdata, int verbose, double *fv, double *dfv);
+double cloglkhd(double *tht, SEXP rdata, int verbose);
+void cloglkhdGr(double *tht, SEXP rdata, int verbose, double *fv, double *dfv);
 
 // *******************************************************************************
 
-void linear(SEXP rdata,
+void clinesearch(SEXP rdata,
 	    double *xOld,
 	    double *h,
 	    double *fv,
 	    int verbose,
 	    double *ram)
 {
-  if (verbose == 1)
-    Rprintf("\n\tstart linear search along the specified direction ...\n");
   R_CheckUserInterrupt();
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     xNew[8], a1, a2, a3, b1, b2;
@@ -38,7 +36,7 @@ void linear(SEXP rdata,
 
   for (int i = 0; i < 8; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
-  fv2 = loglkhd(xNew, rdata, verbose);
+  fv2 = cloglkhd(xNew, rdata, verbose);
 
   if (fv2 > fv1)
     goto stat50;
@@ -47,7 +45,7 @@ void linear(SEXP rdata,
   ram3 = ram2*2.0;
   for (int i = 0; i < 8 ; i++)
     xNew[i] = xOld[i] + ram3 * h[i];
-  fv3 = loglkhd(xNew, rdata, verbose);
+  fv3 = cloglkhd(xNew, rdata, verbose);
   if (fv3 > fv2)
     goto stat70;
   ram1 = ram2;
@@ -67,7 +65,7 @@ void linear(SEXP rdata,
     }
   for (int i = 0; i < 8; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
-  fv2 = loglkhd(xNew, rdata, verbose);
+  fv2 = cloglkhd(xNew, rdata, verbose);
   if (fv2 > fv1)
     goto stat50;
 
@@ -87,7 +85,7 @@ void linear(SEXP rdata,
       *ram = b1 / b2;
       for (int i = 0; i < 8; i++)
 	xNew[i] = xOld[i] + *ram*h[i];
-      *fv = loglkhd(xNew, rdata, verbose);
+      *fv = cloglkhd(xNew, rdata, verbose);
       if (*ram > ram2)
 	{
 	  if (*fv <= fv2)
@@ -141,7 +139,7 @@ void linear(SEXP rdata,
       *ram = b1 /b2;
       for (int i = 0; i < 8; i++)
 	xNew[i] = xOld[i] + *ram*h[i];
-      *fv = loglkhd(xNew, rdata, verbose);
+      *fv = cloglkhd(xNew, rdata, verbose);
       if (fv2 < *fv)
 	*ram = ram2;
       return;
@@ -151,9 +149,9 @@ void linear(SEXP rdata,
 // *******************************************************************************
 // log-likelihood function of the model
 
-double loglkhd(double *tht,
-	       SEXP rdata,
-               int verbose)
+double cloglkhd(double *tht,
+                SEXP rdata,
+                int verbose)
 {
   // extract events
   SEXP revents = VECTOR_ELT(rdata, 0), dim;
@@ -201,13 +199,13 @@ double loglkhd(double *tht,
     {
       if (flag[j] == 1)
 	{
-          s = lambdaj(tht, j, t, x, y, m, bk);
+          s = clambdaj(tht, j, t, x, y, m, bk);
 	  if (s > 1.0e-25)
 	    fv1 += log(s);
 	  else
 	    fv1 -= 100.0;
 	}
-      fv2 += integj(tht, j, t, x, y, m, &np, px, py, &tstart2, &tlength);
+      fv2 += cintegj(tht, j, t, x, y, m, &np, px, py, &tstart2, &tlength);
     }
 
   fv2 += tht[0] * tht[0] * (integ0);
@@ -222,7 +220,7 @@ double loglkhd(double *tht,
 
 // *******************************************************************************
 
-void loglkhdGr(double *tht,
+void cloglkhdGr(double *tht,
 	       SEXP rdata,
 	       int verbose,
 	       double *fv,
@@ -274,7 +272,7 @@ void loglkhdGr(double *tht,
     {
       if (flag[j] == 1)
 	{
-          lambdajGr(tht, j, t, x, y, m, bk, &fv1temp, &g1temp[0]);
+          clambdajGr(tht, j, t, x, y, m, bk, &fv1temp, &g1temp[0]);
 
 	  if (fv1temp > 1.0e-25)
 	    fv1 += log(fv1temp);
@@ -285,7 +283,7 @@ void loglkhdGr(double *tht,
 	    df1[i] += g1temp[i] / fv1temp;
 	}
 
-      integjGr(tht, j, t, x, y, m, &np, px, py, &tstart2, &tlength, &fv2temp, &g2temp[0]);
+      cintegjGr(tht, j, t, x, y, m, &np, px, py, &tstart2, &tlength, &fv2temp, &g2temp[0]);
       fv2 += fv2temp;
       for (int i = 0; i < 8; i++)
 	df2[i] += g2temp[i];
@@ -310,14 +308,17 @@ void loglkhdGr(double *tht,
 
 // *******************************************************************************
 
-SEXP fit(SEXP theta, SEXP rdata, SEXP rverbose)
+SEXP cfit(SEXP theta, SEXP rdata, SEXP ihess, SEXP rverbose)
 {
-  SEXP estimate, fvout, dfvout, aic, out;
+  SEXP estimate, fvout, dfvout, aic, hess, out;
 
   // extract model parameters
   double *tht = REAL(theta);
 
- // extract verbose control
+  // extract the inverse of hessian matrix
+  double *cihess = REAL(ihess);
+
+  // extract verbose control
   int verbose = INTEGER(rverbose)[0];
 
   if (verbose == 1)
@@ -330,194 +331,217 @@ SEXP fit(SEXP theta, SEXP rdata, SEXP rverbose)
   double h[8][8] = {{0}}, s[8] = {0}, dx[8] = {0}, g0[8] = {0}, g[8] = {0}, dg[8], wrk[8];
 
   // Initial estimate of inverse of hessian matrix
-  for( int i = 0; i < 8; i++ )
-    h[i][i] = 1.0;
+  for (int i = 0; i < 8; i++)
+    for (int j = 0; j < 8; j++)
+      h[i][j] = cihess[i * 8 + j];
 
-  loglkhdGr(tht, rdata, verbose, &fv, g);
+  cloglkhdGr(tht, rdata, verbose, &fv, g);
 
   for (int iter = 1; iter < 10; iter++)
-    {
-      R_CheckUserInterrupt();
-      for (int ic = 0; ic < 8; ic++)
-	{
-	  if (ic > 0 || iter > 1)
-	    {
-	      for (int i = 0; i < 8; i++)
-		dg[i] = g[i] - g0[i];
-
-	      for (int i = 0; i < 8; i++)
-		{
-		  sum = 0.0;
-		  for (int j = 0; j < 8; j++)
-		    sum += dg[j] * h[i][j];
-		  wrk[i] = sum;
-		}
-
-	      s1 = 0.0;
-	      s2 = 0.0;
-	      for (int i = 0; i < 8; i++)
-		{
-		  s1 += wrk[i] * dg[i];
-		  s2 += dx[i] * dg[i];
-		}
-
-	      if (s1 <= const1 || s2 <= const1)
-		{
-		  PROTECT(estimate = allocVector(REALSXP, 8));
-		  PROTECT(fvout = allocVector(REALSXP, 1));
-		  PROTECT(dfvout = allocVector(REALSXP, 8));
-		  PROTECT(aic = allocVector(REALSXP, 1));
-		  double *estimP = REAL(estimate), *fvP = REAL(fvout), *dfvP = REAL(dfvout), *aicP=REAL(aic);
-		  fvP[0] = -fv;
-                  aicP[0] = 2 * (fv + 8);
-                  if (verbose == 1)
-		    Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
-		  for( int i = 0; i < 8; i++ )
-		    {
-		      dfvP[i] = g[i];
-                      estimP[i] = tht[i];
-                      if (verbose == 1)
-		        Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
-		    }
-		  PROTECT(out = allocVector(VECSXP, 4));
-		  SET_VECTOR_ELT(out, 0, estimate);
-		  SET_VECTOR_ELT(out, 1, fvout);
-		  SET_VECTOR_ELT(out, 2, dfvout);
-		  SET_VECTOR_ELT(out, 3, aic);
-		  UNPROTECT(5);
-		  return(out);
-		}
-
-	      if (s1 <= s2)
-		{
-		  // fletcher type correction
-		  stem = s1 / s2 + 1.0;
-		  for (int i = 0; i < 8; i++)
-		    for (int j = i; j < 8; j++)
-		      {
-			h[i][j] -= (dx[i] * wrk[j] + wrk[i] * dx[j] - dx[i] * dx[j] * stem) / s2;
-			h[j][i] = h[i][j];
-		      }
-		}
-	      else
-		{
-		  // Update the inverse of hessian matrix
-		  for (int i = 0; i < 8; i++)
-		    for (int j = i; j < 8; j++)
-		      {	// davidon-fletcher-powell type correction
-			h[i][j] += dx[i] * dx[j]/s2 - wrk[i] * wrk[j] / s1;
-			h[j][i] = h[i][j];
-		      }
-		}
-	    }
-	  ss = 0.0;
-	  for (int i = 0; i < 8; i++)
-	    {
-	      sum = 0.0;
-	      for (int j = 0; j < 8; j++)
-		sum += h[i][j] * g[j];
-	      ss += sum * sum;
-	      s[i] = -sum;
-	    }
-	  s1 = 0.0;
-	  s2 = 0.0;
-	  for (int i = 0; i < 8; i++)
-	    {
-	      s1 += s[i] * g[i];
-	      s2 += g[i] * g[i];
-	    }
-
-	  double ds2 = sqrt(s2);
-	  double gtem = fabs(s1) / ds2;
-	  if (gtem <= tau1  &&  ds2 <= tau2)
-	    {
-	      PROTECT(estimate = allocVector(REALSXP, 8));
-	      PROTECT(fvout = allocVector(REALSXP, 1));
-	      PROTECT(dfvout = allocVector(REALSXP, 8));
-	      PROTECT(aic = allocVector(REALSXP, 1));
-	      double *estimP = REAL(estimate), *fvP = REAL(fvout), *dfvP = REAL(dfvout), *aicP=REAL(aic);
-	      fvP[0] = -fv;
-	      aicP[0] = 2 * (fv + 8);
-	      if (verbose == 1)
-		Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
-	      for( int i = 0; i < 8; i++ )
-		{
-		  dfvP[i] = g[i];
-		  estimP[i] = tht[i];
-		  if (verbose == 1)
-		    Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
-		}
-	      PROTECT(out = allocVector(VECSXP, 4));
-	      SET_VECTOR_ELT(out, 0, estimate);
-	      SET_VECTOR_ELT(out, 1, fvout);
-	      SET_VECTOR_ELT(out, 2, dfvout);
-	      SET_VECTOR_ELT(out, 3, aic);
-	      UNPROTECT(5);
-	      return(out);
-	    }
-
-	  if (s1 >= 0)
-	    for (int i = 0; i < 8; i++)
-	      {
-		for (int j = 0; j < 8; j++)
-		  h[i][j] = 0.0;
-		h[i][i] = 1.0;
-		s[i] = -s[i];
-	      }
-
-	  double ed = fv;
-	  // linear  search
-          linear(rdata, tht, s, &ed, verbose, &ramda);
-          if (verbose == 1)
-	    Rprintf("\tBack to Davidon-Fletcher-Powell Procedure: ramda = %f\n", ramda);
-
+  {
     R_CheckUserInterrupt();
+    for (int ic = 0; ic < 8; ic++)
+    {
+      if (ic > 0 || iter > 1)
+      {
+        for (int i = 0; i < 8; i++)
+          dg[i] = g[i] - g0[i];
 
-	  s1 = 0.0;
-	  for (int i = 0; i < 8; i++)
-	    {
-	      dx[i] = s[i] * ramda;
-	      s1 += dx[i] * dx[i];
-	      g0[i] = g[i];
-	      tht[i] += dx[i];
-	    }
-	  double fv0 = fv;
-          loglkhdGr(tht, rdata, verbose, &fv, g);
+        for (int i = 0; i < 8; i++)
+        {
+          sum = 0.0;
+          for (int j = 0; j < 8; j++)
+            sum += dg[j] * h[i][j];
+          wrk[i] = sum;
+        }
 
-	  s2 = 0.0;
-	  for (int i = 0; i < 8; i++)
-	    s2 += g[i] * g[i];
-	  if (sqrt(s2) > tau2)
-	    continue;
-	  if (fv0/fv - 1.0 < eps1 && sqrt(s1) < eps2)
-	    {
-	      PROTECT(estimate = allocVector(REALSXP, 8));
-	      PROTECT(fvout = allocVector(REALSXP, 1));
-	      PROTECT(dfvout = allocVector(REALSXP, 8));
-	      PROTECT(aic = allocVector(REALSXP, 1));
-	      double *estimP = REAL(estimate), *fvP = REAL(fvout), *dfvP = REAL(dfvout), *aicP=REAL(aic);
-	      fvP[0] = -fv;
-	      aicP[0] = 2 * (fv + 8);
-	      if (verbose == 1)
-		Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
-	      for( int i = 0; i < 8; i++ )
-		{
-		  dfvP[i] = g[i];
-		  estimP[i] = tht[i];
-		  if (verbose == 1)
-		    Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
-		}
-	      PROTECT(out = allocVector(VECSXP, 4));
-	      SET_VECTOR_ELT(out, 0, estimate);
-	      SET_VECTOR_ELT(out, 1, fvout);
-	      SET_VECTOR_ELT(out, 2, dfvout);
-	      SET_VECTOR_ELT(out, 3, aic);
-	      UNPROTECT(5);
-	      return(out);
-	    }
-	}
+        s1 = 0.0;
+        s2 = 0.0;
+        for (int i = 0; i < 8; i++)
+        {
+          s1 += wrk[i] * dg[i];
+          s2 += dx[i] * dg[i];
+        }
+
+        if (s1 <= const1 || s2 <= const1)
+        {
+          PROTECT(estimate = allocVector(REALSXP, 8));
+          PROTECT(fvout = allocVector(REALSXP, 1));
+          PROTECT(dfvout = allocVector(REALSXP, 8));
+          PROTECT(aic = allocVector(REALSXP, 1));
+          PROTECT(hess = allocVector(REALSXP, 64));
+          double *estimP = REAL(estimate), *fvP = REAL(fvout),
+            *dfvP = REAL(dfvout), *aicP=REAL(aic), *hessP = REAL(hess);
+          fvP[0] = -fv;
+          aicP[0] = 2 * (fv + 8);
+          if (verbose == 1)
+            Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n",
+                     -fv, 2 * (fv + 8));
+          for( int i = 0; i < 8; i++ )
+          {
+            dfvP[i] = g[i];
+            estimP[i] = tht[i];
+            for (int j = 0; j < 8; j++)
+              hessP[i + 8 * j] = h[i][j];
+            if (verbose == 1)
+              Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n",
+                      i + 1, pow(tht[i], 2), i + 1, g[i]);
+          }
+          PROTECT(out = allocVector(VECSXP, 5));
+          SET_VECTOR_ELT(out, 0, estimate);
+          SET_VECTOR_ELT(out, 1, fvout);
+          SET_VECTOR_ELT(out, 2, dfvout);
+          SET_VECTOR_ELT(out, 3, aic);
+          SET_VECTOR_ELT(out, 4, hess);
+          UNPROTECT(6);
+          return(out);
+        }
+
+        if (s1 <= s2)
+        {
+          // fletcher type correction
+          stem = s1 / s2 + 1.0;
+          for (int i = 0; i < 8; i++)
+            for (int j = i; j < 8; j++)
+            {
+              h[i][j] -= (dx[i] * wrk[j] + wrk[i] * dx[j] - dx[i] * dx[j] * stem) / s2;
+              h[j][i] = h[i][j];
+            }
+        }
+        else
+        {
+          // Update the inverse of hessian matrix
+          for (int i = 0; i < 8; i++)
+            for (int j = i; j < 8; j++)
+            {	// davidon-fletcher-powell type correction
+              h[i][j] += dx[i] * dx[j]/s2 - wrk[i] * wrk[j] / s1;
+              h[j][i] = h[i][j];
+            }
+        }
+      }
+      ss = 0.0;
+      for (int i = 0; i < 8; i++)
+      {
+        sum = 0.0;
+        for (int j = 0; j < 8; j++)
+          sum += h[i][j] * g[j];
+        ss += sum * sum;
+        s[i] = -sum;
+      }
+      s1 = 0.0;
+      s2 = 0.0;
+      for (int i = 0; i < 8; i++)
+      {
+        s1 += s[i] * g[i];
+        s2 += g[i] * g[i];
+      }
+
+      double ds2 = sqrt(s2);
+      double gtem = fabs(s1) / ds2;
+      if (gtem <= tau1  &&  ds2 <= tau2)
+      {
+        PROTECT(estimate = allocVector(REALSXP, 8));
+        PROTECT(fvout = allocVector(REALSXP, 1));
+        PROTECT(dfvout = allocVector(REALSXP, 8));
+        PROTECT(aic = allocVector(REALSXP, 1));
+        PROTECT(hess = allocVector(REALSXP, 64));
+        double *estimP = REAL(estimate), *fvP = REAL(fvout),
+          *dfvP = REAL(dfvout), *aicP=REAL(aic), *hessP=REAL(hess);
+        fvP[0] = -fv;
+        aicP[0] = 2 * (fv + 8);
+        if (verbose == 1)
+          Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
+        for( int i = 0; i < 8; i++ )
+        {
+          dfvP[i] = g[i];
+          estimP[i] = tht[i];
+          for (int j = 0; j < 8; j++)
+            hessP[i + 8 * j] = h[i][j];
+          if (verbose == 1)
+            Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
+        }
+        PROTECT(out = allocVector(VECSXP, 5));
+        SET_VECTOR_ELT(out, 0, estimate);
+        SET_VECTOR_ELT(out, 1, fvout);
+        SET_VECTOR_ELT(out, 2, dfvout);
+        SET_VECTOR_ELT(out, 3, aic);
+        SET_VECTOR_ELT(out, 4, hess);
+        UNPROTECT(6);
+        return(out);
+      }
+
+      if (s1 >= 0)
+      {
+        for (int i = 0; i < 8; i++)
+        {
+          for (int j = 0; j < 8; j++)
+            h[i][j] = 0.0;
+          h[i][i] = 1.0;
+          s[i] = -s[i];
+        }
+      }
+
+
+      double ed = fv;
+      // line  search
+      if (verbose == 1)
+        Rprintf("\nstart line search along the specified direction ...\n");
+      clinesearch(rdata, tht, s, &ed, verbose, &ramda);
+      if (verbose == 1)
+        Rprintf("back to Davidon-Fletcher-Powell Procedure: ramda = %f\n", ramda);
+
+      R_CheckUserInterrupt();
+
+      s1 = 0.0;
+      for (int i = 0; i < 8; i++)
+      {
+        dx[i] = s[i] * ramda;
+        s1 += dx[i] * dx[i];
+        g0[i] = g[i];
+        tht[i] += dx[i];
+      }
+      double fv0 = fv;
+      cloglkhdGr(tht, rdata, verbose, &fv, g);
+
+      s2 = 0.0;
+      for (int i = 0; i < 8; i++)
+        s2 += g[i] * g[i];
+      if (sqrt(s2) > tau2)
+        continue;
+      if (fv0/fv - 1.0 < eps1 && sqrt(s1) < eps2)
+      {
+        PROTECT(estimate = allocVector(REALSXP, 8));
+        PROTECT(fvout = allocVector(REALSXP, 1));
+        PROTECT(dfvout = allocVector(REALSXP, 8));
+        PROTECT(aic = allocVector(REALSXP, 1));
+        PROTECT(hess = allocVector(REALSXP, 64));
+        double *estimP = REAL(estimate), *fvP = REAL(fvout),
+          *dfvP = REAL(dfvout), *aicP=REAL(aic), *hessP=REAL(hess);
+        fvP[0] = -fv;
+        aicP[0] = 2 * (fv + 8);
+        if (verbose == 1)
+          Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
+        for( int i = 0; i < 8; i++ )
+        {
+          dfvP[i] = g[i];
+          estimP[i] = tht[i];
+          for (int j = 0; j < 8; j++)
+            hessP[i + 8 * j] = h[i][j];
+          if (verbose == 1)
+            Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
+        }
+        PROTECT(out = allocVector(VECSXP, 5));
+        SET_VECTOR_ELT(out, 0, estimate);
+        SET_VECTOR_ELT(out, 1, fvout);
+        SET_VECTOR_ELT(out, 2, dfvout);
+        SET_VECTOR_ELT(out, 3, aic);
+        SET_VECTOR_ELT(out, 4, hess);
+        UNPROTECT(6);
+        return(out);
+      }
     }
-    return(0);
+  }
+  return(0);
 }
 
 // *******************************************************************************
