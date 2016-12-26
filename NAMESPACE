@@ -8,7 +8,9 @@ S3method(plot, etas)
 useDynLib(ETAS)
 
 importFrom("graphics", "abline", "axis", "dotchart", "layout", "par",
-           "plot", "points", "polygon")
+           "plot", "points", "polygon", "mtext")
 importFrom("stats", "density", "lm", "plot.ts")
 importFrom("utils", "installed.packages")
 importFrom("maps", "map")
+
+importFrom("Rcpp", "evalCpp")
