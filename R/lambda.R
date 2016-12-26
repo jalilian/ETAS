@@ -18,10 +18,31 @@ lambda <- function(t, x, y, param, object)
       out[i] <- 0
     else
     {
-      out[i] <- .Call("lambdax", as.double(t[i]), as.double(x[i]), as.double(y[i]),
-                 as.double(theta), revents, PACKAGE="ETAS")[[1]]
+      out[i] <- .Call("clambdax", as.double(t[i]), as.double(x[i]),
+                      as.double(y[i]), as.double(theta),
+                      revents, PACKAGE="ETAS")[[1]]
     }
   }
   return(out)
 }
 
+lambdatemporal <- function(t, fit)
+{
+  obj <- fit$object
+  cxxlambdtemp(t, fit$param, obj$revents, obj$rpoly,
+                 obj$rtperiod, fit$integ0, fit$ndiv)
+}
+
+lambdaspatial <- function(x, y, fit)
+{
+  obj <- fit$object
+  cxxlambspat(x, y, fit$param, obj$revents, obj$rpoly,
+              obj$rtperiod, fit$bwd)
+}
+
+timetransform <- function(fit)
+{
+  obj <- fit$object
+  cxxtimetrans(fit$param, obj$revents, obj$rpoly, obj$rtperiod,
+              fit$integ, fit$ndiv)
+}

@@ -1,16 +1,16 @@
 
 catalog <- function(data, time.begin=NULL, study.start=NULL,
-                    study.end=NULL, study.length=NULL,
-                    lat.range=NULL, long.range=NULL,
-                    region.poly=NULL, mag.threshold=NULL,
-                    flatmap=TRUE, tz="GMT")
+                   study.end=NULL, study.length=NULL,
+                   lat.range=NULL, long.range=NULL,
+                   region.poly=NULL, mag.threshold=NULL,
+                   flatmap=TRUE, dist.unit="degree", tz="GMT")
 {
   data <- as.data.frame(data)
   dnames <- tolower(names(data))
   names(data) <- dnames
   vnames <- c("date", "time", "long", "lat", "mag")
   if (!all(vnames %in% dnames))
-    stop(paste("argument", sQuote(data),
+    stop(paste("argument", sQuote("data"),
                "must be a data frame with column names ",
                toString(sQuote(vnames))))
   if (any(is.na(data[, vnames])))
@@ -25,7 +25,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
 
   # extract date and time of events
   dt <- as.POSIXlt(paste(data$date, data$time), tz=tz)
-  if (any(duplicated(dt)))
+  if (anyDuplicated(dt) != 0)
     stop(paste("no more than one event can occur simultaneously!",
                "check events", toString(which(duplicated(dt)))))
   if (is.unsorted(dt))
@@ -78,11 +78,11 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
 
   # spatial region
   if (is.null(lat.range))
-    lat.range <- range(yy)
+    lat.range <- range(yy) + 0.01 * diff(range(yy)) * c(-1, 1)
   else if (!is.vector(lat.range) || length(lat.range) != 2 || lat.range[2] <= lat.range[1])
     stop("lat.range must be a vector of length 2 giving (lat.min, lat.max)")
   if (is.null(long.range))
-    long.range <- range(xx)
+    long.range <- range(xx) + 0.01 * diff(range(xx)) * c(-1, 1)
   else if (!is.vector(long.range) || length(long.range) != 2 || long.range[2] <= long.range[1])
     stop("long.range must be a vector of length 2 giving (long.min, long.max)")
 
@@ -114,7 +114,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
 
   # magnitude threshold
   if (is.null(mag.threshold))
-    mag.threshold <- min(data$mag)
+    mag.threshold <- min(mm)
   else if (!is.numeric(mag.threshold) || length(mag.threshold) > 1)
     stop("mag.threshold must be a single numeric value")
 
@@ -122,14 +122,14 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   longlat.coord <- data.frame(long=xx, lat=yy)
   if (flatmap)
   {
-    ymean <- spatstat::centroid.owin(region.win)$y
-    theta <- cos(ymean * pi / 180)
-    A <- matrix(c(theta, 0, 0, 1), ncol=2, nrow=2)
-    region.win <- spatstat::affine(region.win, mat=A, vec=c(0, 0), rescue=TRUE)
-    xx <- theta * xx
+    proj <- longlat2xy(long=xx, lat=yy, region.poly=region.poly,
+                       dist.unit=dist.unit)
+    xx <- proj$x
+    yy <- proj$y
+    region.win <- proj$region.win
   }
 
-  ok <- (dt <= study.end) & (dt > time.begin) & (mm >= mag.threshold)
+  ok <- (dt <= study.end) & (dt >= time.begin) & (mm >= mag.threshold)
   xx <- xx[ok]
   yy <- yy[ok]
   tt <- tt[ok]
@@ -141,7 +141,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   longlat.coord$flag <- flag
   longlat.coord$dt <- dt[ok]
   X <- spatstat::ppx(data.frame(t=tt, x=xx, y=yy, m=mm),
-           coord.type=c("t", "s", "s", "m"))
+                     coord.type=c("t", "s", "s", "m"))
 
   switch(region.win$type, polygonal= {
     px <- region.win$bdry[[1]]$x
@@ -162,11 +162,11 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
               region.poly=region.poly, region.win=region.win,
               time.begin=time.begin, study.start=study.start,
               study.end=study.end, study.length=study.length,
-              mag.threshold=mag.threshold, longlat.coord=longlat.coord)
+              mag.threshold=mag.threshold, longlat.coord=longlat.coord,
+              dist.unit=dist.unit)
   class(out) <- "catalog"
   return(out)
 }
-
 
 print.catalog <- function (x, ...)
 {
@@ -186,7 +186,7 @@ print.catalog <- function (x, ...)
       ":", sum(x$revents[, 5] == 1), "target events, ",
       sum(x$revents[, 5] != 1), "complementary events\n  (",
       sum(x$revents[, 5] == 0), "events outside geographical region,",
-      sum(x$revents[, 5] == -2), "events outside study period)")
+      sum(x$revents[, 5] == -2), "events outside study period)\n")
 }
 
 plot.catalog <- function(x, ...)
@@ -194,11 +194,11 @@ plot.catalog <- function(x, ...)
   oldpar <- par(no.readonly = TRUE)
   lymat <- matrix(c(1, 1, 2, 1, 1, 3, 4, 5, 6), 3, 3)
   layout(lymat)
-  #par(mfrow=c(2, 2), mar=c(4, 4.1, 1, 1))
   par(mar=c(4, 4.25, 1, 1))
-  plot(x$longlat.coord$long, x$longlat.coord$lat, xlab="long", ylab="lat", col=8,
-       cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]), asp=TRUE, axes=FALSE)
-  map('world', add=TRUE, col="grey50")
+  plot(x$longlat.coord$long, x$longlat.coord$lat, xlab="long", ylab="lat",
+       col=8, cex=2 * (x$revents[, 4] + 0.1)/max(x$revents[, 4]),
+       asp=TRUE, axes=FALSE)
+  maps::map('world', add=TRUE, col="grey50")
   axis(1); axis(2)
   ok <- x$revents[, 5] == 1
   points(x$longlat.coord$long[ok], x$longlat.coord$lat[ok], col=4,
@@ -210,17 +210,17 @@ plot.catalog <- function(x, ...)
   mcc <- log10(rev(cumsum(rev(table(mct)))))
   plot(mbk[-length(mbk)], mcc, type="b",
        xlab="mag", ylab=expression(log[10]*N[mag]), axes=FALSE)
-  abline(lm(mcc ~ mbk[-length(mbk)]), col=4, lty=4)
-  axis(1); axis(2)
+  graphics::abline(stats::lm(mcc ~ mbk[-length(mbk)]), col=4, lty=4)
+  graphics::axis(1); graphics::axis(2)
   #
   tbk <- seq(0, max(x$revents[, 1]), l=100)
   tct <- cut(x$revents[, 1], tbk)
   tcc <- (cumsum(table(tct)))
   plot(tbk[-length(tbk)], tcc, type="l",
-       xlab="time", ylab=expression(log[10]*N[t]), axes=FALSE)
+       xlab="time", ylab=expression(N[t]), axes=FALSE)
   tok <- (tbk[-length(tbk)] >= x$rtperiod[1]) & (tbk[-length(tbk)] <= x$rtperiod[2])
-  abline(lm(tcc[tok] ~ tbk[-length(tbk)][tok]), col=4, lty=4)
-  axis(1); axis(2)
+  graphics::abline(stats::lm(tcc[tok] ~ tbk[-length(tbk)][tok]), col=4, lty=4)
+  graphics::axis(1); graphics::axis(2)
   abline(v=x$rtperiod[1], col=2, lty=2)
   abline(v=x$rtperiod[2], col=2, lty=2)
   #

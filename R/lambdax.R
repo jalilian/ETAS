@@ -5,9 +5,6 @@ lambdax <- function(rt, rx, ry, theta, revents)
    return(0)
   theta <- sqrt(theta)
   storage.mode(revents) <- "double"
-  .Call("lambdax", as.double(rt), as.double(rx), as.double(ry), 
+  .Call("clambdax", as.double(rt), as.double(rx), as.double(ry),
         as.double(theta), revents, PACKAGE="ETAS")[[1]]
 }
-
-
-

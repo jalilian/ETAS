@@ -1,6 +1,8 @@
 
-etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
-                 verbose = TRUE, plot.it = FALSE, no.itr = 11)
+etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
+                 verbose = TRUE, plot.it = FALSE, ndiv = 1000,
+                 no.itr = 11, rel.tol=1e-03, eps = 1e-06,
+                 cxxcode = TRUE, nthreads = 1)
 {
   ptm <- proc.time()
   spatstat::verifyclass(object, "catalog")
@@ -14,14 +16,22 @@ etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
   if (is.null(param0))
   {
     mu0 <- nrow(revents)/(4 * diff(rtperiod) * spatstat::area.owin(win))
-    param0 <- c(mu=mu0, A=0.01, c=0.01, alpha=1, p=1.3, D=0.01, q=2, gamma=1)
-    cat("using non-informative initial parameter values:\n")
-    print(param0)
+    param0 <- c(mu=mu0, A=0.01, c=0.01, alpha=1, p=1.3, D=0.01, q=2,
+                gamma=1)
+    if (object$dist.unit == "km")
+      param0["D"] <- 111^2 * param0["D"]
+    if (verbose)
+    {
+      cat("using non-informative initial parameter values:\n")
+      print(param0)
+    }
     warning("the algorithm is very sensitive to the choice of starting point")
   }
   # bandwidths for smoothness and integration
   if (is.null(bwd))
   {
+    if (object$dist.unit == "km")
+      bwm <-  6371.3 * pi / 180 * bwm
     rbwd <- spatstat::nndist.default(revents[, 2], revents[, 3], k=nnp)
     rbwd <- pmax(rbwd, bwm)
   }
@@ -36,17 +46,27 @@ etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
     stop("param0 must be a numeric vector of length 8 with positive components")
 
   param1 <- param0
-  thetar <- matrix(NA, nrow=no.itr, ncol=8)
+  thetar <- asd <- matrix(NA, nrow=no.itr, ncol=8)
   par.names <- c("mu", "A", "c", "alpha", "p", "D", "q", "gamma")
-  names(param1) <- colnames(thetar) <- par.names
+  names(param1) <- colnames(thetar) <- colnames(asd) <- par.names
   loglikfv <- numeric(no.itr)
-  rownames(thetar) <- names(loglikfv) <- paste("iteration", 1:no.itr)
+  rownames(thetar) <- rownames(asd) <- names(loglikfv) <- paste("iteration", 1:no.itr)
+  ihess <- diag(8)
+  bk <- numeric(nrow(revents))
 
   for (itr in 1:no.itr)
   {
-    bkg <- decluster(param1, rbwd, revents, rpoly, rtperiod)
-    revents <- bkg$revents
+    cat("declustering:\n")
+    bkgpbar <- utils::txtProgressBar(min=0, max=no.itr + 1 - itr, style=3)
+    for (l in 1:(no.itr + 1 - itr))
+    {
+      bkg <- decluster(param1, rbwd, revents, rpoly, rtperiod, ndiv, cxxcode)
+      revents <- bkg$revents
+      utils::setTxtProgressBar(bkgpbar, l)
+    }
+    close(bkgpbar)
     integ0 <- bkg$integ0
+    dbk <- bk - revents[, 6]
     bk <- revents[, 6]
     pb <- revents[, 7]
     if (verbose)
@@ -72,9 +92,13 @@ etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
            ylab="probability of being a background event")
       rates.inter(param1, object, rbwd, plot.it=plot.it)
     }
-    opt <- etasfit(param1, revents, rpoly, rtperiod, integ0, verbose)
+    cat("estimating:\n")
+    opt <- etasfit(param1, revents, rpoly, rtperiod, integ0, ihess,
+                   verbose, ndiv, eps, cxxcode, nthreads)
     thetar[itr, ] <- opt$estimate
     loglikfv[itr] <- opt$loglik
+    asd[itr, ] <- sqrt(diag(opt$avcov))
+    ihess <- opt$ihess
     param1 <- thetar[itr, ]
     if (verbose)
     {
@@ -82,6 +106,15 @@ etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
       cat("MLE:\n")
       print(param1)
       cat("======================================================\n")
+    }
+    if (itr > 1)
+    {
+      dtht <- max((thetar[itr, ] - thetar[itr - 1, ])/thetar[itr - 1, ])
+      dlrv <- abs(loglikfv[itr] / loglikfv[itr - 1] - 1)
+      dbkv <- max(abs(dbk / bk))
+      print(c(dtht, dlrv, dbkv))
+      if (all(c(dtht, dlrv, dbkv) < rel.tol))
+        break
     }
   }
 
@@ -94,7 +127,9 @@ etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
   names(param1) <- c("mu", "A", "c", "alpha", "p", "D", "q", "gamma")
   object$revents <- revents
   out <- list(param = param1, bk=bk, pb=pb, opt=opt, object=object,
-              bwd=rbwd, thetar=thetar, loglikfv=loglikfv)
+              bwd=rbwd, thetar=thetar, loglikfv=loglikfv, asd=asd,
+              integ0=integ0, ndiv=ndiv, itr=itr,
+              exectime=proc.time() - ptm)
   class(out) <- "etas"
   return(out)
 }
@@ -103,21 +138,113 @@ etas <- function(object, param0, bwd = NULL, nnp = 5, bwm = 0.05,
 print.etas <- function (x, ...)
 {
   cat("ETAS model: fitted using iterative stochastic declustering method\n")
-  bt <- 1 / mean(x$object$revents[, 4])
-  cat("ML estimates of model parameters:\nbeta = ", bt, "\ntheta =\n")
-  print(round(x$param, digits=4))
-  cat("log-likelihood: ", x$opt$loglik, "\tAIC: ", x$opt$aic, "\n")
+  cat("converged after", x$itr, "iterations: elapsed exacution time",
+      round(x$exectime[3]/60, 2), "minutes\n\n")
+  mm <- x$object$revents[, 4]
+  bt <- 1 / mean(mm)
+  asd.bt <- bt^2 / length(mm)
+  cat("ML estimates of model parameters:\n")
+  ests <- cbind("Estimate" = c(beta=bt, x$param),
+                "StdErr" = c(asd.bt, x$asd[x$itr, ]))
+  print(round(t(ests), 4))
+  cat("\nDeclustring probabilities:\n")
+  print(round(summary(x$pb), 4))
+  cat("\nlog-likelihood: ", x$opt$loglik, "\tAIC: ", x$opt$aic, "\n")
 }
 
 
 plot.etas <- function(x, which="est", dimyx=NULL, ...)
 {
-  if (which == "loglik")
-    plot(x$loglikfv, xlab="iterations", ylab="log-likelihood",
+  switch(which, loglik={
+    plot(x$loglikfv[1:x$itr], xlab="iterations", ylab="log-likelihood",
          main="log-likelihood function of the model", type="b")
-  else if (which == "est")
-    plot.ts(x$thetar, main="estimates of the model parameters",
-            xlab="iteration")
-  else if (which == "dots")
-    dotchart(x$thetar, main="estimates of the model parameters")
+  }, est={
+    stats::plot.ts(x$thetar[1:x$itr, ], xlab="iteration",
+                   main="estimates of the model parameters")
+  }, dots={
+    graphics::dotchart(x$thetar[1:x$itr, ],
+                       main="estimates of the model parameters")
+  }, rates={
+    rates.inter(x$param, x$object, x$bwd)
+  }, stop("Wrong type"))
+}
+
+resid.etas <- function(x, type="raw", dimyx=NULL)
+{
+  tt <- x$object$revents[, "tt"]
+  xx <- x$object$revents[, "xx"]
+  yy <- x$object$revents[, "yy"]
+
+  tau <- timetransform(x)
+  tg <- seq(min(tt), max(tt), length.out=length(tt))
+  tlam <- lambdatemporal(tg, x)
+  dfun <- function(i){ sum((tt <= tg[i]) & (tt > tg[i - 1])) }
+  tres <- switch(type, raw = unlist(lapply(2:length(tt), dfun))- tlam[-1] * diff(tg),
+                 reciprocal = 1/tlam[-1] - diff(tg),
+                 pearson = 1/sqrt(tlam[-1]) - sqrt(tlam[-1]) * diff(tg))
+
+  W <- x$object$region.win#spatstat::owin(xrange=range(xx), yrange=range(yy))
+  Xs <- spatstat::ppp(xx, yy, window=W, check=FALSE)
+  qd <- spatstat::quadscheme(Xs)
+  xg <- spatstat::x.quad(qd)
+  yg <- spatstat::y.quad(qd)
+  wg <- spatstat::w.quad(qd)
+  slam <- lambdaspatial(xg, yg, x)
+  zg <- spatstat::is.data(qd)
+
+  sres <- switch(type, raw = zg - slam * wg,
+                 reciprocal = zg/slam - wg,
+                 pearson = zg/sqrt(slam) - sqrt(slam) * wg)
+
+  if (is.null(dimyx))
+  {
+    rv <- diff(range(xg)) / diff(range(yg))
+    if (rv > 1)
+    {
+      dimyx <- c(128, rv * 128)
+    } else
+    {
+      dimyx <- c(128 / rv, 128)
+    }
+  }
+
+  Xg <- spatstat::ppp(xg, yg, window=W, check=FALSE)
+  spatstat::marks(Xg) <- sres
+  sres <- spatstat::Smooth(Xg, dimyx=dimyx)#, sigma=mean(x$bwd))
+  gr <- expand.grid(x=sres$xcol, y=sres$yrow)
+  proj <- xy2longlat(gr$x, gr$y, region.poly=x$object$region.poly,
+                     dist.unit=x$object$dist.unit)
+  sres <- data.frame(x=proj$long, y=proj$lat, z=c(t(sres$v)))
+  sres <- stats::na.omit(sres)
+
+  oldpar <- par(no.readonly = TRUE)
+  lymat <- matrix(c(1, 2, 1, 3), 2, 2)
+  layout(lymat)
+
+  par(mar=c(3.1, 3.1, 1.5, 1.6))
+
+  plot(tg[-1], tres, type="l", main=paste(type, "temporal residuals"),
+       xlab="", ylab="", axes=FALSE)
+  abline(h=0, lty=2, col=2)
+  axis(1); axis(2)
+  mtext("time", 1, 1.95, cex=0.85)
+  mtext("residuals", 2, 1.95, cex=0.85)
+
+  fields::quilt.plot(sres$x, sres$y, sres$z, asp=TRUE,
+                     main=paste(type, "spatial residuals"))
+  maps::map('world', add=TRUE, col="grey50")
+ # polygon(x$object$region.poly$long, x$object$region.poly$lat, border=2)
+
+  plot(tau, type="l", main="transformed times", xlab="",  ylab="",
+       asp=TRUE, axes=FALSE)
+  graphics::abline(a=0, b=1, col=2)
+  graphics::grid(); graphics::axis(1); graphics::axis(2)
+  mtext("i", 1, 1.95, cex=0.85)
+  mtext(expression(tau[i]), 2, 1.95, cex=0.85)
+
+  layout(1)
+  par(oldpar)
+
+  out <- list(tau=tau, tres=tres, sres=sres, type=type)
+  invisible(out)
 }
