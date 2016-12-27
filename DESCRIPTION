@@ -9,10 +9,10 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     (ETAS) model to earthquake catalogs
     using a stochastic declustering approach.
     The ETAS model is a spatio-temporal marked point process
-    model and a special case of the Hawckes process.
+    model and a special case of the Hawkes process.
     The package is based on Fortran code by Jiancang Zhuang
     (available at http://bemlar.ism.ac.jp/zhuang/software.html),
-    which is translated into C such that it can be called from R.
+    which is translated into C++ and C such that it can be called from R.
 Depends:
     R (>= 3.1.0),
     maps
