@@ -1,6 +1,9 @@
 #include <cmath>
 #include <Rcpp.h>
+
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 using namespace Rcpp;
 
@@ -893,9 +896,9 @@ double etas::mloglikMP(NumericVector theta,
 
   //setenv("OMP_STACKSIZE", "200M", 1);
   omp_set_dynamic(0);
-  omp_set_num_threads(nthreads);
+  //omp_set_num_threads(nthreads);
 
-#pragma omp parallel
+#pragma omp parallel num_threads(nthreads)
 {
   double fv1_thread = 0, fv2_thread = 0;
 
@@ -1011,9 +1014,9 @@ void etas::mloglikGrMP(NumericVector theta,
 
   //setenv("OMP_STACKSIZE", "200M", 1);
   omp_set_dynamic(0);
-  omp_set_num_threads(nthreads);
+  //omp_set_num_threads(nthreads);
 
-#pragma omp parallel
+#pragma omp parallel num_threads(nthreads)
 {
   double fv1_thread = 0, fv2_thread = 0,
     df1_thread[8] = {0}, df2_thread[8] = {0};
@@ -1772,12 +1775,73 @@ List cxxdeclust(NumericVector param,
     lam[i] = s_thread;
 
     revents(i, 5) = bk[i];
-    revents(i, 6) = mu * bk[i] / lam[i];
+    revents(i, 6) = mu * bk[i] / lam[i]; // probability of event i being a background event
     revents(i, 7) = lam[i];
   }
 
   return List::create(Named("revents") = revents,
                       Named("integ0") = integ0);
+}
+
+// ******************************************************************
+// output rates algorithm
+// ******************************************************************
+// [[Rcpp::export]]
+List cxxrates(NumericVector param,
+              NumericMatrix revents,
+              NumericVector bwd,
+              NumericVector tperiod,
+              NumericVector gx,
+              NumericVector gy)
+{
+  NumericVector t = revents( _, 0), x = revents( _, 1), y = revents( _, 2),
+    m = revents( _, 3), pb = revents( _, 6);
+
+  // extract time period information
+  const double tstart2 = tperiod[0], tlength = tperiod[1];
+
+  const double mu = param[0];
+  const double A = param[1];
+  const double c = param[2];
+  const double alpha = param[3];
+  const double p = param[4];
+  const double D = param[5];
+  const double q= param[6];
+  const double gamma = param[7];
+
+  int N = t.length(), ngx = gx.length(), ngy = gy.length();
+
+  NumericMatrix bkgd(ngx, ngy), total(ngx, ngy), clust(ngx, ngy),
+  lamb(ngx, ngy);
+
+  double tmp, sum1, sum2;
+  for (int i = 0; i < ngx; i++)
+    for (int j = 0; j < ngy; j++)
+    {
+      sum1 = sum2 = 0;
+      for (int l = 0; l < N; l++)
+      {
+        tmp = dGauss(dist2(x[l], y[l], gx[i], gy[j]), bwd[l]);
+        sum1 += pb[l] * tmp;
+        sum2 += tmp;
+      }
+      bkgd(i, j) = sum1 / (tlength - tstart2);
+      total(i, j) = sum2 / (tlength - tstart2);
+      clust(i, j) = 1 - sum1 / sum2;
+      lamb(i, j) = mu * bkgd(i, j);
+
+      for (int l = 0; l < N; l++)
+      {
+        lamb(i, j) += A * exp(alpha * m[l]) *
+          (p - 1)/c * pow(1 + (tlength - t[l])/c, - p) *
+          (q - 1) / (D * exp(gamma * m[l]) * M_PI) *
+          pow(1 + dist2(x[l], y[l], gx[i], gy[j]) / (D * exp(gamma * m[l])), - q);
+      }
+    }
+  return List::create(Named("bkgd") = bkgd,
+                      Named("total") = total,
+                      Named("clust") = clust,
+                      Named("lamb") = lamb);
 }
 
 // ******************************************************************
@@ -1940,10 +2004,10 @@ NumericVector cxxlambspat(NumericVector xg,
 //  Maximum number of threads of parallel region
 // ******************************************************************
 
-// [[Rcpp::plugins(openmp)]]
+/*// [[Rcpp::plugins(openmp)]]
 // [[Rcpp::export]]
 int maxnumthread()
 {
-  int nmax = omp_get_max_threads();
+ int nmax = omp_get_max_threads();
   return nmax;
-}
+}*/

@@ -12,6 +12,12 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
   m0 <- object$mag.threshold
   win <- object$region.win
 
+  if (nthreads > parallel::detectCores())
+  {
+    stop(paste("nthreads can not be greater than", parallel::detectCores(),
+               "on this machine!"))
+  }
+
   # initial prameter values
   if (is.null(param0))
   {
@@ -138,16 +144,16 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
 print.etas <- function (x, ...)
 {
   cat("ETAS model: fitted using iterative stochastic declustering method\n")
-  cat("converged after", x$itr, "iterations: elapsed exacution time",
+  cat("converged after", x$itr, "iterations: elapsed execution time",
       round(x$exectime[3]/60, 2), "minutes\n\n")
-  mm <- x$object$revents[, 4]
+  mm <- x$object$revents[x$object$revents[, 5] == 1, 4]
   bt <- 1 / mean(mm)
   asd.bt <- bt^2 / length(mm)
   cat("ML estimates of model parameters:\n")
   ests <- cbind("Estimate" = c(beta=bt, x$param),
                 "StdErr" = c(asd.bt, x$asd[x$itr, ]))
   print(round(t(ests), 4))
-  cat("\nDeclustring probabilities:\n")
+  cat("\nDeclustering probabilities:\n")
   print(round(summary(x$pb), 4))
   cat("\nlog-likelihood: ", x$opt$loglik, "\tAIC: ", x$opt$aic, "\n")
 }
@@ -201,10 +207,10 @@ resid.etas <- function(x, type="raw", dimyx=NULL)
     rv <- diff(range(xg)) / diff(range(yg))
     if (rv > 1)
     {
-      dimyx <- c(128, rv * 128)
+      dimyx <- c(128, floor(rv * 128))
     } else
     {
-      dimyx <- c(128 / rv, 128)
+      dimyx <- c(floor(128 / rv), 128)
     }
   }
 
@@ -215,13 +221,11 @@ resid.etas <- function(x, type="raw", dimyx=NULL)
   proj <- xy2longlat(gr$x, gr$y, region.poly=x$object$region.poly,
                      dist.unit=x$object$dist.unit)
   sres <- data.frame(x=proj$long, y=proj$lat, z=c(t(sres$v)))
-  sres <- stats::na.omit(sres)
+  #sres <- stats::na.omit(sres)
 
   oldpar <- par(no.readonly = TRUE)
-  lymat <- matrix(c(1, 2, 1, 3), 2, 2)
-  layout(lymat)
 
-  par(mar=c(3.1, 3.1, 1.5, 1.6))
+  par(mfrow=c(2, 2), mar=c(3.1, 3.1, 1.5, 1.6))
 
   plot(tg[-1], tres, type="l", main=paste(type, "temporal residuals"),
        xlab="", ylab="", axes=FALSE)
@@ -230,8 +234,8 @@ resid.etas <- function(x, type="raw", dimyx=NULL)
   mtext("time", 1, 1.95, cex=0.85)
   mtext("residuals", 2, 1.95, cex=0.85)
 
-  fields::quilt.plot(sres$x, sres$y, sres$z, asp=TRUE,
-                     main=paste(type, "spatial residuals"))
+  fields::quilt.plot(sres$x, sres$y, sres$z, asp=TRUE, nx=dimyx[2],
+                     ny=dimyx[1], main=paste(type, "spatial residuals"))
   maps::map('world', add=TRUE, col="grey50")
  # polygon(x$object$region.poly$long, x$object$region.poly$lat, border=2)
 
@@ -242,9 +246,15 @@ resid.etas <- function(x, type="raw", dimyx=NULL)
   mtext("i", 1, 1.95, cex=0.85)
   mtext(expression(tau[i]), 2, 1.95, cex=0.85)
 
-  layout(1)
+  U <- 1 - exp(-diff(tau))
+  stats::qqplot(U, runif(max(1000, length(U))), axes=FALSE, xlab="",
+                ylab="", asp=1, main=expression(Q-Q~plot~of~U[i]))
+  mtext(expression(observed~quantiles), 1, 1.95, cex=0.85)
+  mtext(expression(quantiles~of~italic(U)(0,1)), 2, 1.95, cex=0.85)
+  abline(c(0, 1), col="red")
+  graphics::grid(); graphics::axis(1); graphics::axis(2)
   par(oldpar)
 
-  out <- list(tau=tau, tres=tres, sres=sres, type=type)
+  out <- list(tau=tau, U=U, tres=tres, sres=sres, type=type)
   invisible(out)
 }

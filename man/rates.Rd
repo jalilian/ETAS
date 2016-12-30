@@ -9,10 +9,15 @@ Clustering Coefficient}
 }
 \usage{
   probs(fit)
-  rates(fit, dimyx=NULL, plot.it=TRUE)
+  rates(fit, lat.range = NULL, long.range = NULL,
+        dimyx=NULL, plot.it=TRUE)
 }
 \arguments{
   \item{fit}{A fitted ETAS model. An object of class \code{"etas"}.}
+  \item{lat.range}{Latitude range of the rectangular grid.
+                  A numric vector of length 2.}
+  \item{long.range}{Longitude range of the rectangular grid.
+                  A numric vector of length 2.}
   \item{dimyx}{Dimensions of the rectangular discretization
            grid for the geographical study region.
            A numeric vector of length 2.}
@@ -21,12 +26,17 @@ Clustering Coefficient}
 }
 \value{
   If \code{plot.it=TRUE}, the function produces plots of the
-  background seismicity rate and clustering coefficient.
+  background seismicity and total spatial rate, clustering coefficient
+  and conditional intensity function at the end of study period.
 
-  If \code{plot.it=FALSE}, it returns a list of length 3,
-  with the total spatial intensity, background seismicity rate
-  and clustering as components (objects of
-  \code{im} class in the package \code{spatstat}).
+  If \code{plot.it=FALSE}, it returns a list with components
+  \itemize{
+  \item\bold{bkgd} the estimated background siesmicity rate
+  \item\bold{total} the estimated total spatial rate
+  \item\bold{clust} the estimated clustering coefficient
+  \item\bold{lamb} the estimated conditional intensity function at
+         time \eqn{t=t_{\mathrm{start}}}{t=t_{start} + T}
+  }
 }
 \details{
   The function \code{probs} returns estimates of the declustring probabilities

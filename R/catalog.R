@@ -136,7 +136,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   mm <- mm[ok] - mag.threshold
   flag <- as.integer(spatstat::inside.owin(xx, yy, region.win))
   flag[dt[ok] < study.start] <- -2
-  revents <- cbind(tt, xx, yy, mm, flag, 0, 1, 0)
+  revents <- cbind(tt, xx, yy, mm, flag, bkgd=0, prob=1, lambd=0)
   longlat.coord <- longlat.coord[ok, ]
   longlat.coord$flag <- flag
   longlat.coord$dt <- dt[ok]
