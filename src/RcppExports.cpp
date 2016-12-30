@@ -41,6 +41,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cxxrates
+List cxxrates(NumericVector param, NumericMatrix revents, NumericVector bwd, NumericVector tperiod, NumericVector gx, NumericVector gy);
+RcppExport SEXP ETAS_cxxrates(SEXP paramSEXP, SEXP reventsSEXP, SEXP bwdSEXP, SEXP tperiodSEXP, SEXP gxSEXP, SEXP gySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type revents(reventsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bwd(bwdSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gx(gxSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type gy(gySEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxrates(param, revents, bwd, tperiod, gx, gy));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cxxtimetrans
 NumericVector cxxtimetrans(NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double integ0, int ndiv);
 RcppExport SEXP ETAS_cxxtimetrans(SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP integ0SEXP, SEXP ndivSEXP) {
@@ -88,16 +104,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bwd(bwdSEXP);
     rcpp_result_gen = Rcpp::wrap(cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd));
-    return rcpp_result_gen;
-END_RCPP
-}
-// maxnumthread
-int maxnumthread();
-RcppExport SEXP ETAS_maxnumthread() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(maxnumthread());
     return rcpp_result_gen;
 END_RCPP
 }

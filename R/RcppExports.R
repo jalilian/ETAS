@@ -9,6 +9,10 @@ cxxdeclust <- function(param, revents, rpoly, bwd, tperiod, ndiv) {
     .Call('ETAS_cxxdeclust', PACKAGE = 'ETAS', param, revents, rpoly, bwd, tperiod, ndiv)
 }
 
+cxxrates <- function(param, revents, bwd, tperiod, gx, gy) {
+    .Call('ETAS_cxxrates', PACKAGE = 'ETAS', param, revents, bwd, tperiod, gx, gy)
+}
+
 cxxtimetrans <- function(theta, revents, rpoly, tperiod, integ0, ndiv) {
     .Call('ETAS_cxxtimetrans', PACKAGE = 'ETAS', theta, revents, rpoly, tperiod, integ0, ndiv)
 }
@@ -19,9 +23,5 @@ cxxlambdtemp <- function(tg, theta, revents, rpoly, tperiod, integ0, ndiv) {
 
 cxxlambspat <- function(xg, yg, theta, revents, rpoly, tperiod, bwd) {
     .Call('ETAS_cxxlambspat', PACKAGE = 'ETAS', xg, yg, theta, revents, rpoly, tperiod, bwd)
-}
-
-maxnumthread <- function() {
-    .Call('ETAS_maxnumthread', PACKAGE = 'ETAS')
 }
 
