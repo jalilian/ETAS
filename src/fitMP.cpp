@@ -1884,9 +1884,13 @@ NumericVector cxxtimetrans(NumericVector theta,
     double sum = 0;
     for (int i=0; i < j; i++)
     {
-      sum += (1 - pow(1 + (t[j] - t[i])/c, 1 - p)) * sinteg[i];
+      if (t[i] > tstart2)
+        sum += (1 - pow(1 + (t[j] - t[i])/c, 1 - p)) * sinteg[i];
+      else
+        sum += (pow(1 + (tstart2 - t[i])/c, 1 - p) -
+          pow(1 + (t[j] - t[i])/c, 1 - p)) * sinteg[i];
     }
-    out[j] = mu * integ0 * t[j] / (tlength - tstart2) + sum;
+    out[j] = mu * integ0 * (t[j] - tstart2) / (tlength - tstart2) + sum;
   }
   return out;
 }
