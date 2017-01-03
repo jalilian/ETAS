@@ -17,7 +17,6 @@
 \alias{xy2longlat}
 \alias{print.etas}
 \alias{plot.etas}
-\alias{resid.etas}
 \alias{print.catalog}
 \alias{plot.catalog}
 \description{
@@ -41,7 +40,6 @@ lambdaspatial(x, y, fit)
 lambdatemporal(t, fit)
 longlat2xy(long, lat, region.poly, dist.unit="degree")
 xy2longlat(x, y, region.poly, dist.unit="degree")
-resid.etas(x, type = "raw", dimyx = NULL)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)

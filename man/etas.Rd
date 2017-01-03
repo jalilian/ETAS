@@ -58,7 +58,7 @@
   (ETAS) model based on Gutenberg-Richter law and modified Omori law.
   In its space-time representation (Ogata, 1998), the ETAS model is a
   temporal marked point process model, and a special case of marked
-  Hawks process, with conditional intensity function
+  Hawkes process, with conditional intensity function
     \deqn{
       \lambda(t, x, y | H_t) = \mu(x,y) + \sum_{t_i < t} k(m_i)g(t - t_i)f(x - x_i, y - y_i|m_i)
     }{
@@ -144,8 +144,8 @@
 
   This version of the ETAS model assumes that the earthquake catalog
   is complete and the data are stationary in time. If the catalog
-  is incomplete or there is instationarity (e.g. increasing trend)
-  in the time of events, then the results of this function are
+  is incomplete or there is non-stationarity (e.g. increasing or cyclic
+  trend)  in the time of events, then the results of this function are
   not reliable.
 }
 \note{
@@ -161,6 +161,12 @@
   \url{http://bemlar.ism.ac.jp/zhuang/software.html}.
 }
 \references{
+  Ogata Y (1988).
+  Statistical Models for Earthquake Occurrences and Residual Analysis for
+  Point Processes.
+  \emph{Journal of the American Statistical Association},
+  \bold{83}(401), 9--27. \href{http://dx.doi.org/10.2307/2288914}{doi:10.2307/2288914}.
+
   Ogata Y (1998).
   Space-time Point-process Models for Earthquake Occurrences.
   \emph{Annals of the Institute of Statistical Mathematics},
@@ -190,13 +196,15 @@
 \seealso{
 
   \code{\link{catalog}} for constructing data.
+  \code{\link{probs}} for estimated declustering probabilities.
+  \code{\link{resid.etas}} for diagnostic plots.
 }
 \examples{
   # fitting the ETAS model to an Iranian catalog
   # preparing the catalog
   iran.cat <- catalog(iran.quakes, time.begin="1973/01/01",
-     study.start="1976/01/01", study.end="2016/01/01",
-     lat.range=c(25, 42), long.range=c(42, 63), mag.threshold=5)
+     study.start="1986/01/01", study.end="2016/01/01",
+     lat.range=c(26, 40), long.range=c(44, 63), mag.threshold=5)
   print(iran.cat)
   \dontrun{
   plot(iran.cat)}

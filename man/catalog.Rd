@@ -55,8 +55,9 @@
   in order to approximate the
   great-circle distance on the sphere by the corresponding Euclidean
   distance on the flat map.}
-  \item{dist.unit}{The unit of geographical coordinates and distances
-  between events.}
+  \item{dist.unit}{A character string specifying the unit of geographical
+  coordinates and spatial distances between events. Options
+  are \code{"degree"} (the default case) and \code{"km"}.}
   \item{tz}{A character string specifying the time zone to be used
   for the date-time conversion in \code{as.POSIXlt}.
   The default \code{"GMT"} is the UTC (Universal Time, Coordinated).}

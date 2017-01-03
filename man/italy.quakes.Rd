@@ -14,7 +14,7 @@
   \item \code{date}
   Occurrence date in the format "yyyy/mm/dd"
   \item \code{time}
-  Occurrence time in decimal days after the first earquake
+  Occurrence time in decimal days after the first earthquake
   \item \code{long}
   Latitude of epicenter in decimal degrees
   \item \code{lat}

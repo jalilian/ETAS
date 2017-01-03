@@ -4,7 +4,7 @@
 \title{Declustering Probabilities, Background Seismicity Rate and
 Clustering Coefficient}
 \description{
-  Functions to estimate the declustring probabilities, background seismicity
+  Functions to estimate the declustering probabilities, background seismicity
   rate and clustering (triggering) coefficient for a fitted ETAS model.
 }
 \usage{
@@ -15,9 +15,9 @@ Clustering Coefficient}
 \arguments{
   \item{fit}{A fitted ETAS model. An object of class \code{"etas"}.}
   \item{lat.range}{Latitude range of the rectangular grid.
-                  A numric vector of length 2.}
+                  A numeric vector of length 2.}
   \item{long.range}{Longitude range of the rectangular grid.
-                  A numric vector of length 2.}
+                  A numeric vector of length 2.}
   \item{dimyx}{Dimensions of the rectangular discretization
            grid for the geographical study region.
            A numeric vector of length 2.}
@@ -39,7 +39,7 @@ Clustering Coefficient}
   }
 }
 \details{
-  The function \code{probs} returns estimates of the declustring probabilities
+  The function \code{probs} returns estimates of the declustering probabilities
   \deqn{p_j = 1 - \frac{\mu(x_j, y_j)}{lambda(t_j, x_j, y_j|H_{t_j})}}{p[j] = 1 - mu(x[j], y[j])/lambda(t[j], x[j], y[j]|H_t[j])}
   where \eqn{1-p_j}{1-p[j]} is the probability that event \eqn{j}{j}
   is a background event.
@@ -101,7 +101,7 @@ Clustering Coefficient}
   \dontrun{
   iran.fit <- etas(iran.cat, param0=param01)}
 
-  # estimating the declustering probailities
+  # estimating the declustering probabilities
   \dontrun{
   pr <- probs(iran.fit)
   plot(iran.cat$longlat.coord[,1:2], cex=2 * (1 - pr$prob))}
