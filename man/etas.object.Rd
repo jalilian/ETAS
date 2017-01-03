@@ -30,29 +30,22 @@
   data(iran.quakes)
   summary(iran.quakes)
 
+    # fitting the ETAS model to an Iranian catalog
   # preparing the catalog
   iran.cat <- catalog(iran.quakes, time.begin="1973/01/01",
-     study.start="1985/01/01", study.end="2016/01/01",
-     lat.range=c(25, 42), long.range=c(42, 63), mag.threshold=4.5)
-
+     study.start="1986/01/01", study.end="2016/01/01",
+     lat.range=c(26, 40), long.range=c(44, 63), mag.threshold=5)
+  print(iran.cat)
   \dontrun{
-  plot(ir.cat)
-  }
+  plot(iran.cat)}
 
-  # initial parameters values
-  param01 <- c(0.4339678,
-   0.1988628,
-   0.0345206,
-   1.6290137,
-   1.1286776,
-   0.0072539,
-   2.1705884,
-   0.5706402)
+  # setting initial parameter values
+  param0 <- c(0.46, 0.23, 0.022, 2.8, 1.12, 0.012, 2.4, 0.35)
 
   # fitting the model
   \dontrun{
-  res <- etas(ir.cat, param0=param01)
-  }
+  iran.fit <- etas(iran.cat, param0=param0)}
+
 }
 \author{Abdollah Jalilian
   \email{jalilian@razi.ac.ir}
