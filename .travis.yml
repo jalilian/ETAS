@@ -16,9 +16,9 @@ matrix:
      r: release
    - os: osx
 #     r: devel
-#     osx_image: xcode8
-#     r_packages:
-#      - Rcpp
+     osx_image: xcode8
+     r_packages:
+      - Rcpp
  fast_finish: true
 # To CRAN, warnings **are** errors.
 warnings_are_errors: true
