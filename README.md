@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jalilian/ETAS.svg?branch=master)](https://travis-ci.org/jalilian/ETAS)
+
 # ETAS
 
 This repository contains a copy of the R package 'ETAS'.
