@@ -23,3 +23,14 @@ If 'devtools' is not installed, you should first run:
 install.packages('devtools')
 ```
  
+Alternatively, the package can be installed by
+
+```R
+require(githubinstall)
+githubinstall('ETAS')
+```
+
+If 'githubinstall' is not installed, first run:
+```R
+install.packages('githubinstall')
+```
