@@ -1,8 +1,8 @@
 Package: ETAS
 Type: Package
 Title: Modeling Earthquake Data Using ETAS Model
-Version: 0.4
-Date: 2016-12-30
+Version: 0.4.2
+Date: 2017-07-04
 Author: Abdollah Jalilian [aut, cre], Jiancang Zhuang [ctb]
 Maintainer: Abdollah Jalilian <jalilian@razi.ac.ir>
 Description: Fits the space-time Epidemic Type Aftershock Sequence
@@ -14,7 +14,7 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     which is modified and translated into C++ and C such that it 
     can be called from R.
 Depends:
-    R (>= 3.1.0),
+    R (>= 3.3.0),
     maps
 Imports:
     spatstat,

@@ -488,7 +488,7 @@ SEXP cfit(SEXP theta, SEXP rdata, SEXP ihess, SEXP rverbose)
         Rprintf("\nstart line search along the specified direction ...\n");
       clinesearch(rdata, tht, s, &ed, verbose, &ramda);
       if (verbose == 1)
-        Rprintf("back to Davidon-Fletcher-Powell Procedure: ramda = %f\n", ramda);
+        Rprintf("back to Davidon-Fletcher-Powell Procedure: zeta = %f\n", ramda);
 
       R_CheckUserInterrupt();
 

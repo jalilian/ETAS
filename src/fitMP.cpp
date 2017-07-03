@@ -819,7 +819,7 @@ List etas::fitfun(NumericVector tht,
       linesearch(tht, s, &ed, &ramda);
 
       if (verbose)
-        Rprintf(" ramda = %f\n", ramda);
+        Rprintf(" zeta = %f\n", ramda);
 
       //R_CheckUserInterrupt();
 
@@ -1511,7 +1511,7 @@ List etas::fitfunMP(NumericVector tht,
       linesearchMP(tht, s, &ed, &ramda, nthreads);
 
       if (verbose)
-        Rprintf(" ramda = %f\n", ramda);
+        Rprintf(" zeta = %f\n", ramda);
 
       //R_CheckUserInterrupt();
 
