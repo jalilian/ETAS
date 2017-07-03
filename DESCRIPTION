@@ -14,7 +14,7 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     which is modified and translated into C++ and C such that it 
     can be called from R.
 Depends:
-    R (>= 3.3.0),
+    R (>= 3.4.0),
     maps
 Imports:
     spatstat,
