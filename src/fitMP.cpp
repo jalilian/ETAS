@@ -1595,12 +1595,13 @@ List cxxfit(NumericVector tht,
   etas data;
   data.set(revents, rpoly, tperiod, rinteg0, ndiv);
   
-  if (nthreads > 1)  // parallel version
-  {
-    return data.fitfunMP(tht, ihess, eps, verbose, nthreads);
-  }
-  else  // serial version of code
-    return data.fitfun(tht, ihess, eps, verbose);
+#ifdef _OPENMP
+  // multithreaded OpenMP version of code
+  return data.fitfunMP(tht, ihess, eps, verbose, nthreads);
+#else
+  // single-threaded version of code
+  return data.fitfun(tht, ihess, eps, verbose);
+#endif
 }
 
 // *******************************************************************************
