@@ -5,8 +5,6 @@
 # include <omp.h>
 #endif
 
-// [[Rcpp::plugins(openmp)]]
-
 using namespace Rcpp;
 
 // ******************************************************************
@@ -895,11 +893,6 @@ double etas::mloglikMP(NumericVector theta,
   const double gamma = theta[7] * theta[7];
 
   double fv1 = 0, fv2 = 0;
-
-#ifdef _OPENMP
-  omp_set_dynamic(0);
-  omp_set_num_threads(nthreads);
-#endif
   
 #pragma omp parallel //num_threads(nthreads)
 {
@@ -1014,11 +1007,6 @@ void etas::mloglikGrMP(NumericVector theta,
   const double gamma = theta[7] * theta[7];
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
-
-#ifdef _OPENMP
-  omp_set_dynamic(0);
-  omp_set_num_threads(nthreads);
-#endif
 
 #pragma omp parallel //num_threads(nthreads)
 {
@@ -1583,6 +1571,7 @@ List etas::fitfunMP(NumericVector tht,
 // wrapper fit function for R
 // ******************************************************************
 
+// [[Rcpp::plugins(openmp)]]
 // [[Rcpp::export]]
 List cxxfit(NumericVector tht,
             NumericMatrix revents,
@@ -1599,6 +1588,9 @@ List cxxfit(NumericVector tht,
   data.set(revents, rpoly, tperiod, rinteg0, ndiv);
   
 #ifdef _OPENMP
+  omp_set_dynamic(0);
+  omp_set_num_threads(nthreads);
+  
   // multithreaded OpenMP version of code
   return data.fitfunMP(tht, ihess, eps, verbose, nthreads);
 #else
