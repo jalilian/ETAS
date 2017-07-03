@@ -894,6 +894,10 @@ double etas::mloglikMP(NumericVector theta,
 
   double fv1 = 0, fv2 = 0;
 
+#ifdef _OPENMP
+  omp_set_dynamic(0);
+#endif
+  
 #pragma omp parallel num_threads(nthreads)
 {
   double fv1_thread = 0, fv2_thread = 0;
@@ -1008,6 +1012,9 @@ void etas::mloglikGrMP(NumericVector theta,
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
 
+#ifdef _OPENMP
+  omp_set_dynamic(0);
+#endif
 
 #pragma omp parallel num_threads(nthreads)
 {
@@ -1588,19 +1595,12 @@ List cxxfit(NumericVector tht,
   etas data;
   data.set(revents, rpoly, tperiod, rinteg0, ndiv);
   
-#ifdef _OPENMP
-  if (nthreads > 1)
+  if (nthreads > 1)  // parallel version
   {
-    //setenv("OMP_STACKSIZE", "200M", 1);
-    omp_set_dynamic(0);
     return data.fitfunMP(tht, ihess, eps, verbose, nthreads);
   }
-  else
+  else  // serial version of code
     return data.fitfun(tht, ihess, eps, verbose);
-#else
-  // serial version of code
-  return data.fitfun(tht, ihess, eps, verbose);
-#endif
 }
 
 // *******************************************************************************
