@@ -5,6 +5,8 @@
 #include <omp.h>
 #endif
 
+// [[Rcpp::plugins(openmp)]]
+
 using namespace Rcpp;
 
 // ******************************************************************
@@ -1579,7 +1581,6 @@ List etas::fitfunMP(NumericVector tht,
 // wrapper fit function for R
 // ******************************************************************
 
-// [[Rcpp::plugins(openmp)]]
 // [[Rcpp::export]]
 List cxxfit(NumericVector tht,
             NumericMatrix revents,
