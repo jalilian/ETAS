@@ -8,17 +8,21 @@ sudo: false
 matrix:
  include:
    - os: linux
+     r: oldrel
+   - os: linux
      r: release
-     r_packages: covr
+     env: R_CODECOV=true
    - os: linux
      r: devel
    - os: osx
      r: release
+     latex: false
    - os: osx
-#     r: devel
-     osx_image: xcode8
+     r: release
+     osx_image: xcode8.2
+     latex: false
      r_packages:
       - Rcpp
- fast_finish: true
+# fast_finish: true
 # To CRAN, warnings **are** errors.
 warnings_are_errors: true
