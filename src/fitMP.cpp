@@ -2,7 +2,7 @@
 #include <Rcpp.h>
 
 #ifdef _OPENMP
-#include <omp.h>
+# include <omp.h>
 #endif
 
 // [[Rcpp::plugins(openmp)]]
@@ -898,9 +898,10 @@ double etas::mloglikMP(NumericVector theta,
 
 #ifdef _OPENMP
   omp_set_dynamic(0);
+  omp_set_num_threads(nthreads);
 #endif
   
-#pragma omp parallel num_threads(nthreads)
+#pragma omp parallel //num_threads(nthreads)
 {
   double fv1_thread = 0, fv2_thread = 0;
 
@@ -1016,9 +1017,10 @@ void etas::mloglikGrMP(NumericVector theta,
 
 #ifdef _OPENMP
   omp_set_dynamic(0);
+  omp_set_num_threads(nthreads);
 #endif
 
-#pragma omp parallel num_threads(nthreads)
+#pragma omp parallel //num_threads(nthreads)
 {
   double fv1_thread = 0, fv2_thread = 0,
     df1_thread[8] = {0}, df2_thread[8] = {0};
