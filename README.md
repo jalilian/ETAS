@@ -34,3 +34,11 @@ If 'githubinstall' is not installed, first run:
 ```R
 install.packages('githubinstall')
 ```
+
+## Parallel computing
+
+As of version 0.3, a new C++ code is implemented using the [Rcpp](http://www.rcpp.org/) package which allows multi-thread parallel computing on multi-core processors with OpenMP and [suported platforms](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#OpenMP-support). The argument `nthreads` in `etas` function determines the number of threads to be used in the parallel region of the code. The detectCores function in [parallel](http://stat.ethz.ch/R-manual/R-devel/library/parallel/html/parallel-package.html) package can be consulted to find out the overall number of available threads on a given machine:
+```R
+parallel::detectCores()
+```
+Parallel computing (`nthreads > 1`) reduces the computation time for large earthquake catalogs. However, resource usage and limitations should be considered when setting `nthreads`.
