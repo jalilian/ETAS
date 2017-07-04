@@ -12,9 +12,10 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     on a Fortran program by Jiancang Zhuang
     (available at <http://bemlar.ism.ac.jp/zhuang/software.html>),
     which is modified and translated into C++ and C such that it 
-    can be called from R.
+    can be called from R. Parallel computing with OpenMP is possible 
+    on supported platforms.
 Depends:
-    R (>= 3.1.0),
+    R (>= 3.3.0),
     maps
 Imports:
     spatstat,
