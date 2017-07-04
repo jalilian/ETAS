@@ -59,8 +59,8 @@ resid.etas <- function(fit, type="raw", n.temp=1000, dimyx=NULL)
   mtext("time", 1, 1.95, cex=0.85)
   mtext("residuals", 2, 1.95, cex=0.85)
 
-  fields::quilt.plot(sres$x, sres$y, sres$z,
-                     zlim=c(-max(abs(sres$z)), max(abs(sres$z))),
+  zmax <- max(abs(sres$z), na.rm=TRUE)
+  fields::quilt.plot(sres$x, sres$y, sres$z, zlim=c(-zmax, zmax),
                      nx=dimyx[2], ny=dimyx[1], asp=TRUE,
                      main=paste(type, "spatial residuals"))
   maps::map('world', add=TRUE, col="grey50")
