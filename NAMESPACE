@@ -11,6 +11,7 @@ importFrom("graphics", "abline", "axis", "dotchart", "layout", "par",
            "plot", "points", "polygon", "mtext", "title")
 importFrom("stats", "density", "lm", "plot.ts", "runif")
 importFrom("utils", "installed.packages")
+importFrom("lattice", "xyplot")
 importFrom("maps", "map")
 
 importFrom("Rcpp", "evalCpp")
