@@ -166,11 +166,14 @@ print.etas <- function (x, ...)
 plot.etas <- function(x, which="est", dimyx=NULL, ...)
 {
   switch(which, loglik={
-    plot(x$loglikfv[1:x$itr], xlab="iterations", ylab="log-likelihood",
-         main="log-likelihood function of the model", type="b")
+    plot(x$loglikfv[1:x$itr], xlab="iterations", 
+         ylab="log-likelihood", type="b",
+         main="log-likelihood function of the model")
   }, est={
-    stats::plot.ts(x$thetar[1:x$itr, ], xlab="iteration",
-                   main="estimates of the model parameters")
+    theta.ts <- stats::ts(x$thetar[1:x$itr, ])
+    lattice::xyplot(theta.ts, xlab="iteration", type="b", pch=16,
+                    scales=list(x=list(tick.number=x$itr)),
+                    main="estimates of the model parameters")
   }, dots={
     graphics::dotchart(x$thetar[1:x$itr, ],
                        main="estimates of the model parameters")
