@@ -172,7 +172,8 @@ plot.etas <- function(x, which="est", dimyx=NULL, ...)
   }, est={
     theta.ts <- stats::ts(x$thetar[1:x$itr, ])
     lattice::xyplot(theta.ts, xlab="iteration", type="b", pch=16,
-                    scales=list(x=list(tick.number=x$itr)),
+                    scales=list(x=list(tick.number=x$itr),
+                                y=list(tick.number=2)),
                     main="estimates of the model parameters")
   }, dots={
     graphics::dotchart(x$thetar[1:x$itr, ],
