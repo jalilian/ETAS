@@ -107,3 +107,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+RcppExport SEXP cdeclust(SEXP, SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP cfit(SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP clambdax(SEXP, SEXP, SEXP, SEXP, SEXP);
+
+static const R_CallMethodDef CallEntries[] = {
+    {"ETAS_cxxfit", (DL_FUNC) &ETAS_cxxfit, 10},
+    {"ETAS_cxxdeclust", (DL_FUNC) &ETAS_cxxdeclust, 6},
+    {"ETAS_cxxrates", (DL_FUNC) &ETAS_cxxrates, 6},
+    {"ETAS_cxxtimetrans", (DL_FUNC) &ETAS_cxxtimetrans, 6},
+    {"ETAS_cxxlambdtemp", (DL_FUNC) &ETAS_cxxlambdtemp, 7},
+    {"ETAS_cxxlambspat", (DL_FUNC) &ETAS_cxxlambspat, 7},
+    {"cdeclust",          (DL_FUNC) &cdeclust,           5},
+    {"cfit",              (DL_FUNC) &cfit,               4},
+    {"clambdax",          (DL_FUNC) &clambdax,           5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_ETAS(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

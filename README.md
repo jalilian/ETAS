@@ -1,5 +1,5 @@
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ETAS)](http://cran.r-project.org/web/packages/ETAS)
-[![CRAN_Download_Count](http://cranlogs.r-pkg.org/badges/ETAS)](http://cran.rstudio.com/web/packages/ETAS/index.html)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ETAS)](https://CRAN.R-project.org/package=ETAS)
+[![CRAN_Download_Count](http://cranlogs.r-pkg.org/badges/ETAS)](https://CRAN.R-project.org/package=ETAS)
 [![Build Status](https://travis-ci.org/jalilian/ETAS.svg?branch=master)](https://travis-ci.org/jalilian/ETAS)
 
 # ETAS
