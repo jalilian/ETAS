@@ -36,5 +36,6 @@ allanfactor <- function(object, K=200)
   axis(1); axis(2)
   polygon(c(log10(tau), rev(log10(tau))), c(q025, rev(q975)),
           col="grey70", border="grey70")
+  abline(h=0, lty=2, col="green")
   lines(log10(tau), obsaf, lty=1.25)
 }
