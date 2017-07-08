@@ -1,4 +1,9 @@
 
+# Telesca, L., Lovallo, M., Golay, J., & Kanevski, M. (2016). 
+# Comparing seismicity declustering techniques by means of 
+# the joint use of Allan Factor and Morisita index. 
+# Stochastic environmental research and risk assessment, 30(1), 77.
+
 allanfactor <- function(object, K=200)
 {
   ok <- object$revents[, "flag"] == 1
@@ -29,7 +34,8 @@ allanfactor <- function(object, K=200)
   q975 <- apply(matrix(log10(unlist(afsim)), ncol=100), 1, 
                 stats::quantile, p=0.975)
   ylim <- range(c(obsaf, q025[is.finite(q025)], q975), na.rm = TRUE)
-  par(mar=c(4, 4.1, 1, 0.5))
+  oldpar <- par(no.readonly = TRUE)
+  par(mar=c(4, 4.2, 1, 0.5))
   plot(log10(tau), obsaf, type="n", ylim=ylim, axes=FALSE, 
        xlab=expression(log[10]~tau),
        ylab=expression(log[10]~AF(tau)), main="")
@@ -38,4 +44,5 @@ allanfactor <- function(object, K=200)
           col="grey70", border="grey70")
   abline(h=0, lty=2, col="green")
   lines(log10(tau), obsaf, lty=1.25)
+  par(oldpar)
 }
