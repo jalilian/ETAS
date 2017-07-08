@@ -9,7 +9,8 @@ useDynLib(ETAS)
 
 importFrom("graphics", "abline", "axis", "dotchart", "layout", "par",
            "plot", "points", "polygon", "mtext", "title")
-importFrom("stats", "density", "lm", "plot.ts", "runif")
+importFrom("stats", "density", "lm", "plot.ts", "runif", "punif",
+           "ks.test")
 importFrom("utils", "installed.packages")
 importFrom("lattice", "xyplot")
 importFrom("maps", "map")
