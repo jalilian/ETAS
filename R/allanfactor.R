@@ -4,8 +4,11 @@
 # the joint use of Allan Factor and Morisita index. 
 # Stochastic environmental research and risk assessment, 30(1), 77.
 
-allanfactor <- function(object, K=200)
+allanfactor <- function(object, K=200, cat.name=NULL)
 {
+  if (is.null(cat.name))
+    cat.name <- deparse(substitute(object))
+
   ok <- object$revents[, "flag"] == 1
   tt <- object$revents[ok, "tt"]
   tmin <- object$rtperiod[1]
@@ -38,7 +41,7 @@ allanfactor <- function(object, K=200)
   par(mar=c(4, 4.2, 1, 0.5))
   plot(log10(tau), obsaf, type="n", ylim=ylim, axes=FALSE, 
        xlab=expression(log[10]~tau),
-       ylab=expression(log[10]~AF(tau)), main="")
+       ylab=expression(log[10]~AF(tau)), main=cat.name)
   axis(1); axis(2)
   polygon(c(log10(tau), rev(log10(tau))), c(q025, rev(q975)),
           col="grey70", border="grey70")
