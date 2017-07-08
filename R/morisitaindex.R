@@ -23,7 +23,7 @@ morisitaindex <- function(object, K=12, bw=NULL, cat.name=NULL)
     dimyx <- c(ceiling(128 / rxy), 128)
   
   if (is.null(bw))
-    bw <- spatstat::bw.diggle(X)
+    bw <- spatstat::bw.scott(X)
   Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw)
   Lam[Lam$v < 0] <- 0
   
