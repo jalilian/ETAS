@@ -4,14 +4,14 @@
 # the joint use of Allan Factor and Morisita index. 
 # Stochastic environmental research and risk assessment, 30(1), 77.
 
-morisitaindex <- function(object, K=12, bw=NULL, cat.name=NULL)
+morisitaindex <- function(object, K=11, bw=NULL, cat.name=NULL)
 {
   if (is.null(cat.name))
     cat.name <- deparse(substitute(object))
   
   ok <- object$revents[, "flag"] == 1
   xx <- object$revents[ok, "xx"]
-  yy <- object$revents[ok, "xx"]
+  yy <- object$revents[ok, "yy"]
   N <- length(xx)
   win <- object$region.win
   areaW <- spatstat::area.owin(win)
@@ -23,28 +23,29 @@ morisitaindex <- function(object, K=12, bw=NULL, cat.name=NULL)
     dimyx <- c(ceiling(128 / rxy), 128)
   
   if (is.null(bw))
-    bw <- spatstat::bw.scott(X)
-  Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw)
-  Lam[Lam$v < 0] <- 0
-  
-  delta <- areaW / (1:K + 1)^2
+    bw <- spatstat::bw.ppl(X)
+  Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw, 
+                               positive=TRUE)
+
+  k.add <- 1
+  delta <- areaW / (1:K + k.add)^2
   mifun <- function(Y)
   {
     mi <- numeric(K)
     for (k in 1:K)
     {
-      Q <- spatstat::quadratcount(Y, nx=k + 1, ny=k + 1)
-      mi[k] <- (k + 1)^2 * sum(Q * (Q - 1)) / (N * (N - 1))
+      Q <- spatstat::quadratcount(Y, nx=k + k.add, ny=k + k.add)
+      mi[k] <- (k + k.add)^2 * sum(Q * (Q - 1)) / (N * (N - 1))
     }
     return(mi)
   }
   obsmi <- log10(mifun(X))
   
-  X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
+  X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=100)
   X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
   misim <- lapply(X.sim, mifun)
   
-  misim.vals <- matrix(log10(unlist(misim)), ncol=99)
+  misim.vals <- matrix(log10(unlist(misim)), ncol=100)
   q025 <- apply(misim.vals, 1, stats::quantile, p=0.025)
   q975 <- apply(misim.vals, 1, stats::quantile, p=0.975)
   ylim <- range(c(obsmi, q025[is.finite(q025)], q975), na.rm = TRUE)
@@ -58,4 +59,5 @@ morisitaindex <- function(object, K=12, bw=NULL, cat.name=NULL)
           col="grey70", border="grey70")
   lines(log10(delta), obsmi, lty=1.25)
   #par(oldpar)
+  invisible(list(X=X, Lam=Lam))
 }
