@@ -1,0 +1,61 @@
+
+# Telesca, L., Lovallo, M., Golay, J., & Kanevski, M. (2016). 
+# Comparing seismicity declustering techniques by means of 
+# the joint use of Allan Factor and Morisita index. 
+# Stochastic environmental research and risk assessment, 30(1), 77.
+
+morisitaindex <- function(object, K=12, bw=NULL, cat.name=NULL)
+{
+  if (is.null(cat.name))
+    cat.name <- deparse(substitute(object))
+  
+  ok <- object$revents[, "flag"] == 1
+  xx <- object$revents[ok, "xx"]
+  yy <- object$revents[ok, "xx"]
+  N <- length(xx)
+  win <- object$region.win
+  areaW <- spatstat::area.owin(win)
+  X <- spatstat::ppp(xx, yy, window=win)
+  rxy <- diff(win$xrange)/diff(win$yrange)
+  if (rxy >= 1)
+    dimyx <- c(128, ceiling(128 * rxy))
+  else
+    dimyx <- c(ceiling(128 / rxy), 128)
+  
+  if (is.null(bw))
+    bw <- spatstat::bw.diggle(X)
+  Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw)
+  Lam[Lam$v < 0] <- 0
+  
+  delta <- areaW / (1:K + 1)^2
+  mifun <- function(Y)
+  {
+    mi <- numeric(K)
+    for (k in 1:K)
+    {
+      Q <- quadratcount(Y, nx=k + 1, ny=k + 1)
+      mi[k] <- (k + 1)^2 * sum(Q * (Q - 1)) / (N * (N - 1))
+    }
+    return(mi)
+  }
+  obsmi <- log10(mifun(X))
+  
+  X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
+  X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
+  misim <- lapply(X.sim, mifun)
+  
+  misim.vals <- matrix(log10(unlist(misim)), ncol=99)
+  q025 <- apply(misim.vals, 1, stats::quantile, p=0.025)
+  q975 <- apply(misim.vals, 1, stats::quantile, p=0.975)
+  ylim <- range(c(obsmi, q025[is.finite(q025)], q975), na.rm = TRUE)
+  #oldpar <- par(no.readonly = TRUE)
+  par(mar=c(4, 4.2, 1, 0.5))
+  plot(log10(delta), obsmi, type="n", ylim=ylim, axes=FALSE, 
+       xlab=expression(log[10]~delta),
+       ylab=expression(log[10]~I(delta)), main=cat.name)
+  axis(1); axis(2)
+  polygon(c(log10(delta), rev(log10(delta))), c(q025, rev(q975)),
+          col="grey70", border="grey70")
+  lines(log10(delta), obsmi, lty=1.25)
+  #par(oldpar)
+}

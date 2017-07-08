@@ -21,6 +21,7 @@
 \alias{plot.catalog}
 \alias{poisson.test}
 \alias{allanfactor}
+\alias{morisitaindex}
 \description{
   Internal ETAS functions.
 }
@@ -45,6 +46,7 @@ xy2longlat(x, y, region.poly, dist.unit="degree")
 poisson.test(object, which="joint", r=NULL, n.perm=1000, 
      verbose=TRUE)
 allanfactor(object, K=200, cat.name=NULL)
+morisitaindex(object, K=12, bw=NULL, cat.name=NULL)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)

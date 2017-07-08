@@ -28,7 +28,6 @@ poisson.test <- function(object, which="joint", r=NULL,
     else
       dimyx <- c(ceiling(128 / rxy), 128)
     
-
     Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, 
                                  sigma=spatstat::bw.diggle)
     Lam[Lam$v < 0] <- 0

@@ -38,7 +38,7 @@ allanfactor <- function(object, K=200, cat.name=NULL)
                 stats::quantile, p=0.975)
   ylim <- range(c(obsaf, q025[is.finite(q025)], q975), na.rm = TRUE)
   oldpar <- par(no.readonly = TRUE)
-  par(mar=c(4, 4.2, 1, 0.5))
+  #par(mar=c(4, 4.2, 1, 0.5))
   plot(log10(tau), obsaf, type="n", ylim=ylim, axes=FALSE, 
        xlab=expression(log[10]~tau),
        ylab=expression(log[10]~AF(tau)), main=cat.name)
@@ -47,5 +47,5 @@ allanfactor <- function(object, K=200, cat.name=NULL)
           col="grey70", border="grey70")
   abline(h=0, lty=2, col="green")
   lines(log10(tau), obsaf, lty=1.25)
-  par(oldpar)
+  #par(oldpar)
 }
