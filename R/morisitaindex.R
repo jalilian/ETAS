@@ -33,7 +33,7 @@ morisitaindex <- function(object, K=12, bw=NULL, cat.name=NULL)
     mi <- numeric(K)
     for (k in 1:K)
     {
-      Q <- quadratcount(Y, nx=k + 1, ny=k + 1)
+      Q <- spatstat::quadratcount(Y, nx=k + 1, ny=k + 1)
       mi[k] <- (k + 1)^2 * sum(Q * (Q - 1)) / (N * (N - 1))
     }
     return(mi)
