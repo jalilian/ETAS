@@ -7,8 +7,11 @@
 #   Geophysical journal international, 189(1), 691-700.
 
 poiss.test <- function(object, which="joint", r=NULL, bw=NULL, 
-                       n.perm=1000, verbose=TRUE)
+                       n.perm=1000, verbose=TRUE, cat.name=NULL)
 {
+  if (is.null(cat.name))
+    cat.name <- deparse(substitute(object))
+  
   ok <- object$revents[, "flag"] == 1
   tt <- object$revents[ok, "tt"]
   xx <- object$revents[ok, "xx"]
@@ -47,8 +50,8 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
                               use.theory=TRUE, savepatterns=TRUE, 
                               simulate=X.sim)
     res <- spatstat::dclf.test(env, use.theory=TRUE)
-    par(mar=c(4, 4.1, 1.5, 0.5))
-    plot(env, legend=FALSE, axes=FALSE, main="")
+    par(mar=c(4, 4.2, 1.5, 0.5))
+    plot(env, legend=FALSE, axes=FALSE, main=cat.name)
     axis(1); axis(2)
     mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
     return(res)
