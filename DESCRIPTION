@@ -1,8 +1,8 @@
 Package: ETAS
 Type: Package
 Title: Modeling Earthquake Data Using ETAS Model
-Version: 0.4.3
-Date: 2017-07-05
+Version: 0.4.4
+Date: 2017-07-09
 Author: Abdollah Jalilian [aut, cre], Jiancang Zhuang [ctb]
 Maintainer: Abdollah Jalilian <jalilian@razi.ac.ir>
 Description: Fits the space-time Epidemic Type Aftershock Sequence

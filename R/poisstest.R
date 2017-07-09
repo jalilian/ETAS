@@ -6,8 +6,8 @@
 #   Poisson tests of declustered catalogues. 
 #   Geophysical journal international, 189(1), 691-700.
 
-poiss.test <- function(object, which="joint", r=NULL, 
-                         n.perm=1000, verbose=TRUE)
+poiss.test <- function(object, which="joint", r=NULL, bw=NULL, 
+                       n.perm=1000, verbose=TRUE)
 {
   ok <- object$revents[, "flag"] == 1
   tt <- object$revents[ok, "tt"]
@@ -22,23 +22,30 @@ poiss.test <- function(object, which="joint", r=NULL,
   }, spatial={
     win <- object$region.win
     X <- spatstat::ppp(xx, yy, window=win)
-    rxy <- diff(win$xrange)/diff(win$yrange)
-    if (rxy >= 1)
-      dimyx <- c(128, ceiling(128 * rxy))
+    dxy <- diff(win$xrange)/diff(win$yrange)
+    if (dxy >= 1)
+      dimyx <- c(128, ceiling(128 * dxy))
     else
-      dimyx <- c(ceiling(128 / rxy), 128)
+      dimyx <- c(ceiling(128 / dxy), 128)
     
-    Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, 
-                                 sigma=spatstat::bw.diggle)
-    Lam[Lam$v < 0] <- 0
+    if (is.null(bw))
+      bw <- spatstat::bw.diggle(X)
+    Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw, 
+                                 positive=TRUE)
     X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
+
+    if (is.null(r))
+    {
+      rmax <- spatstat::rmax.rule("K", win) / 3
+      r <- seq(0, rmax, length=250)
+    }
     env <- spatstat::envelope(X, spatstat::Linhom, 
                               correction="translate", r=r, 
                               global = TRUE, savefuns = TRUE, 
                               use.theory=TRUE, savepatterns=TRUE, 
                               simulate=X.sim)
-    res <- spatstat::dclf.test(env)
+    res <- spatstat::dclf.test(env, use.theory=TRUE)
     par(mar=c(4, 4.1, 1.5, 0.5))
     plot(env, legend=FALSE, axes=FALSE, main="")
     axis(1); axis(2)
@@ -97,5 +104,5 @@ poiss.test <- function(object, which="joint", r=NULL,
                 parameter=n.perm)
     class(out) <- "htest"
     return(out)
-  })
+  }, stop("wrong which choice."))
 }
