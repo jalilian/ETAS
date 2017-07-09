@@ -18,10 +18,12 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
   yy <- object$revents[ok, "yy"]
   
   switch(which, temporal={
-    # res <- ks.test(diff(tt), pexp, rate=1/mean(diff(tt)))
-    res <- ks.test(tt, punif, min=object$rtperiod[1], 
-                  max=object$rtperiod[2])
-    return(res)
+    # res1 <- ks.test(diff(tt), pexp, rate=1/mean(diff(tt)))
+    res1 <- ks.test(tt, punif, min=object$rtperiod[1], 
+                    max=object$rtperiod[2])
+    res2 <- goftest::ad.test(tt, punif, min=object$rtperiod[1], 
+                             max=object$rtperiod[2])
+    return(list(KS=res1, AD=res2))
   }, spatial={
     win <- object$region.win
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
@@ -54,7 +56,8 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
     plot(env, legend=FALSE, axes=FALSE, main=cat.name)
     axis(1); axis(2)
     mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
-    return(res)
+    return(list(DCLF=res, 
+                MAD=spatstat::dclf.test(env, use.theory=TRUE)))
   }, joint={
     # extract ranks (assume no ties)
     x.rank <- rank(xx)
