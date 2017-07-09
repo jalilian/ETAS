@@ -6,7 +6,7 @@
 #   Poisson tests of declustered catalogues. 
 #   Geophysical journal international, 189(1), 691-700.
 
-poiss.test <- function(object, which="joint", r=NULL, bw=NULL, 
+poiss.test <- function(object, which="joint", r=NULL, f=0.2, nrep=10, 
                        n.perm=1000, verbose=TRUE, cat.name=NULL)
 {
   if (is.null(cat.name))
@@ -34,10 +34,12 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
     else
       dimyx <- c(ceiling(128 / dxy), 128)
     
-    if (is.null(bw))
-      bw <- spatstat::bw.diggle(X)
-    Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw, 
-                                 positive=TRUE)
+#    Lam <- spatstat::nndensity(X, dimyx=dimyx)
+    Lam <- spatstat::adaptive.density(X, dimyx=dimyx, f=f, nrep=nrep)
+#    if (is.null(bw))
+#      bw <- spatstat::bw.diggle(X)
+#    Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw, 
+#                                 positive=TRUE)
     X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
@@ -46,8 +48,13 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
       rmax <- spatstat::rmax.rule("K", win) / 3
       r <- seq(0, rmax, length=250)
     }
-    env <- spatstat::envelope(X, spatstat::Linhom, 
-                              correction="translate", r=r, 
+    stat <- function(Y, r)
+    {
+      LamY <- spatstat::adaptive.density(Y, dimyx=dimyx, f=f, nrep=nrep, 
+                                         verbose=FALSE)
+      spatstat::Linhom(Y, r=r, lambda=LamY, correction="translate")
+    }
+    env <- spatstat::envelope(X, stat, r=r,
                               global = TRUE, savefuns = TRUE, 
                               use.theory=TRUE, savepatterns=TRUE, 
                               simulate=X.sim)
@@ -56,7 +63,7 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
     plot(env, legend=FALSE, axes=FALSE, main=cat.name)
     axis(1); axis(2)
     mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
-    return(list(DCLF=res, 
+    return(list(Lam=Lam, env=env, DCLF=res, 
                 MAD=spatstat::mad.test(env, use.theory=TRUE)))
   }, joint={
     # extract ranks (assume no ties)
