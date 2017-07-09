@@ -10,17 +10,21 @@ The Epidemic Type Aftershock Sequence (ETAS) model is a spatio-temporal marked p
 
 ## Installation
 
-To install the package, run the following in R:
- 
+To install the package from [CRAN](https://CRAN.R-project.org/package=ETAS), run the following in R:
 ```R
-require(devtools)
+install.packages('ETAS')
+```
+
+You can also intall the current version of the package on GitHub by running:
+```R
+require(remotes)
 install_github('jalilian/ETAS')
 ```
 
-If 'devtools' is not installed, you should first run:
+If [remotes](https://github.com/mangothecat/remotes) is not installed, you should first run:
 
 ```R
-install.packages('devtools')
+install.packages('remotes')
 ```
  
 Alternatively, the package can be installed by
