@@ -21,7 +21,8 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
     return(res)
   }, spatial={
     win <- object$region.win
-    X <- spatstat::ppp(xx, yy, window=win)
+    unitname <- paste(object$dist.unit, c("", "s"), sep="")
+    X <- spatstat::ppp(xx, yy, window=win, unitname=unitname)
     dxy <- diff(win$xrange)/diff(win$yrange)
     if (dxy >= 1)
       dimyx <- c(128, ceiling(128 * dxy))
