@@ -19,7 +19,7 @@
 \alias{plot.etas}
 \alias{print.catalog}
 \alias{plot.catalog}
-\alias{poisson.test}
+\alias{poiss.test}
 \alias{allanfactor}
 \alias{morisitaindex}
 \description{
@@ -43,10 +43,9 @@ lambdaspatial(x, y, fit)
 lambdatemporal(t, fit)
 longlat2xy(long, lat, region.poly, dist.unit="degree")
 xy2longlat(x, y, region.poly, dist.unit="degree")
-poisson.test(object, which="joint", r=NULL, n.perm=1000, 
-     verbose=TRUE)
+poiss.test(object, which="joint", r=NULL, n.perm=1000, verbose=TRUE)
 allanfactor(object, K=200, cat.name=NULL)
-morisitaindex(object, K=12, bw=NULL, cat.name=NULL)
+morisitaindex(object, K=11, bw=NULL, cat.name=NULL)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)

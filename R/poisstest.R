@@ -6,7 +6,7 @@
 #   Poisson tests of declustered catalogues. 
 #   Geophysical journal international, 189(1), 691-700.
 
-poisson.test <- function(object, which="joint", r=NULL, 
+poiss.test <- function(object, which="joint", r=NULL, 
                          n.perm=1000, verbose=TRUE)
 {
   ok <- object$revents[, "flag"] == 1
