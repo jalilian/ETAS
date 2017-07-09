@@ -57,7 +57,7 @@ poiss.test <- function(object, which="joint", r=NULL, bw=NULL,
     axis(1); axis(2)
     mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
     return(list(DCLF=res, 
-                MAD=spatstat::dclf.test(env, use.theory=TRUE)))
+                MAD=spatstat::mad.test(env, use.theory=TRUE)))
   }, joint={
     # extract ranks (assume no ties)
     x.rank <- rank(xx)
