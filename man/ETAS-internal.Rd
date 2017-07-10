@@ -20,6 +20,7 @@
 \alias{print.catalog}
 \alias{plot.catalog}
 \alias{poiss.test}
+\alias{Smooth.catalog}
 \alias{allanfactor}
 \alias{morisitaindex}
 \description{
@@ -43,7 +44,8 @@ lambdaspatial(x, y, fit)
 lambdatemporal(t, fit)
 longlat2xy(long, lat, region.poly, dist.unit="degree")
 xy2longlat(x, y, region.poly, dist.unit="degree")
-poiss.test(object, which="joint", r=NULL, f=0.25, nrep=10, n.perm=1000, verbose=TRUE, cat.name=NULL)
+poiss.test(object, which="joint", r=NULL, bwd=NULL, dimyx=NULL, n.perm=1000, verbose=TRUE, cat.name=NULL)
+Smooth.catalog(object, bwd=NULL, bwm = 0.05, nnp=5, dimyx=NULL)
 allanfactor(object, K=200, cat.name=NULL)
 morisitaindex(object, K=11, bw=NULL, cat.name=NULL)
 \method{print}{etas}(x,\dots)

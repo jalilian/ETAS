@@ -6,8 +6,9 @@
 #   Poisson tests of declustered catalogues. 
 #   Geophysical journal international, 189(1), 691-700.
 
-poiss.test <- function(object, which="joint", r=NULL, f=0.25, nrep=10, 
-                       n.perm=1000, verbose=TRUE, cat.name=NULL)
+poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
+                       dimyx=NULL, n.perm=1000, verbose=TRUE, 
+                       cat.name=NULL)
 {
   if (is.null(cat.name))
     cat.name <- deparse(substitute(object))
@@ -28,28 +29,16 @@ poiss.test <- function(object, which="joint", r=NULL, f=0.25, nrep=10,
     win <- object$region.win
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
     X <- spatstat::ppp(xx, yy, window=win, unitname=unitname)
-    dxy <- diff(win$xrange)/diff(win$yrange)
-    if (dxy >= 1)
-      dimyx <- c(128, ceiling(128 * dxy))
-    else
-      dimyx <- c(ceiling(128 / dxy), 128)
-    
-    Lam <- spatstat::adaptive.density(X, dimyx=dimyx, f=f, nrep=nrep)
+    Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dumyx)
     X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
     if (is.null(r))
     {
       rmax <- spatstat::rmax.rule("K", win) / 3
-      r <- seq(0, rmax, length=250)
+      r <- seq(0, rmax, length=200)
     }
-    stat <- function(Y, r)
-    {
-      LamY <- spatstat::adaptive.density(Y, dimyx=dimyx, f=f, nrep=nrep, 
-                                         verbose=FALSE)
-      spatstat::Linhom(Y, r=r, lambda=LamY, correction="translate")
-    }
-    env <- spatstat::envelope(X, stat, r=r,
+    env <- spatstat::envelope(X, spatstat::Linhom, r=r,
                               global = TRUE, savefuns = TRUE, 
                               use.theory=TRUE, savepatterns=TRUE, 
                               simulate=X.sim)
@@ -114,4 +103,47 @@ poiss.test <- function(object, which="joint", r=NULL, f=0.25, nrep=10,
     class(out) <- "htest"
     return(out)
   }, stop("wrong which choice."))
+}
+
+Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5, 
+                           dimyx=NULL)
+{
+  ok <- object$revents[, "flag"] == 1
+  xx <- object$revents[ok, "xx"]
+  yy <- object$revents[ok, "yy"]
+  
+  win <- object$region.win
+  unitname <- paste(object$dist.unit, c("", "s"), sep="")
+
+  if (is.null(dimyx))
+  {
+    rv <- diff(win$xrange)/diff(win$yrange)
+    if (rv > 1)
+    {
+      dimyx <- round(128 * c(1, rv))
+    } else
+    {
+      dimyx <- round(128 * c(1 / rv, 1))
+    }
+  }
+  
+  # bandwidths for smoothness and integration
+  if (is.null(bwd))
+  {
+    if (object$dist.unit == "km")
+      bwm <-  6371.3 * pi / 180 * bwm
+    bwd <- spatstat::nndist.default(xx, yy, k=nnp)
+    bwd <- pmax(bwd, bwm)
+  }
+  else
+  {
+    stopifnot(is.numeric(bwd), length(bwd) != length(xx))
+  }
+  
+  gx <- seq(win$xrange[1], win$xrange[2], length.out=dimyx[2])
+  gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
+  
+  out <- cxxSmooth(xx, yy, bwd, gx, gy)
+
+  spatstat::as.im.matrix(t(out), xcol=gx, yrow=gy)
 }
