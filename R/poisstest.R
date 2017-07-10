@@ -6,7 +6,7 @@
 #   Poisson tests of declustered catalogues. 
 #   Geophysical journal international, 189(1), 691-700.
 
-poiss.test <- function(object, which="joint", r=NULL, f=0.2, nrep=10, 
+poiss.test <- function(object, which="joint", r=NULL, f=0.25, nrep=10, 
                        n.perm=1000, verbose=TRUE, cat.name=NULL)
 {
   if (is.null(cat.name))
@@ -34,12 +34,7 @@ poiss.test <- function(object, which="joint", r=NULL, f=0.2, nrep=10,
     else
       dimyx <- c(ceiling(128 / dxy), 128)
     
-#    Lam <- spatstat::nndensity(X, dimyx=dimyx)
     Lam <- spatstat::adaptive.density(X, dimyx=dimyx, f=f, nrep=nrep)
-#    if (is.null(bw))
-#      bw <- spatstat::bw.diggle(X)
-#    Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw, 
-#                                 positive=TRUE)
     X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
@@ -63,7 +58,7 @@ poiss.test <- function(object, which="joint", r=NULL, f=0.2, nrep=10,
     plot(env, legend=FALSE, axes=FALSE, main=cat.name)
     axis(1); axis(2)
     mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
-    return(list(Lam=Lam, env=env, DCLF=res, 
+    return(list(X=X, Lam=Lam, env=env, DCLF=res, 
                 MAD=spatstat::mad.test(env, use.theory=TRUE)))
   }, joint={
     # extract ranks (assume no ties)
