@@ -2005,4 +2005,35 @@ NumericVector cxxlambspat(NumericVector xg,
   
   return out;
 }
+
+// ******************************************************************
+// variable bandwidth kernel smoothing
+// ******************************************************************
+// [[Rcpp::export]]
+NumericMatrix cxxSmooth(NumericVector x,
+                        NumericVector y,
+                        NumericVector bwd,
+                        NumericVector gx,
+                        NumericVector gy)
+{
+
+  int N = x.length(), ngx = gx.length(), ngy = gy.length();
+  NumericMatrix outmat(ngx, ngy);
+  
+  double sum;
+  for (int i = 0; i < ngx; i++)
+    for (int j = 0; j < ngy; j++)
+    {
+      sum = 0;
+      for (int l = 0; l < N; l++)
+      {
+        sum += dGauss(dist2(x[l], y[l], gx[i], gy[j]), bwd[l]);
+      }
+      outmat(i, j) = sum;
+    }
+    
+  return outmat;
+}
+
+
 // ******************************************************************
