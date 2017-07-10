@@ -111,9 +111,7 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   ok <- object$revents[, "flag"] == 1
   xx <- object$revents[ok, "xx"]
   yy <- object$revents[ok, "yy"]
-  
   win <- object$region.win
-  unitname <- paste(object$dist.unit, c("", "s"), sep="")
 
   if (is.null(dimyx))
   {
@@ -145,5 +143,5 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
   out <- cxxSmooth(xx, yy, bwd, gx, gy)
 
-  spatstat::as.im.matrix(t(out), xcol=gx, yrow=gy)
+  spatstat::as.im(list(x=gx, y=gy, z=out))
 }

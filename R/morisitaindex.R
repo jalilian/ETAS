@@ -4,7 +4,7 @@
 # the joint use of Allan Factor and Morisita index. 
 # Stochastic environmental research and risk assessment, 30(1), 77.
 
-morisitaindex <- function(object, K=11, bw=NULL, cat.name=NULL)
+morisitaindex <- function(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 {
   if (is.null(cat.name))
     cat.name <- deparse(substitute(object))
@@ -16,16 +16,8 @@ morisitaindex <- function(object, K=11, bw=NULL, cat.name=NULL)
   win <- object$region.win
   areaW <- spatstat::area.owin(win)
   X <- spatstat::ppp(xx, yy, window=win)
-  rxy <- diff(win$xrange)/diff(win$yrange)
-  if (rxy >= 1)
-    dimyx <- c(128, ceiling(128 * rxy))
-  else
-    dimyx <- c(ceiling(128 / rxy), 128)
-  
-  if (is.null(bw))
-    bw <- spatstat::bw.ppl(X)
-  Lam <- spatstat::density.ppp(X, dimyx=dimyx, diggle=TRUE, sigma=bw, 
-                               positive=TRUE)
+  Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
+  X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=100)
 
   k.add <- 1
   delta <- areaW / (1:K + k.add)^2
@@ -34,15 +26,13 @@ morisitaindex <- function(object, K=11, bw=NULL, cat.name=NULL)
     mi <- numeric(K)
     for (k in 1:K)
     {
-      Q <- spatstat::quadratcount(Y, nx=k + k.add, ny=k + k.add)
+      #print(c(k=k, n=Y$n))
+      Q <- spatstat::quadratcount.ppp(Y, nx=k + k.add, ny=k + k.add)
       mi[k] <- (k + k.add)^2 * sum(Q * (Q - 1)) / (N * (N - 1))
     }
     return(mi)
   }
   obsmi <- log10(mifun(X))
-  
-  X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=100)
-  X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
   misim <- lapply(X.sim, mifun)
   
   misim.vals <- matrix(log10(unlist(misim)), ncol=100)

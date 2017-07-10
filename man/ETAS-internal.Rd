@@ -50,7 +50,7 @@ poiss.test(object, which="joint", r=NULL, bwd=NULL, dimyx=NULL,
    n.perm=1000, verbose=TRUE, cat.name=NULL)
 Smooth.catalog(object, bwd=NULL, bwm = 0.05, nnp=5, dimyx=NULL)
 allanfactor(object, K=200, cat.name=NULL)
-morisitaindex(object, K=11, bw=NULL, cat.name=NULL)
+morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)
