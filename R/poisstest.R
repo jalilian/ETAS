@@ -29,7 +29,7 @@ poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
     win <- object$region.win
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
     X <- spatstat::ppp(xx, yy, window=win, unitname=unitname)
-    Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dumyx)
+    Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
     X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
@@ -118,12 +118,13 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   if (is.null(dimyx))
   {
     rv <- diff(win$xrange)/diff(win$yrange)
+    npixel <- spatstat::spatstat.options("npixel")
     if (rv > 1)
     {
-      dimyx <- round(128 * c(1, rv))
+      dimyx <- round(npixel * c(1, rv))
     } else
     {
-      dimyx <- round(128 * c(1 / rv, 1))
+      dimyx <- round(npixel * c(1 / rv, 1))
     }
   }
   
@@ -142,7 +143,6 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   
   gx <- seq(win$xrange[1], win$xrange[2], length.out=dimyx[2])
   gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
-  
   out <- cxxSmooth(xx, yy, bwd, gx, gy)
 
   spatstat::as.im.matrix(t(out), xcol=gx, yrow=gy)

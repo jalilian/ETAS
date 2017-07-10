@@ -10,6 +10,7 @@
 \alias{cxxtimetrans}
 \alias{cxxlambdtemp}
 \alias{cxxlambspat}
+\alias{cxxSmooth}
 \alias{timetransform}
 \alias{lambdaspatial}
 \alias{lambdatemporal}
@@ -39,12 +40,14 @@ cxxrates(param, revents, bwd, tperiod, gx, gy)
 cxxtimetrans(theta, revents, rpoly, tperiod, integ0, ndiv)
 cxxlambdtemp(tg, theta, revents, rpoly, tperiod, integ0, ndiv)
 cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd)
+cxxSmooth(x, y, bwd, gx, gy)
 timetransform(fit)
 lambdaspatial(x, y, fit)
 lambdatemporal(t, fit)
 longlat2xy(long, lat, region.poly, dist.unit="degree")
 xy2longlat(x, y, region.poly, dist.unit="degree")
-poiss.test(object, which="joint", r=NULL, bwd=NULL, dimyx=NULL, n.perm=1000, verbose=TRUE, cat.name=NULL)
+poiss.test(object, which="joint", r=NULL, bwd=NULL, dimyx=NULL, 
+   n.perm=1000, verbose=TRUE, cat.name=NULL)
 Smooth.catalog(object, bwd=NULL, bwm = 0.05, nnp=5, dimyx=NULL)
 allanfactor(object, K=200, cat.name=NULL)
 morisitaindex(object, K=11, bw=NULL, cat.name=NULL)

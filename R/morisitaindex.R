@@ -55,9 +55,9 @@ morisitaindex <- function(object, K=11, bw=NULL, cat.name=NULL)
        xlab=expression(log[10]~delta),
        ylab=expression(log[10]~I(delta)), main=cat.name)
   axis(1); axis(2)
-  polygon(c(log10(delta), rev(log10(delta))), c(q025, rev(q975)),
-          col="grey70", border="grey70")
-  lines(log10(delta), obsmi, lty=1.25)
+  graphics::polygon(c(log10(delta), rev(log10(delta))), 
+                    c(q025, rev(q975)), col="grey70", border="grey70")
+  graphics::lines(log10(delta), obsmi, lty=1.25)
   #par(oldpar)
   invisible(list(X=X, Lam=Lam))
 }
