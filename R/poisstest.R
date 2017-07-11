@@ -30,7 +30,7 @@ poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
     X <- spatstat::ppp(xx, yy, window=win, unitname=unitname)
     Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-    X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=99)
+    X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=499)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
     if (is.null(r))
@@ -41,7 +41,7 @@ poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
     env <- spatstat::envelope(X, spatstat::Linhom, r=r,
                               global = TRUE, savefuns = TRUE, 
                               use.theory=TRUE, savepatterns=TRUE, 
-                              simulate=X.sim)
+                              simulate=X.sim, nsim=499, nrank=5)
     res <- spatstat::dclf.test(env, use.theory=TRUE)
     par(mar=c(4, 4.2, 1.5, 0.5))
     plot(env, legend=FALSE, axes=FALSE, main=cat.name)
