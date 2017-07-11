@@ -46,10 +46,10 @@ lambdaspatial(x, y, fit)
 lambdatemporal(t, fit)
 longlat2xy(long, lat, region.poly, dist.unit="degree")
 xy2longlat(x, y, region.poly, dist.unit="degree")
-poiss.test(object, which="joint", r=NULL, bwd=NULL, dimyx=NULL, nsim=299, 
-  n.perm=1000, verbose=TRUE, cat.name=NULL)
+poiss.test(object, which="joint", r=NULL, lambda=NULL, bwd=NULL, dimyx=NULL, 
+  nsim=299, n.perm=1000, verbose=TRUE, cat.name=NULL)
 Smooth.catalog(object, bwd=NULL, bwm=0.05, nnp=5, dimyx=NULL, convert=FALSE)
-allanfactor(object, K=200, nsim=500, cat.name=NULL)
+allanfactor(object, K=100, nsim=500, cat.name=NULL)
 morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)

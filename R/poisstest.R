@@ -6,7 +6,7 @@
 #   Poisson tests of declustered catalogues. 
 #   Geophysical journal international, 189(1), 691-700.
 
-poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
+poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
                        dimyx=NULL, nsim=299, n.perm=1000, verbose=TRUE, 
                        cat.name=NULL)
 {
@@ -29,8 +29,9 @@ poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
     win <- object$region.win
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
     X <- spatstat::ppp(xx, yy, window=win, unitname=unitname)
-    Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-    X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=nsim)
+    if (is.null(lambda))
+      lambda <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
+    X.sim <- spatstat::rpoint(X$n, lambda, win=win, nsim=nsim)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
     if (is.null(r))
@@ -41,13 +42,13 @@ poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
     env <- spatstat::envelope(X, spatstat::Linhom, r=r, global = TRUE, 
                               savefuns = TRUE, use.theory=TRUE, 
                               savepatterns=TRUE, simulate=X.sim, nsim=nsim, 
-                              nrank=round(0.01 * nsim))
+                              nrank=round(0.05 * nsim))
     res <- spatstat::dclf.test(env, use.theory=TRUE)
     par(mar=c(4, 4.2, 1.5, 0.5))
     plot(env, legend=FALSE, axes=FALSE, main=cat.name)
     axis(1); axis(2)
     mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
-    return(list(X=X, Lam=Lam, env=env, DCLF=res, 
+    return(list(X=X, lambda=lambda, env=env, DCLF=res, 
                 MAD=spatstat::mad.test(env, use.theory=TRUE)))
   }, joint={
     # extract ranks (assume no ties)
