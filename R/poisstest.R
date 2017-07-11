@@ -106,7 +106,7 @@ poiss.test <- function(object, which="joint", r=NULL, bwd=NULL,
 }
 
 Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5, 
-                           dimyx=NULL)
+                           dimyx=NULL, convert=FALSE)
 {
   ok <- object$revents[, "flag"] == 1
   xx <- object$revents[ok, "xx"]
@@ -143,5 +143,14 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
   out <- cxxSmooth(xx, yy, bwd, gx, gy)
 
-  spatstat::as.im(list(x=gx, y=gy, z=out))
+  if (convert)
+  {
+    gcoords <- expand.grid(gx, gy)
+    gcoords <- xy2longlat(gcoords[, 1], gcoords[, 2], 
+                          object$region.poly, 
+                          dist.unit=object$dist.unit)
+    gx <- gcoords$long[1:dimyx[2]]
+    gy <- gcoords$lat[dimyx[2] * (1:dimyx[1]) - 1]
+  }
+  spatstat::as.im.default(list(x=gx, y=gy, z=out))
 }
