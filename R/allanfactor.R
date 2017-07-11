@@ -4,7 +4,7 @@
 # the joint use of Allan Factor and Morisita index. 
 # Stochastic environmental research and risk assessment, 30(1), 77.
 
-allanfactor <- function(object, K=200, nsim=1000, cat.name=NULL)
+allanfactor <- function(object, K=200, nsim=500, cat.name=NULL)
 {
   if (is.null(cat.name))
     cat.name <- deparse(substitute(object))
@@ -35,7 +35,7 @@ allanfactor <- function(object, K=200, nsim=1000, cat.name=NULL)
   afsim.mat <- matrix(log10(unlist(afsim)), ncol=nsim)
   q025 <- apply(afsim.mat, 1, stats::quantile, p=0.025)
   q975 <- apply(afsim.mat, 1, stats::quantile, p=0.975)
-  ylim <- range(c(obsaf, q025[is.finite(q025)], q975), na.rm = TRUE)
+  ylim <- range(c(obsaf, q025[is.finite(q025)], q975), na.rm=TRUE)
   #oldpar <- par(no.readonly = TRUE)
   #par(mar=c(4, 4.2, 1, 0.5))
   plot(log10(tau), obsaf, type="n", ylim=ylim, axes=FALSE, 
