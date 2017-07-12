@@ -42,7 +42,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
     env <- spatstat::envelope(X, spatstat::Linhom, r=r, global = TRUE, 
                               savefuns = TRUE, use.theory=TRUE, 
                               savepatterns=TRUE, simulate=X.sim, nsim=nsim, 
-                              nrank=round(0.05 * nsim))
+                              nrank=round(0.02 * nsim))
     res <- spatstat::dclf.test(env, use.theory=TRUE)
     par(mar=c(4, 4.2, 1.5, 0.5))
     plot(env, legend=FALSE, axes=FALSE, main=cat.name)
