@@ -25,7 +25,7 @@ cxxlambspat <- function(xg, yg, theta, revents, rpoly, tperiod, bwd) {
     .Call('ETAS_cxxlambspat', PACKAGE = 'ETAS', xg, yg, theta, revents, rpoly, tperiod, bwd)
 }
 
-cxxSmooth <- function(x, y, bwd, gx, gy) {
-    .Call('ETAS_cxxSmooth', PACKAGE = 'ETAS', x, y, bwd, gx, gy)
+cxxSmooth <- function(x, y, bwd, gx, gy, expand) {
+    .Call('ETAS_cxxSmooth', PACKAGE = 'ETAS', x, y, bwd, gx, gy, expand)
 }
 

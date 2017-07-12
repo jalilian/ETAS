@@ -2010,30 +2010,49 @@ NumericVector cxxlambspat(NumericVector xg,
 // variable bandwidth kernel smoothing
 // ******************************************************************
 // [[Rcpp::export]]
-NumericMatrix cxxSmooth(NumericVector x,
-                        NumericVector y,
-                        NumericVector bwd,
-                        NumericVector gx,
-                        NumericVector gy)
+List cxxSmooth(NumericVector x,
+               NumericVector y,
+               NumericVector bwd,
+               NumericVector gx,
+               NumericVector gy,
+               bool expand)
 {
 
   int N = x.length(), ngx = gx.length(), ngy = gy.length();
-  NumericMatrix outmat(ngx, ngy);
-  
   double sum;
-  for (int i = 0; i < ngx; i++)
-    for (int j = 0; j < ngy; j++)
+  
+  if (expand)
+  {
+    NumericMatrix out(ngx, ngy);
+    for (int i = 0; i < ngx; i++)
+    {
+      for (int j = 0; j < ngy; j++)
+      {
+        sum = 0;
+        for (int l = 0; l < N; l++)
+        {
+          sum += dGauss(dist2(x[l], y[l], gx[i], gy[j]), bwd[l]);
+        }
+        out(i, j) = sum;
+      }
+    }
+    return List::create(Named("out") = out);
+  }
+  else{
+    if (ngx != ngy)
+      stop("gird coordinates must have the same length.");
+    NumericVector out(ngx);
+    for (int i = 0; i < ngx; i++)
     {
       sum = 0;
       for (int l = 0; l < N; l++)
       {
-        sum += dGauss(dist2(x[l], y[l], gx[i], gy[j]), bwd[l]);
+        sum += dGauss(dist2(x[l], y[l], gx[i], gy[i]), bwd[l]);
       }
-      outmat(i, j) = sum;
+      out[i] = sum;
     }
-    
-  return outmat;
+    return List::create(Named("out") = out);
+  }
 }
-
 
 // ******************************************************************

@@ -7,12 +7,8 @@
 #   Geophysical journal international, 189(1), 691-700.
 
 poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
-                       dimyx=NULL, nsim=299, n.perm=1000, verbose=TRUE, 
-                       cat.name=NULL)
+                       dimyx=NULL, nsim=299, n.perm=1000, verbose=TRUE)
 {
-  if (is.null(cat.name))
-    cat.name <- deparse(substitute(object))
-  
   ok <- object$revents[, "flag"] == 1
   tt <- object$revents[ok, "tt"]
   xx <- object$revents[ok, "xx"]
@@ -39,17 +35,15 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
       rmax <- spatstat::rmax.rule("K", win) / 3
       r <- seq(0, rmax, length=200)
     }
-    env <- spatstat::envelope(X, spatstat::Linhom, r=r, global = TRUE, 
-                              savefuns = TRUE, use.theory=TRUE, 
+    env <- spatstat::envelope(X, spatstat::Linhom, diggle=TRUE,
+                              sigma=spatstat::bw.scott,
+                              r=r, correction="translate", global=TRUE, 
+                              savefuns=TRUE, use.theory=TRUE, 
                               savepatterns=TRUE, simulate=X.sim, nsim=nsim, 
                               nrank=round(0.02 * nsim))
-    res <- spatstat::dclf.test(env, use.theory=TRUE)
-    par(mar=c(4, 4.2, 1.5, 0.5))
-    plot(env, legend=FALSE, axes=FALSE, main=cat.name)
-    axis(1); axis(2)
-    mtext(paste("pvalue =", round(res$p.value, 3)), 3, -1)
-    return(list(X=X, lambda=lambda, env=env, DCLF=res, 
-                MAD=spatstat::mad.test(env, use.theory=TRUE)))
+    res1 <- spatstat::dclf.test(env, use.theory=TRUE)
+    res2 <- spatstat::mad.test(env, use.theory=TRUE)
+    return(list(X=X, lambda=lambda, env=env, DCLF=res1, MAD=res2))
   }, joint={
     # extract ranks (assume no ties)
     x.rank <- rank(xx)
@@ -142,7 +136,7 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   
   gx <- seq(win$xrange[1], win$xrange[2], length.out=dimyx[2])
   gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
-  out <- cxxSmooth(xx, yy, bwd, gx, gy)
+  out <- cxxSmooth(xx, yy, bwd, gx, gy, TRUE)$out
 
   if (convert)
   {
@@ -153,5 +147,7 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
     gx <- gcoords$long[1:dimyx[2]]
     gy <- gcoords$lat[dimyx[2] * (1:dimyx[1]) - 1]
   }
-  spatstat::as.im.default(list(x=gx, y=gy, z=out))
+  lambda <- spatstat::as.im.default(list(x=gx, y=gy, z=out))
+  attr(lambda, 'bwd') <- bwd
+  return(lambda)
 }

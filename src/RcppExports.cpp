@@ -108,8 +108,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cxxSmooth
-NumericMatrix cxxSmooth(NumericVector x, NumericVector y, NumericVector bwd, NumericVector gx, NumericVector gy);
-RcppExport SEXP ETAS_cxxSmooth(SEXP xSEXP, SEXP ySEXP, SEXP bwdSEXP, SEXP gxSEXP, SEXP gySEXP) {
+List cxxSmooth(NumericVector x, NumericVector y, NumericVector bwd, NumericVector gx, NumericVector gy, bool expand);
+RcppExport SEXP ETAS_cxxSmooth(SEXP xSEXP, SEXP ySEXP, SEXP bwdSEXP, SEXP gxSEXP, SEXP gySEXP, SEXP expandSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -118,7 +118,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type bwd(bwdSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type gx(gxSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type gy(gySEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxSmooth(x, y, bwd, gx, gy));
+    Rcpp::traits::input_parameter< bool >::type expand(expandSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxSmooth(x, y, bwd, gx, gy, expand));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -134,7 +135,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"ETAS_cxxtimetrans", (DL_FUNC) &ETAS_cxxtimetrans, 6},
     {"ETAS_cxxlambdtemp", (DL_FUNC) &ETAS_cxxlambdtemp, 7},
     {"ETAS_cxxlambspat", (DL_FUNC) &ETAS_cxxlambspat, 7},
-    {"ETAS_cxxSmooth", (DL_FUNC) &ETAS_cxxSmooth, 5},
+    {"ETAS_cxxSmooth", (DL_FUNC) &ETAS_cxxSmooth, 6},
     {"cdeclust",          (DL_FUNC) &cdeclust,           5},
     {"cfit",              (DL_FUNC) &cfit,               4},
     {"clambdax",          (DL_FUNC) &clambdax,           5},
