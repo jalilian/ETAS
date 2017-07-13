@@ -123,6 +123,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cxxstpoisstest
+double cxxstpoisstest(NumericVector xrank, NumericVector yrank, NumericMatrix M);
+RcppExport SEXP ETAS_cxxstpoisstest(SEXP xrankSEXP, SEXP yrankSEXP, SEXP MSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type xrank(xrankSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type yrank(yrankSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type M(MSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxstpoisstest(xrank, yrank, M));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP cdeclust(SEXP, SEXP, SEXP, SEXP, SEXP);
 RcppExport SEXP cfit(SEXP, SEXP, SEXP, SEXP);
@@ -136,9 +149,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"ETAS_cxxlambdtemp", (DL_FUNC) &ETAS_cxxlambdtemp, 7},
     {"ETAS_cxxlambspat", (DL_FUNC) &ETAS_cxxlambspat, 7},
     {"ETAS_cxxSmooth", (DL_FUNC) &ETAS_cxxSmooth, 6},
-    {"cdeclust",          (DL_FUNC) &cdeclust,           5},
-    {"cfit",              (DL_FUNC) &cfit,               4},
-    {"clambdax",          (DL_FUNC) &clambdax,           5},
+    {"ETAS_cxxstpoisstest", (DL_FUNC) &ETAS_cxxstpoisstest, 3},
+    {"cdeclust",            (DL_FUNC) &cdeclust,             5},
+    {"cfit",                (DL_FUNC) &cfit,                 4},
+    {"clambdax",            (DL_FUNC) &clambdax,             5},
     {NULL, NULL, 0}
 };
 

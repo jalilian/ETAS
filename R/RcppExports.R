@@ -29,3 +29,7 @@ cxxSmooth <- function(x, y, bwd, gx, gy, expand) {
     .Call('ETAS_cxxSmooth', PACKAGE = 'ETAS', x, y, bwd, gx, gy, expand)
 }
 
+cxxstpoisstest <- function(xrank, yrank, M) {
+    .Call('ETAS_cxxstpoisstest', PACKAGE = 'ETAS', xrank, yrank, M)
+}
+

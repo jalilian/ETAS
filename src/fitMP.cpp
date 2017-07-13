@@ -2018,7 +2018,7 @@ List cxxSmooth(NumericVector x,
                bool expand)
 {
 
-  int N = x.length(), ngx = gx.length(), ngy = gy.length();
+  const int N = x.length(), ngx = gx.length(), ngy = gy.length();
   double sum;
   
   if (expand)
@@ -2026,6 +2026,7 @@ List cxxSmooth(NumericVector x,
     NumericMatrix out(ngx, ngy);
     for (int i = 0; i < ngx; i++)
     {
+      R_CheckUserInterrupt();
       for (int j = 0; j < ngy; j++)
       {
         sum = 0;
@@ -2055,4 +2056,36 @@ List cxxSmooth(NumericVector x,
   }
 }
 
+// ******************************************************************
+// distant based test statistic for the spatio-temporal Poisson test
+// ******************************************************************
+// [[Rcpp::export]]
+double cxxstpoisstest(NumericVector xrank, 
+                      NumericVector yrank,
+                      NumericMatrix M)
+{
+  const int n = xrank.length();
+  NumericMatrix tmp(n, n);
+  double dfv, dfvtmp, out = 0;
+  
+  for (int k = 1; k <= n; k++)
+  {
+    R_CheckUserInterrupt();
+    dfv = 0;
+    for (int i = 0; i < n; i++)
+    {
+      for (int j =0; j < n; j++)
+      {
+        if ((yrank[i] >= yrank[k - 1]) && (xrank[j] >= xrank[k - 1]))
+          tmp(i, j) += 1;
+        dfvtmp = tmp(i, j)/n - M(i, j)/n * k/n;
+        if (fabs(dfvtmp) > dfv)
+          dfv = dfvtmp;
+      }
+    }
+    if (dfv > out)
+      out = dfv;
+  }
+  return out;
+}
 // ******************************************************************

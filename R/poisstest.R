@@ -35,16 +35,22 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
       rmax <- spatstat::rmax.rule("K", win) / 3
       r <- seq(0, rmax, length=200)
     }
-    env <- spatstat::envelope(X, spatstat::Linhom, diggle=TRUE,
-                              sigma=spatstat::bw.scott,
-                              r=r, correction="translate", global=TRUE, 
-                              savefuns=TRUE, use.theory=TRUE, 
+    stat <- function(Y, r)
+    {
+      lamY <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
+      spatstat::Linhom(Y, lambda=lamY, r=r, correction="translate")
+    }
+    env <- spatstat::envelope(X, stat, r=r, savefuns=TRUE, use.theory=TRUE, 
                               savepatterns=TRUE, simulate=X.sim, nsim=nsim, 
                               nrank=round(0.02 * nsim))
     res1 <- spatstat::dclf.test(env, use.theory=TRUE)
     res2 <- spatstat::mad.test(env, use.theory=TRUE)
     return(list(X=X, lambda=lambda, env=env, DCLF=res1, MAD=res2))
   }, joint={
+    # exclude ties 
+    dok <- !(duplicated(xx) | duplicated(yy))
+    xx <- xx[dok]
+    yy <- yy[dok]
     # extract ranks (assume no ties)
     x.rank <- rank(xx)
     y.rank <- rank(yy)
@@ -57,21 +63,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
       outer(x.rank, x.rank, "<=")
     
     # Distance function
-    distfind <- function(x.rank, y.rank, xy.upper)
-    {
-      dfv <- 0
-      xyz.temp <- matrix(0, n, n)
-      for(k in 1:n)
-      {
-        xyz.temp <- xyz.temp + 
-          (y.rank >= y.rank[k]) %*% t(x.rank >= x.rank[k])
-        dist.matrix <- xyz.temp/n - xy.upper/n * k/n
-        dfv <- max(dfv, abs(dist.matrix))
-      }
-      return(dfv)
-    }
-    
-    teststat <- distfind(x.rank, y.rank, xy.upper)
+    teststat <- cxxstpoisstest(x.rank, y.rank, xy.upper)
     
     # permuting the occurrence times of events 
     permustat <- rep(NA, n.perm)
@@ -82,7 +74,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
       y.perm <- y.rank[o]
       xy.perm <- xy.upper[o, o]
       
-      permustat[permu] <- distfind(x.perm,y.perm,xy.perm)
+      permustat[permu] <- cxxstpoisstest(x.perm, y.perm, xy.perm)
       if (verbose)
         cat(permu, "\t", permustat[permu], "\n")
     }
@@ -100,7 +92,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
   }, stop("wrong which choice."))
 }
 
-Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5, 
+Smooth.catalog <- function(object, bwd=NULL, bwm=NULL, nnp=NULL, 
                            dimyx=NULL, convert=FALSE)
 {
   ok <- object$revents[, "flag"] == 1
@@ -124,9 +116,11 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   # bandwidths for smoothness and integration
   if (is.null(bwd))
   {
-    if (object$dist.unit == "km")
-      bwm <-  6371.3 * pi / 180 * bwm
+    if (is.null(nnp))
+      nnp <- round(log(length(xx)))
     bwd <- spatstat::nndist.default(xx, yy, k=nnp)
+    if (is.null(bwm))
+      bwm <- quantile(bwd, probs=0.25)
     bwd <- pmax(bwd, bwm)
   }
   else
@@ -149,5 +143,6 @@ Smooth.catalog <- function(object, bwd=NULL, bwm=0.05, nnp=5,
   }
   lambda <- spatstat::as.im.default(list(x=gx, y=gy, z=out))
   attr(lambda, 'bwd') <- bwd
+  attr(lambda, 'nnp') <- nnp
   return(lambda)
 }
