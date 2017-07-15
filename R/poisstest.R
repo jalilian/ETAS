@@ -95,57 +95,74 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
   }, stop("wrong which choice."))
 }
 
-Smooth.catalog <- function(object, bwd=NULL, bwm=NULL, nnp=NULL, 
-                           dimyx=NULL, convert=FALSE)
+Smooth.catalog <- function(object, type="spatial", bwd=NULL, bwm=NULL, 
+                           nnp=NULL, dimyx=NULL, convert=FALSE)
 {
   ok <- object$revents[, "flag"] == 1
-  xx <- object$revents[ok, "xx"]
-  yy <- object$revents[ok, "yy"]
-  win <- object$region.win
-
-  if (is.null(dimyx))
-  {
-    rv <- diff(win$xrange)/diff(win$yrange)
-    npixel <- spatstat::spatstat.options("npixel")
-    if (rv > 1)
+  switch(type, temporal={
+    tt <- object$revents[ok, "tt"]
+    if (is.null(bwd))
+      bwd <- "SJ-ste"
+    else
+      stopifnot(length(bwd) == 1)
+    tdens <- density(tt, bw=bwd)
+    plot(tdens, axes=FALSE, main="", xaxt = "n",
+         ylab=expression(hat(lambda)(t)))
+    idx <- round(seq(1, length(tt), length.out=15))
+    years <- substr(object$longlat.coord$dt[ok][idx], 1, 4)
+    axis(1, at=tt[idx], labels=years)
+    axis(2)
+    rug(tt, col="grey75")
+  }, spatial={
+    xx <- object$revents[ok, "xx"]
+    yy <- object$revents[ok, "yy"]
+    win <- object$region.win
+    
+    if (is.null(dimyx))
     {
-      dimyx <- round(npixel * c(1, rv))
-    } else
-    {
-      dimyx <- round(npixel * c(1 / rv, 1))
+      rv <- diff(win$xrange)/diff(win$yrange)
+      npixel <- spatstat::spatstat.options("npixel")
+      if (rv > 1)
+      {
+        dimyx <- round(npixel * c(1, rv))
+      } else
+      {
+        dimyx <- round(npixel * c(1 / rv, 1))
+      }
     }
-  }
-  
-  # bandwidths for smoothness and integration
-  if (is.null(bwd))
-  {
-    if (is.null(nnp))
-      nnp <- round(log(length(xx)))
-    bwd <- spatstat::nndist.default(xx, yy, k=nnp)
-    if (is.null(bwm))
-      bwm <- quantile(bwd, probs=0.25)
-    bwd <- pmax(bwd, bwm)
-  }
-  else
-  {
-    stopifnot(is.numeric(bwd), length(bwd) != length(xx))
-  }
-  
-  gx <- seq(win$xrange[1], win$xrange[2], length.out=dimyx[2])
-  gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
-  out <- cxxSmooth(xx, yy, bwd, gx, gy, TRUE)$out
-
-  if (convert)
-  {
-    gcoords <- expand.grid(gx, gy)
-    gcoords <- xy2longlat(gcoords[, 1], gcoords[, 2], 
-                          object$region.poly, 
-                          dist.unit=object$dist.unit)
-    gx <- gcoords$long[1:dimyx[2]]
-    gy <- gcoords$lat[dimyx[2] * (1:dimyx[1]) - 1]
-  }
-  lambda <- spatstat::as.im.default(list(x=gx, y=gy, z=out))
-  attr(lambda, 'bwd') <- bwd
-  attr(lambda, 'nnp') <- nnp
-  return(lambda)
+    
+    # bandwidths for smoothness and integration
+    if (is.null(bwd))
+    {
+      if (is.null(nnp))
+        nnp <- round(log(length(xx)))
+      bwd <- spatstat::nndist.default(xx, yy, k=nnp)
+      if (is.null(bwm))
+        bwm <- quantile(bwd, probs=0.25)
+      bwd <- pmax(bwd, bwm)
+    }
+    else
+    {
+      stopifnot(is.numeric(bwd), length(bwd) != length(xx))
+    }
+    
+    gx <- seq(win$xrange[1], win$xrange[2], length.out=dimyx[2])
+    gy <- seq(win$yrange[1], win$yrange[2], length.out=dimyx[1])
+    out <- cxxSmooth(xx, yy, bwd, gx, gy, TRUE)$out
+    out <- out / diff(object$rtperiod)
+    
+    if (convert)
+    {
+      gcoords <- expand.grid(gx, gy)
+      gcoords <- xy2longlat(gcoords[, 1], gcoords[, 2], 
+                            object$region.poly, 
+                            dist.unit=object$dist.unit)
+      gx <- gcoords$long[1:dimyx[2]]
+      gy <- gcoords$lat[dimyx[2] * (1:dimyx[1]) - 1]
+    }
+    lambda <- spatstat::as.im.default(list(x=gx, y=gy, z=out))
+    attr(lambda, 'bwd') <- bwd
+    attr(lambda, 'nnp') <- nnp
+    return(lambda)
+  }, stop("only spatial or temporal smmothing is implemented"))
 }
