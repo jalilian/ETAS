@@ -33,3 +33,7 @@ cxxstpoisstest <- function(xrank, yrank, M) {
     .Call('ETAS_cxxstpoisstest', PACKAGE = 'ETAS', xrank, yrank, M)
 }
 
+cxxstpoisstestMP <- function(xrank, yrank, M, nthreads) {
+    .Call('ETAS_cxxstpoisstestMP', PACKAGE = 'ETAS', xrank, yrank, M, nthreads)
+}
+
