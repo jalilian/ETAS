@@ -7,7 +7,8 @@
 #   Geophysical journal international, 189(1), 691-700.
 
 poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
-                       dimyx=NULL, nsim=299, n.perm=1000, verbose=TRUE)
+                       dimyx=NULL, nsim=299, n.perm=1000, verbose=TRUE, 
+                       nthreads=1)
 {
   ok <- object$revents[, "flag"] == 1
   tt <- object$revents[ok, "tt"]
@@ -63,7 +64,8 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
       outer(x.rank, x.rank, "<=")
     
     # Distance function
-    teststat <- cxxstpoisstest(x.rank, y.rank, xy.upper)
+   # teststat <- cxxstpoisstest(x.rank, y.rank, xy.upper)
+    teststat <- cxxstpoisstestMP(x.rank, y.rank, xy.upper, nthreads)
     
     # permuting the occurrence times of events 
     permustat <- rep(NA, n.perm)
@@ -74,7 +76,8 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
       y.perm <- y.rank[o]
       xy.perm <- xy.upper[o, o]
       
-      permustat[permu] <- cxxstpoisstest(x.perm, y.perm, xy.perm)
+      #permustat[permu] <- cxxstpoisstest(x.perm, y.perm, xy.perm)
+      permustat[permu] <- cxxstpoisstestMP(x.perm, y.perm, xy.perm, nthreads)
       if (verbose)
         cat(permu, "\t", permustat[permu], "\n")
     }
