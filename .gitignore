@@ -2,6 +2,21 @@
 .Rhistory
 .RData
 .Ruserdata
-src/*.o
-src/*.so
-src/*.dll
+
+# Binary files
+*.o
+*.so
+*.dll
+*.xls*
+*.doc*
+*.ppt*
+*.zip
+*.gz
+*.tar
+
+# Tempfiles
+*.dta
+*.ods
+*.log
+*.out
+*.tex

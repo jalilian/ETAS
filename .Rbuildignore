@@ -2,3 +2,10 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^\.gitignore$
+
+# Binary files
+.*\.tar\.gz
+.*\.zip
+.*\.xls
+.*\.doc
+.*\.pdf

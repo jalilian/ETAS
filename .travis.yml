@@ -12,6 +12,8 @@ matrix:
    - os: linux
      r: release
      env: R_CODECOV=true
+      global:
+        - CRAN: http://cran.rstudio.com
    - os: linux
      r: devel
    - os: osx
@@ -26,3 +28,14 @@ matrix:
 # fast_finish: true
 # To CRAN, warnings **are** errors.
 warnings_are_errors: true
+
+after_success:
+  - if [ $TRAVIS_OS_NAME == "linux" ]; then Rscript -e 'covr::codecov()'; fi
+
+after_failure:
+  - ./run.sh dump_logs
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
