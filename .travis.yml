@@ -27,11 +27,7 @@ matrix:
    - os: osx
      r: release
      latex: false
-     r_check_args: --as-cran --use-valgrind
-     addons:
-        homebrew:
-          packages:
-          - valgrind
+     r_check_args: --as-cran
    - os: osx
      r: release
      osx_image: xcode8.2
