@@ -29,9 +29,9 @@ matrix:
      latex: false
      r_check_args: --as-cran --use-valgrind
      addons:
-        apt:
+        homebrew:
           packages:
-          - valgrind
+    - valgrind
    - os: osx
      r: release
      osx_image: xcode8.2
