@@ -20,10 +20,18 @@ matrix:
    - os: linux
      r: devel
      r_check_args: --as-cran --use-valgrind
+     addons:
+        apt:
+          packages:
+          - valgrind
    - os: osx
      r: release
      latex: false
      r_check_args: --as-cran --use-valgrind
+     addons:
+        apt:
+          packages:
+          - valgrind
    - os: osx
      r: release
      osx_image: xcode8.2
