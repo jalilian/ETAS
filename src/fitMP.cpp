@@ -1504,7 +1504,7 @@ List etas::fitfunMP(NumericVector tht,
           s[i] = -s[i];
         }
         
-        double ed = fv;
+      double ed = fv;
       if (verbose)
         Rprintf("\nline search along the specified direction ...");
       // line  search
@@ -1840,10 +1840,11 @@ List cxxrates(NumericVector param,
           pow(1 + dist2(x[l], y[l], gx[i], gy[j]) / (D * exp(gamma * m[l])), - q);
       }
     }
-    return List::create(Named("bkgd") = bkgd,
-                        Named("total") = total,
-                        Named("clust") = clust,
-                        Named("lamb") = lamb);
+  
+  return List::create(Named("bkgd") = bkgd,
+                      Named("total") = total,
+                      Named("clust") = clust,
+                      Named("lamb") = lamb);
 }
 
 // ******************************************************************
@@ -2098,13 +2099,13 @@ double cxxstpoisstestMP(NumericVector xrank,
 {
   const int n = xrank.length();
   NumericMatrix tmp(n, n);
-  double dfv, dfvtmp, out = 0;
+  double dfv=0, out = 0;
   
 #ifdef _OPENMP
   omp_set_dynamic(0);
 #endif
   
-  double max_calc_value = -DBL_MAX; // minimum double value
+//  double max_calc_value = -DBL_MAX; // minimum double value
 #pragma omp parallel num_threads(nthreads)
 {
   double dfv_thread, out_thread=0;
