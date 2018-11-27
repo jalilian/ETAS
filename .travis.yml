@@ -31,7 +31,7 @@ matrix:
      addons:
         homebrew:
           packages:
-          - valgrind
+    - valgrind
    - os: osx
      r: release
      osx_image: xcode8.2
