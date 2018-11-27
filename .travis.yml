@@ -12,6 +12,11 @@ matrix:
    - os: linux
      r: release
      env: R_CODECOV=true
+     r_check_args: --as-cran --use-valgrind
+     addons:
+        apt:
+          packages:
+          - valgrind
    - os: linux
      r: devel
    - os: osx
