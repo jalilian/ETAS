@@ -29,7 +29,7 @@ matrix:
      latex: false
      r_check_args: --as-cran --use-valgrind
      addons:
-        apt:
+        homebrew:
           packages:
           - valgrind
    - os: osx
