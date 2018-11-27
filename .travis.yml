@@ -19,17 +19,17 @@ matrix:
           - valgrind
    - os: linux
      r: devel
+     r_check_args: --as-cran --use-valgrind
    - os: osx
      r: release
      latex: false
+     r_check_args: --as-cran --use-valgrind
    - os: osx
      r: release
      osx_image: xcode8.2
      latex: false
      r_packages:
       - Rcpp
-   - os: windows
-     r: release
 # fast_finish: true
 # To CRAN, warnings **are** errors.
 warnings_are_errors: true
