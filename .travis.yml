@@ -28,6 +28,8 @@ matrix:
      latex: false
      r_packages:
       - Rcpp
+   - os: windows
+     r: release
 # fast_finish: true
 # To CRAN, warnings **are** errors.
 warnings_are_errors: true
