@@ -6,7 +6,9 @@
 
 This repository contains a copy of the R package 'ETAS'.
 
-The Epidemic Type Aftershock Sequence (ETAS) model is a spatio-temporal marked point process model. The 'ETAS' package fits the ETAS model to an earthquake catalog.
+An earthquake catalog is a chronologically ordered list of time, coordinates of epicenter, magnitude and focal depth of all recorded earthquakes with magnitudes greater than or equal to a certain threshold that occurred inside or in the vicinity of a geographical region during a specified time period. Among different proposed models, the epidemic type aftershock sequence (ETAS) model is the most widely used statistical model to describe the underlying process that generates an earthquake catalogs. 
+
+The space-time version of the ETAS model is a spatio-temporal marked point process model. It is a semi-parametric model that describes the background and triggering seismic activities in a geographical region and can be used for earthquake declustering. However, estimation of the ETAS model parameters is computationally challenging. The 'ETAS' package fits the ETAS model to an earthquake catalog.
 
 ## Installation
 
