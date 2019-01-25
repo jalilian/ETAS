@@ -10,8 +10,8 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     which is modified and translated into C++ and C such that it 
     can be called from R. Parallel computing with 'OpenMP' is possible 
     on supported platforms.
-Version: 0.4.5
-Date: 2018-11-22
+Version: 0.4.6
+Date: 2019-01-26
 Authors@R: c(
   person(given = "Abdollah", family = "Jalilian", 
          email = "jalilian@razi.ac.ir", 
@@ -43,3 +43,4 @@ LazyData: true
 LazyLoad: true
 NeedsCompilation: yes
 URL: https://github.com/jalilian/ETAS
+BugReports: https://github.com/jalilian/ETAS/issues

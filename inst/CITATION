@@ -1,0 +1,15 @@
+bibentry(bibtype = "Article",
+  title        = "{ETAS}: An {R} Package for Fitting the Space-Time {ETAS} Model to Earthquake Data",
+  author       = person(given = "Abdollah",
+                        family = "Jalilian",
+                        email = "jalilian@razi.ac.ir"),
+  journal      = "Journal of Statistical Software, Code Snippets",
+  year         = "2019",
+  volume       = "88",
+  number       = "1",
+  pages        = "1--39",
+  doi          = "10.18637/jss.v088.c01",
+
+  header       = "To cite ETAS/sd.tar.gz in publications use:"
+)
+
