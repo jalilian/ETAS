@@ -26,6 +26,8 @@
 \alias{Smooth.catalog}
 \alias{allanfactor}
 \alias{morisitaindex}
+\alias{decimalplaces}
+\alias{roundoffErr}
 \description{
   Internal ETAS functions.
 }
@@ -56,6 +58,8 @@ Smooth.catalog(object, type="spatial", bwd=NULL, bwm=NULL, nnp=NULL,
   dimyx=NULL, convert=FALSE)
 allanfactor(object, K=100, nsim=500, cat.name=NULL)
 morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
+decimalplaces(x) 
+roundoffErr(x)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)
