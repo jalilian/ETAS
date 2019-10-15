@@ -58,6 +58,8 @@
   \item{dist.unit}{A character string specifying the unit of geographical
   coordinates and spatial distances between events. Options
   are \code{"degree"} (the default case) and \code{"km"}.}
+  \item{roundoff}{Logical flag indicating whether to account for round-off 
+  error in coordinates of epicenters.}
   \item{tz}{A character string specifying the time zone to be used
   for the date-time conversion in \code{as.POSIXlt}.
   The default \code{"GMT"} is the UTC (Universal Time, Coordinated).}

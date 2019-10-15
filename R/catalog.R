@@ -3,7 +3,8 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
                    study.end=NULL, study.length=NULL,
                    lat.range=NULL, long.range=NULL,
                    region.poly=NULL, mag.threshold=NULL,
-                   flatmap=TRUE, dist.unit="degree", tz="GMT")
+                   flatmap=TRUE, dist.unit="degree", 
+                   roundoff=TRUE, tz="GMT")
 {
   data <- as.data.frame(data)
   dnames <- tolower(names(data))
@@ -22,6 +23,13 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   xx <- data$long  # longitude of epicenter: coordinates
   yy <- data$lat   # latitude of epicenter : coordinates
   mm <- data$mag   # magnitude
+  
+  # accounting for round-off error in coordinates of epicenters
+  if(roundoff)
+  {
+    xx <- roundoffErr(xx)
+    yy <- roundoffErr(yy)
+  }
 
   # extract date and time of events
   dt <- as.POSIXlt(paste(data$date, data$time), tz=tz)
