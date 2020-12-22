@@ -14,10 +14,10 @@ morisitaindex <- function(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
   yy <- object$revents[ok, "yy"]
   N <- length(xx)
   win <- object$region.win
-  areaW <- spatstat::area.owin(win)
-  X <- spatstat::ppp(xx, yy, window=win)
+  areaW <- spatstat.geom::area.owin(win)
+  X <- spatstat.geom::ppp(xx, yy, window=win)
   Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-  X.sim <- spatstat::rpoint(X$n, Lam, win=win, nsim=100)
+  X.sim <- spatstat.core::rpoint(X$n, Lam, win=win, nsim=100)
 
   k.add <- 1
   delta <- areaW / (1:K + k.add)^2
@@ -27,7 +27,7 @@ morisitaindex <- function(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
     for (k in 1:K)
     {
       #print(c(k=k, n=Y$n))
-      Q <- spatstat::quadratcount.ppp(Y, nx=k + k.add, ny=k + k.add)
+      Q <- spatstat.geom::quadratcount.ppp(Y, nx=k + k.add, ny=k + k.add)
       mi[k] <- (k + k.add)^2 * sum(Q * (Q - 1)) / (N * (N - 1))
     }
     return(mi)

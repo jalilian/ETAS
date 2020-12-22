@@ -98,7 +98,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   {
     region.poly <- list(long=c(long.range, rev(long.range)),
                         lat=rep(lat.range, each=2))
-    region.win <- spatstat::owin(xrange=long.range, yrange=lat.range)
+    region.win <- spatstat.geom::owin(xrange=long.range, yrange=lat.range)
   }
   else
   {
@@ -113,8 +113,8 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
       stop("lat and long coordinates must be numeric vectors of equal length")
     if (length(region.poly$lat) < 3)
       stop("region.poly needs at least 3 vertices")
-    region.win <- spatstat::owin(poly=list(x=region.poly$long, y=region.poly$lat))
-    region.area <- spatstat::area.owin(region.win) #Area.xypolygon(list(x=region.poly$long, y=region.poly$lat))
+    region.win <- spatstat.geom::owin(poly=list(x=region.poly$long, y=region.poly$lat))
+    region.area <- spatstat.geom::area.owin(region.win) #Area.xypolygon(list(x=region.poly$long, y=region.poly$lat))
     if (region.area < 0)
       stop(paste("Area of polygon is negative -",
                  "maybe traversed in wrong direction?"))
@@ -142,13 +142,13 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   yy <- yy[ok]
   tt <- tt[ok]
   mm <- mm[ok] - mag.threshold
-  flag <- as.integer(spatstat::inside.owin(xx, yy, region.win))
+  flag <- as.integer(spatstat.geom::inside.owin(xx, yy, region.win))
   flag[dt[ok] < study.start] <- -2
   revents <- cbind(tt, xx, yy, mm, flag, bkgd=0, prob=1, lambd=0)
   longlat.coord <- longlat.coord[ok, ]
   longlat.coord$flag <- flag
   longlat.coord$dt <- dt[ok]
-  X <- spatstat::ppx(data.frame(t=tt, x=xx, y=yy, m=mm),
+  X <- spatstat.geom::ppx(data.frame(t=tt, x=xx, y=yy, m=mm),
                      coord.type=c("t", "s", "s", "m"))
 
   switch(region.win$type, polygonal= {

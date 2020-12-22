@@ -34,7 +34,7 @@ Depends:
 Imports:
     lattice,
     goftest,
-    spatstat,
+    spatstat.geom, spatstat.core,
     Rcpp,
     fields
 LinkingTo: Rcpp (>= 1.0.0)
