@@ -6,7 +6,7 @@ lambda <- function(t, x, y, param, object)
   if (length(t) != length(x) || length(t) != length(y) || length(x) != length(y))
     stop(paste("Arguments", sQuote(t), ",", sQuote(x), "and", sQuote(y), "must be of the same length."))
 
-  spatstat::verifyclass(object, "catalog")
+  spatstat.geom::verifyclass(object, "catalog")
   revents <-  object$revents
 
   storage.mode(revents) <- "double"

@@ -25,27 +25,27 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
   }, spatial={
     win <- object$region.win
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
-    X <- spatstat::ppp(xx, yy, window=win, unitname=unitname)
+    X <- spatstat.geom::ppp(xx, yy, window=win, unitname=unitname)
     if (is.null(lambda))
       lambda <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-    X.sim <- spatstat::rpoint(X$n, lambda, win=win, nsim=nsim)
+    X.sim <- spatstat.core::rpoint(X$n, lambda, win=win, nsim=nsim)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
     if (is.null(r))
     {
-      rmax <- spatstat::rmax.rule("K", win) / 3
+      rmax <- spatstat.core::rmax.rule("K", win) / 3
       r <- seq(0, rmax, length=200)
     }
     stat <- function(Y, r)
     {
       lamY <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-      spatstat::Linhom(Y, lambda=lamY, r=r, correction="translate")
+      spatstat.core::Linhom(Y, lambda=lamY, r=r, correction="translate")
     }
-    env <- spatstat::envelope(X, stat, r=r, savefuns=TRUE, use.theory=TRUE, 
+    env <- spatstat.core::envelope(X, stat, r=r, savefuns=TRUE, use.theory=TRUE, 
                               savepatterns=TRUE, simulate=X.sim, nsim=nsim, 
                               nrank=round(0.02 * nsim))
-    res1 <- spatstat::dclf.test(env, use.theory=TRUE)
-    res2 <- spatstat::mad.test(env, use.theory=TRUE)
+    res1 <- spatstat.core::dclf.test(env, use.theory=TRUE)
+    res2 <- spatstat.core::mad.test(env, use.theory=TRUE)
     return(list(X=X, lambda=lambda, env=env, DCLF=res1, MAD=res2))
   }, joint={
     # exclude ties 
@@ -121,7 +121,7 @@ Smooth.catalog <- function(object, type="spatial", bwd=NULL, bwm=NULL,
     if (is.null(dimyx))
     {
       rv <- diff(win$xrange)/diff(win$yrange)
-      npixel <- spatstat::spatstat.options("npixel")
+      npixel <- spatstat.geom::spatstat.options("npixel")
       if (rv > 1)
       {
         dimyx <- round(npixel * c(1, rv))
@@ -136,7 +136,7 @@ Smooth.catalog <- function(object, type="spatial", bwd=NULL, bwm=NULL,
     {
       if (is.null(nnp))
         nnp <- round(log(length(xx)))
-      bwd <- spatstat::nndist.default(xx, yy, k=nnp)
+      bwd <- spatstat.geom::nndist.default(xx, yy, k=nnp)
       if (is.null(bwm))
         bwm <- quantile(bwd, probs=0.25)
       bwd <- pmax(bwd, bwm)
@@ -160,7 +160,7 @@ Smooth.catalog <- function(object, type="spatial", bwd=NULL, bwm=NULL,
       gx <- gcoords$long[1:dimyx[2]]
       gy <- gcoords$lat[dimyx[2] * (1:dimyx[1]) - 1]
     }
-    lambda <- spatstat::as.im.default(list(x=gx, y=gy, z=out))
+    lambda <- spatstat.geom::as.im.default(list(x=gx, y=gy, z=out))
     attr(lambda, 'bwd') <- bwd
     attr(lambda, 'nnp') <- nnp
     return(lambda)

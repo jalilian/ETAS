@@ -15,13 +15,13 @@ resid.etas <- function(fit, type="raw", n.temp=1000, dimyx=NULL)
                  pearson = 1/sqrt(tlam[-1]) - sqrt(tlam[-1]) * diff(tg))
 
   W <- fit$object$region.win
-  Xs <- spatstat::ppp(xx, yy, window=W, check=FALSE)
-  qd <- spatstat::quadscheme(Xs)
-  xg <- spatstat::x.quad(qd)
-  yg <- spatstat::y.quad(qd)
-  wg <- spatstat::w.quad(qd)
+  Xs <- spatstat.geom::ppp(xx, yy, window=W, check=FALSE)
+  qd <- spatstat.geom::quadscheme(Xs)
+  xg <- spatstat.geom::x.quad(qd)
+  yg <- spatstat.geom::y.quad(qd)
+  wg <- spatstat.geom::w.quad(qd)
   slam <- lambdaspatial(xg, yg, fit)
-  zg <- spatstat::is.data(qd)
+  zg <- spatstat.geom::is.data(qd)
 
   sres <- switch(type, raw = zg - slam * wg,
                  reciprocal = zg/slam - wg,
@@ -39,9 +39,9 @@ resid.etas <- function(fit, type="raw", n.temp=1000, dimyx=NULL)
     }
   }
 
-  Xg <- spatstat::ppp(xg, yg, window=W, check=FALSE)
-  spatstat::marks(Xg) <- sres
-  sres <- spatstat::Smooth(Xg, dimyx=dimyx, sigma=mean(fit$bwd))
+  Xg <- spatstat.geom::ppp(xg, yg, window=W, check=FALSE)
+  spatstat.geom::marks(Xg) <- sres
+  sres <- spatstat.core::Smooth(Xg, dimyx=dimyx, sigma=mean(fit$bwd))
   gr <- expand.grid(x=sres$xcol, y=sres$yrow)
   proj <- xy2longlat(gr$x, gr$y, region.poly=fit$object$region.poly,
                      dist.unit=fit$object$dist.unit)

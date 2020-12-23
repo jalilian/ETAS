@@ -5,7 +5,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
                  cxxcode = TRUE, nthreads = 1)
 {
   ptm <- proc.time()
-  spatstat::verifyclass(object, "catalog")
+  spatstat.geom::verifyclass(object, "catalog")
   revents <-  object$revents
   rpoly <-    object$rpoly
   rtperiod <- object$rtperiod
@@ -21,7 +21,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
   # initial prameter values
   if (is.null(param0))
   {
-    mu0 <- nrow(revents)/(4 * diff(rtperiod) * spatstat::area.owin(win))
+    mu0 <- nrow(revents)/(4 * diff(rtperiod) * spatstat.geom::area.owin(win))
     param0 <- c(mu=mu0, A=0.01, c=0.01, alpha=1, p=1.3, D=0.01, q=2,
                 gamma=1)
     if (object$dist.unit == "km")
@@ -38,7 +38,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
   {
     if (object$dist.unit == "km")
       bwm <-  6371.3 * pi / 180 * bwm
-    rbwd <- spatstat::nndist.default(revents[, 2], revents[, 3], k=nnp)
+    rbwd <- spatstat.geom::nndist.default(revents[, 2], revents[, 3], k=nnp)
     rbwd <- pmax(rbwd, bwm)
   }
   else

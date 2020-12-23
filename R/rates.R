@@ -1,7 +1,7 @@
 
 probs <- function(fit)
 {
-  spatstat::verifyclass(fit, "etas")
+  spatstat.geom::verifyclass(fit, "etas")
   object <- fit$object
 
   xx <- object$longlat$long
@@ -16,7 +16,7 @@ probs <- function(fit)
 rates <- function(fit, lat.range=NULL, long.range=NULL,
                   dimyx=NULL, plot.it=TRUE)
 {
-  spatstat::verifyclass(fit, "etas")
+  spatstat.geom::verifyclass(fit, "etas")
   rates.inter(fit$param, fit$object, fit$bwd, lat.range=lat.range,
                long.range=long.range, dimyx=dimyx, plot.it=plot.it)
 }
