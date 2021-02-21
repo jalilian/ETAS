@@ -13,7 +13,9 @@
           study.end=NULL, study.length=NULL,
           lat.range=NULL, long.range=NULL,
           region.poly=NULL, mag.threshold=NULL,
-          flatmap=TRUE, dist.unit = "degree", tz="GMT")
+          flatmap=TRUE, dist.unit = "degree", 
+          roundoff=TRUE, tz="GMT")
+  
 }
 \arguments{
   \item{data}{A \code{data.frame} containing date, time,
