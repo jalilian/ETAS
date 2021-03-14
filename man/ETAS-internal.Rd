@@ -13,6 +13,9 @@
 \alias{cxxSmooth}
 \alias{cxxstpoisstest}
 \alias{cxxstpoisstestMP}
+\alias{cdeclust}
+\alias{cfit}
+\alias{clambdax}
 \alias{timetransform}
 \alias{lambdaspatial}
 \alias{lambdatemporal}
@@ -47,6 +50,9 @@ cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd)
 cxxSmooth(x, y, bwd, gx, gy, expand)
 cxxstpoisstest(xrank, yrank, M)
 cxxstpoisstestMP(xrank, yrank, M, nthreads)
+cdeclust(theta, rbwd,revents, rpoly, tperiod)
+cfit(theta, rdata, ihess, rverbose)
+clambdax(rt, rx, ry, theta, revents)
 timetransform(fit)
 lambdaspatial(x, y, fit)
 lambdatemporal(t, fit)

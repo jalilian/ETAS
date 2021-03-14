@@ -1,7 +1,0 @@
-\documentclass{article}
-\usepackage{pdfpages}
-%\VignetteIndexEntry{etas}
-
-\begin{document}
-\includepdf[pages=-, fitpaper=true]{jssPaper.pdf}
-\end{document}
