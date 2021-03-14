@@ -2,6 +2,7 @@
 [![CRAN_Download_Count](http://cranlogs.r-pkg.org/badges/ETAS)](https://CRAN.R-project.org/package=ETAS)
 [![Build Status](https://travis-ci.org/jalilian/ETAS.svg?branch=master)](https://travis-ci.org/jalilian/ETAS)
 [![Dependencies](https://tinyverse.netlify.com/badge/ETAS)](https://cran.r-project.org/package=ETAS)
+[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![Last Commit](https://img.shields.io/github/last-commit/jalilian/ETAS)](https://github.com/jalilian/ETAS)
 
 # ETAS model
