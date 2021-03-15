@@ -73,12 +73,8 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-<<<<<<< HEAD
       - name: Install automake for macOS
         if: runner.os == 'macOS'
-=======
-        if: runner.os == 'macOS-latest'
->>>>>>> 6cab528978b708d763780c379f601ea5e929291f
         run: |
           brew install automake
 
