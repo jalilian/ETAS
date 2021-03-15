@@ -58,26 +58,29 @@
   Baddeley A, Turner R (2000).
   Practical Maximum Pseudolikelihood for Spatial Point Patterns.
   \emph{Australian & New Zealand Journal of Statistics},
-  \bold{42}(3), 283--322. \href{http://dx.doi.org/10.1111/1467-842X.00128}{doi:10.1111/1467-842X.00128}.
+  \bold{42}(3), 283--322. 
+  \doi{10.1111/1467-842X.00128}.
 
   Baddeley A, Turner R, Moller J, Hazelton M (2005).
   Residual Analysis for Spatial Point Processes.
   \emph{Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
-  \bold{67}(5), 617--666. \href{http://dx.doi.org/10.1111/j.1467-9868.2005.00519.x}{doi:10.1111/j.1467-9868.2005.00519.x}.
+  \bold{67}(5), 617--666. 
+  \doi{10.1111/j.1467-9868.2005.00519.x}.
 
   Ogata Y (1988).
   Statistical Models for Earthquake Occurrences and Residual Analysis for
   Point Processes.
   \emph{Journal of the American Statistical Association},
-  \bold{83}(401), 9--27. \href{http://dx.doi.org/10.2307/2288914}{doi:10.2307/2288914}.
+  \bold{83}(401), 9--27. 
+  \doi{10.2307/2288914}.
 
   Zhuang J (2006).
   Second-order Residual Analysis of Spatiotemporal Point Processes and
   Applications in Model Evaluation
     \emph{Journal of the Royal Statistical Society: Series B (Statistical
 Methodology)},
-  \bold{68}(4), 635--653. \href{http://dx.doi.org/10.1111/j.1467-9868.2006.00559.x}{doi:10.1111/j.1467-9868.2006.00559.x}.
-
+  \bold{68}(4), 635--653. 
+  \doi{10.1111/j.1467-9868.2006.00559.x}.
 }
 
 \seealso{

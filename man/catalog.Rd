@@ -127,7 +127,7 @@
   Long-term Earthquake Forecasts Based on the Epidemic-type Aftershock
   Sequence (ETAS) Model for Short-term Clustering.
   \emph{Research in Geophysics}, \bold{2}(1), 52--57.
-  \href{http://dx.doi.org/10.4081/rg.2012.e8}{doi:10.4081/rg.2012.e8}.
+  \doi{10.4081/rg.2012.e8}.
 }
 
 \examples{

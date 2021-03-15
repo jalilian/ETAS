@@ -33,13 +33,13 @@
   Stochastic Declustering of Space-Time Earthquake Occurrences.
   \emph{Journal of the American Statistical Association},
   \bold{97}(458), 369--380.
-  \href{http://dx.doi.org/10.1198/016214502760046925}{doi:10.1198/016214502760046925}.
+  \doi{10.1198/016214502760046925}.
 
   Zhuang J, Ogata Y, Vere-Jones D (2006).
   Diagnostic Analysis of Space-Time Branching Processes for Earthquakes.
   In \emph{Case Studies in Spatial Point Process Modeling},
   pp. 275--292. Springer Nature.
-  \href{http://dx.doi.org/10.1007/0-387-31144-0_15}{doi:10.1007/0-387-31144-0_15}.
+  \doi{10.1007/0-387-31144-0_15}.
 }
 
 \seealso{
