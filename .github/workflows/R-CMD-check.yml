@@ -45,7 +45,7 @@ jobs:
       - uses: r-lib/actions/setup-tinytex@v1
       - run: tlmgr --version
       - run: tlmgr install pdfpages
-      - run: tlmgr install ae
+      - run: tlmgr install ae pdflscape
 
       - name: Query dependencies
         run: |
