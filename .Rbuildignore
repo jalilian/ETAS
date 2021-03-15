@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^\.gitignore$
+^\.github
 
 # Binary files
 .*\.tar\.gz
