@@ -3,6 +3,10 @@
 .RData
 .Ruserdata
 
+autom4te.cache
+config.log
+config.status
+
 # Binary files
 *.o
 *.so
