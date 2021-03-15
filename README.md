@@ -24,7 +24,7 @@ require(remotes)
 install_github('jalilian/ETAS')
 ```
 
-If [remotes](https://github.com/mangothecat/remotes) is not installed, you should first run:
+If [remotes](https://github.com/r-lib/remotes) is not installed, you should first run:
 
 ```R
 install.packages('remotes')

@@ -27,7 +27,7 @@
 \usage{data(iran.quakes)}
 \source{
   The ANSS Comprehensive Catalog (ComCat):
-  \url{http://earthquake.usgs.gov/earthquakes/search/}
+  \url{https://earthquake.usgs.gov/earthquakes/search/}
 }
 %\references{
 %  Jalilian, A. (2017). Modeling Earthquakes of Iran by ETAS model. \emph{submitted}.
