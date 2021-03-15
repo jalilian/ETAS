@@ -54,3 +54,13 @@ dnl this the meat of R's m4/openmp.m4
 AC_SUBST(OPENMP_CXXFLAGS)
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
+
+echo "
+  --------------------------------------------------
+  Configuration for ${PACKAGE_NAME} ${PACKAGE_VERSION}
+
+    cppflags: ${CPPFLAGS} ${PKG_CPPFLAGS}
+    libs:     ${PKG_LIBS}
+
+  --------------------------------------------------
+"
