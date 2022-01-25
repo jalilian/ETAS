@@ -17,4 +17,7 @@ importFrom("lattice", "xyplot")
 importFrom("maps", "map")
 
 importFrom("Rcpp", "evalCpp")
-import("spatstat")
+import("spatstat.core")
+import("spatstat.geom")
+importFrom("spatstat.random", "rpoint")
+

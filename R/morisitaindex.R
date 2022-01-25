@@ -17,7 +17,7 @@ morisitaindex <- function(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
   areaW <- spatstat.geom::area.owin(win)
   X <- spatstat.geom::ppp(xx, yy, window=win)
   Lam <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-  X.sim <- spatstat.core::rpoint(X$n, Lam, win=win, nsim=100)
+  X.sim <- spatstat.random::rpoint(X$n, Lam, win=win, nsim=100)
 
   k.add <- 1
   delta <- areaW / (1:K + k.add)^2

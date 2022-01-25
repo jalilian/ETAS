@@ -28,7 +28,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
     X <- spatstat.geom::ppp(xx, yy, window=win, unitname=unitname)
     if (is.null(lambda))
       lambda <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-    X.sim <- spatstat.core::rpoint(X$n, lambda, win=win, nsim=nsim)
+    X.sim <- spatstat.random::rpoint(X$n, lambda, win=win, nsim=nsim)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
     if (is.null(r))
