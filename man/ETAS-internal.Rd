@@ -31,6 +31,7 @@
 \alias{morisitaindex}
 \alias{decimalplaces}
 \alias{roundoffErr}
+\alias{ttrend}
 \description{
   Internal ETAS functions.
 }
@@ -66,6 +67,7 @@ allanfactor(object, K=100, nsim=500, cat.name=NULL)
 morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 decimalplaces(x) 
 roundoffErr(x)
+ttrend(obj, tmax=NULL, tmin=NULL)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)
