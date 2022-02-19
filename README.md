@@ -35,7 +35,7 @@ install.packages('remotes')
 
 ## Vignette
 
-Jalilian, A. (2019). [ETAS: An R Package for Fitting the Space-Time ETAS Model to Earthquake Data](https://www.jstatsoft.org/index.php/jss/article/view/v088c01/v88c01.pdf). Journal of Statistical Software, 88(CN 1), 1-39. [DOI:10.18637/jss.v088.c01](http://dx.doi.org/10.18637/jss.v088.c01)
+Jalilian, A. (2019). [ETAS: An R Package for Fitting the Space-Time ETAS Model to Earthquake Data](https://www.jstatsoft.org/htaccess.php?volume=088&type=c&issue=01&filename=paper). Journal of Statistical Software, 88(CN 1), 1-39. [DOI:10.18637/jss.v088.c01](http://dx.doi.org/10.18637/jss.v088.c01)
  
 ## Parallel computing
 
