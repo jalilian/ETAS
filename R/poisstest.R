@@ -33,19 +33,19 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
 
     if (is.null(r))
     {
-      rmax <- spatstat.core::rmax.rule("K", win) / 3
+      rmax <- spatstat.explore::rmax.rule("K", win) / 3
       r <- seq(0, rmax, length=200)
     }
     stat <- function(Y, r)
     {
       lamY <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
-      spatstat.core::Linhom(Y, lambda=lamY, r=r, correction="translate")
+      spatstat.explore::Linhom(Y, lambda=lamY, r=r, correction="translate")
     }
-    env <- spatstat.core::envelope(X, stat, r=r, savefuns=TRUE, use.theory=TRUE, 
+    env <- spatstat.explore::envelope(X, stat, r=r, savefuns=TRUE, use.theory=TRUE, 
                               savepatterns=TRUE, simulate=X.sim, nsim=nsim, 
                               nrank=round(0.02 * nsim))
-    res1 <- spatstat.core::dclf.test(env, use.theory=TRUE)
-    res2 <- spatstat.core::mad.test(env, use.theory=TRUE)
+    res1 <- spatstat.explore::dclf.test(env, use.theory=TRUE)
+    res2 <- spatstat.explore::mad.test(env, use.theory=TRUE)
     return(list(X=X, lambda=lambda, env=env, DCLF=res1, MAD=res2))
   }, joint={
     # exclude ties 

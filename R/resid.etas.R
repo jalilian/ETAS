@@ -41,7 +41,7 @@ resid.etas <- function(fit, type="raw", n.temp=1000, dimyx=NULL)
 
   Xg <- spatstat.geom::ppp(xg, yg, window=W, check=FALSE)
   spatstat.geom::marks(Xg) <- sres
-  sres <- spatstat.core::Smooth(Xg, dimyx=dimyx, sigma=mean(fit$bwd))
+  sres <- spatstat.explore::Smooth(Xg, dimyx=dimyx, sigma=mean(fit$bwd))
   gr <- expand.grid(x=sres$xcol, y=sres$yrow)
   proj <- xy2longlat(gr$x, gr$y, region.poly=fit$object$region.poly,
                      dist.unit=fit$object$dist.unit)
