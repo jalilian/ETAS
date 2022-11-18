@@ -10,8 +10,8 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     which is modified and translated into C++ and C such that it 
     can be called from R. Parallel computing with 'OpenMP' is possible 
     on supported platforms.
-Version: 0.4.9
-Date: 2022-02-20
+Version: 0.5.0
+Date: 2022-11-18
 Authors@R: c(
   person(given = "Abdollah", family = "Jalilian", 
          email = "jalilian@razi.ac.ir", 
