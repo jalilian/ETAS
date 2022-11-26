@@ -49,7 +49,6 @@ jobs:
       - run: tlmgr install pdfpages
       - run: tlmgr install ae pdflscape
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
       - name: Query dependencies
         run: |
           install.packages('remotes')
