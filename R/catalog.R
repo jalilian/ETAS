@@ -38,7 +38,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
     dtidx <- which(diff(dt) == 0)
     for (i in dtidx)
     {
-      dt[i + 1] <- dt[i] + as.difftime(1, unit = "secs")
+      dt[i + 1] <- dt[i] + as.difftime(1, units="secs")
     }
     warning(paste("more than one event has occurred simultaneously!",
                   "\ncheck events", toString(dtidx),
