@@ -25,7 +25,7 @@ Authors@R: c(
          ))
 Author: Abdollah Jalilian [aut, cre] (0000-0002-6573-0069), 
     Jiancang Zhuang [ctb] (0000-0002-9708-3871)
-Maintainer: Abdollah Jalilian <jalilian@razi.ac.ir>
+Maintainer: Abdollah Jalilian <stat4aj@gmail.com>
 Depends:
     R (>= 3.3.0), 
     stats,
