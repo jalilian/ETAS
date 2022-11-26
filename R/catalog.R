@@ -34,8 +34,16 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
   # extract date and time of events
   dt <- as.POSIXlt.character(paste(data$date, data$time), tz=tz)
   if (sum(duplicated(dt)) > 0)
-    stop(paste("no more than one event can occur simultaneously!",
-               "check events", toString(which(duplicated(dt)))))
+  {
+    dtidx <- which(diff(dt) == 0)
+    for (i in dtidx)
+    {
+      dt[i + 1] <- dt[i] + as.difftime(1, unit = "secs")
+    }
+    warning(paste("more than one event have occur simultaneously!",
+                  "\ncheck events", toString(dtidx),
+                  "\nduplicated times have been altered by one second"))
+  }
   if (is.unsorted(dt))
   {
     warning(paste("events were not chronologically sorted:",
