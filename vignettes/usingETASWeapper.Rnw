@@ -1,0 +1,9 @@
+\documentclass{article}
+\usepackage{pdfpages}
+%\VignetteIndexEntry{Fitting ETAS model}
+%\VignetteKeywords{Earthquake, Declustering, ETAS, Seismicity}
+%\VignettePackage{ETAS}
+
+\begin{document}
+\includepdf[pages=-, fitpaper=true]{UsingETAS.pdf}
+\end{document}
