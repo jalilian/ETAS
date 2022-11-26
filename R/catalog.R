@@ -33,8 +33,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
 
   # extract date and time of events
   dt <- as.POSIXlt.character(paste(data$date, data$time), tz=tz)
-  print(anyDuplicated(dt))
-  if (anyDuplicated(dt) != 0)
+  if (sum(duplicated(dt)) > 0)
     stop(paste("no more than one event can occur simultaneously!",
                "check events", toString(which(duplicated(dt)))))
   if (is.unsorted(dt))
