@@ -24,8 +24,8 @@ jobs:
         config:
           - {os: windows-latest, r: 'release'}
           - {os: macos-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-22.04,   r: 'release'}
+          - {os: ubuntu-22.04,   r: 'devel', http-user-agent: 'release'}
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
@@ -34,21 +34,22 @@ jobs:
     steps:
       - name: Configure git
         run: git config --global core.autocrlf false
-        
-      - uses: actions/checkout@v2
-
-      - uses: r-lib/actions/setup-r@v1
+       
+      - uses: actions/checkout@v3
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc@v2
       
       - uses: actions/checkout@master
-      - uses: r-lib/actions/setup-tinytex@v1
+      - uses: r-lib/actions/setup-tinytex@v2
       - run: tlmgr --version
       - run: tlmgr install pdfpages
       - run: tlmgr install ae pdflscape
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -70,7 +71,7 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "22.04"))')
 
       - name: Install automake for macOS
         if: runner.os == 'macOS'
