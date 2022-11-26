@@ -60,7 +60,8 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          args: 'c("--no-manual", "--as-cran", "--no-vignettes")'
+          args: 'c("--no-manual", "--as-cran")'
+          build-args: '--compact-vignettes="both"'
           error-on: '"warning"'
           check-dir: '"check"'
           
