@@ -40,7 +40,7 @@ catalog <- function(data, time.begin=NULL, study.start=NULL,
     {
       dt[i + 1] <- dt[i] + as.difftime(1, unit = "secs")
     }
-    warning(paste("more than one event have occur simultaneously!",
+    warning(paste("more than one event has occurred simultaneously!",
                   "\ncheck events", toString(dtidx),
                   "\nduplicated times have been altered by one second"))
   }
