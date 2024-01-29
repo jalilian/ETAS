@@ -907,12 +907,12 @@ double etas::mloglikMP(NumericVector theta,
         
         if (r1 + r2 > 1.0e-20)
         {
-          r0 = dist2(x1 + r1/(r1 + r2) * (x2 - x1),
+          r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1),
                     x[j], y[j]);
           
-          si += sgn(det) * (f1r(r1 * r1, w)/6 + (f1r(r0, w) * 2)/3 +
-            fr(r2 * r2, w)/6) * phi;
+          si += sgn(det) * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
+            f1r(r2, w)/6) * phi;
         }
       }
     }
