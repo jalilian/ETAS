@@ -857,7 +857,8 @@ double etas::mloglikMP(NumericVector theta,
       {
         s_thread += A * exp(alpha * m[i]) *
           (p - 1)/c * pow(1 + (t[j] - t[i])/c, - p) *
-          f1(dist2(x[j], y[j], x[i], y[i]), w, m[i]);
+          f1(dist2(x[j], y[j], x[i], y[i]),
+             D * exp(gamma * m[i]), q);
          /* (q - 1) / (D * exp(gamma * m[i]) * M_PI) *
           pow(1 + dist2(x[j], y[j], x[i], y[i]) /
             (D * exp(gamma * m[i])), - q); */
@@ -980,7 +981,8 @@ void etas::mloglikGrMP(NumericVector theta,
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
-        part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
+        part3 = f1(r2, sig, q);
+       // part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
         
         fv1temp    += A * part1 * part2 * part3;
         g1temp[1]  += part1 * part2 * part3;
