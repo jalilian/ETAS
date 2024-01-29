@@ -1810,16 +1810,14 @@ NumericVector cxxtimetrans(NumericVector theta,
   const int N = revents.nrow();
   NumericVector sinteg(N), out(N);
   
-  double w[4];
+  double w[2];
   for (int i=0; i < N; i++)
   {
-    w[ 0 ] = gamma;
-    w[ 1 ] = D;
-    w[ 2 ] = q;
-    w[ 3 ] = m[i];
+    w[ 0 ] = D * exp(gamma * m[i]);
+    w[ 1 ] = q;
     
     sinteg[i] =  A * exp(alpha * m[i]) *
-      polyintegXX(fr, w, px, py, x[i], y[i], ndiv);
+      polyintegXX(f1r, w, px, py, x[i], y[i], ndiv);
   }
   
   for (int j=0; j < N; ++j)
@@ -1864,16 +1862,14 @@ NumericVector cxxlambdtemp(NumericVector tg,
   const int ng = tg.length();
   NumericVector out(ng);
   
-  double w[4];
+  double w[2];
   for (int i=0; i < N; i++)
   {
-    w[ 0 ] = gamma;
-    w[ 1 ] = D;
-    w[ 2 ] = q;
-    w[ 3 ] = m[i];
-    
+    w[ 0 ] = D * exp(gamma * m[i]);
+    w[ 1 ] = q;
+
     sinteg[i] =  A * exp(alpha * m[i]) *
-      polyintegXX(fr, w, px, py, x[i], y[i], ndiv);
+      polyintegXX(f1r, w, px, py, x[i], y[i], ndiv);
     
   }
   
