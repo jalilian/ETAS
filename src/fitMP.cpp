@@ -293,12 +293,12 @@ void etas::mloglikGr(NumericVector theta,
         part1 = exp(alpha * m[i]);
         
         delta = t[j] - t[i];
-        part2 = (p - 1)/c * pow(1 + delta / c, - p);
+        part2 = g1(delta, c, p);
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
-        part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
-        
+        part3 = f1(r2, sig, q);
+
         fv1temp    += A * part1 * part2 * part3;
         g1temp[1]  += part1 * part2 * part3;
         
@@ -989,8 +989,9 @@ void etas::mloglikGrMP(NumericVector theta,
         part2_p = part2 * (1/(p - 1) - log(1 + delta/c));
         g1temp[4] += A * part1 * part2_p * part3;
         
+        double part3_sig = part3 * dsig_f1(r2, sig, q);
         //part3_d = part3 / D * (-1 + q * (1 - 1/(1 + r2/sig)));
-        part3_d = part3 * dsig_f1(r2, sig, q) * sig / D;
+        part3_d = part3_sig * sig / D;
         g1temp[5] += A * part1 * part2 * part3_d;
         
         //part3_q = part3 * (1/(q - 1) - log(1 + r2/sig));
@@ -998,7 +999,7 @@ void etas::mloglikGrMP(NumericVector theta,
         g1temp[6] += A * part1 * part2 * part3_q;
         
         //part3_gamma = part3 * (-m[i] + q * m[i] * (1 - 1/(1 + r2/sig)));
-        part3_gamma = part3 * dsig_f1(r2, sig, q) * sig * m[i];
+        part3_gamma = part3_sig * sig * m[i];
         g1temp[7]  += A * part1 * part2 * part3_gamma;
       }
       
