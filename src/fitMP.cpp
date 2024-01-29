@@ -1005,7 +1005,7 @@ void etas::mloglikGrMP(NumericVector theta,
         g1temp[6] += A * part1 * part2 * part3_q;
         
         //part3_gamma = part3 * (-m[i] + q * m[i] * (1 - 1/(1 + r2/sig)));
-        part3_gamma = part3 * * dsig_f1(r2, sig, q) * sig * m[i];
+        part3_gamma = part3 * dsig_f1(r2, sig, q) * sig * m[i];
         g1temp[7]  += A * part1 * part2 * part3_gamma;
       }
       
