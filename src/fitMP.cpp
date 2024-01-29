@@ -843,6 +843,12 @@ double etas::mloglikMP(NumericVector theta,
 #pragma omp for
   for (int j = 0; j < N; ++j)
   {
+    double w[4];
+    w[ 0 ] = gamma;
+    w[ 1 ] = D;
+    w[ 2 ] = q;
+    w[ 3 ] = m[j];
+
     double s_thread, gi;
     if (flag[j] == 1)
     {
@@ -851,9 +857,10 @@ double etas::mloglikMP(NumericVector theta,
       {
         s_thread += A * exp(alpha * m[i]) *
           (p - 1)/c * pow(1 + (t[j] - t[i])/c, - p) *
-          (q - 1) / (D * exp(gamma * m[i]) * M_PI) *
+          fr(dist(x[j], y[j], x[i], y[i]), w);
+         /* (q - 1) / (D * exp(gamma * m[i]) * M_PI) *
           pow(1 + dist2(x[j], y[j], x[i], y[i]) /
-            (D * exp(gamma * m[i])), - q);
+            (D * exp(gamma * m[i])), - q); */
       }
       
       if (s_thread > 1.0e-25)
@@ -871,12 +878,6 @@ double etas::mloglikMP(NumericVector theta,
       gi   = (1 - pow(1 + (tlength - t[j])/c, 1 - p)) -
         (1 - pow(1 + (tstart2 - t[j])/c, 1 - p));
     }
-    
-    double w[4];
-    w[ 0 ] = gamma;
-    w[ 1 ] = D;
-    w[ 2 ] = q;
-    w[ 3 ] = m[j];
     
     double si = 0, dpx, dpy, x1, x2, y1, y2, det, r0, r1, r2, phi;
     

@@ -11,10 +11,7 @@ using namespace Rcpp;
 
 inline int sgn(double x)
 {
-  if (x < 0)
-    return -1;
-  else
-    return 1;
+  return (x < 0) ? -1 : 1;
 }
 
 inline
