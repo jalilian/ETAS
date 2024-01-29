@@ -38,7 +38,7 @@ double norm(double *x, int dim)
 // spatial density function and its derivatives
 // ******************************************************************
 
-double f1(double r2, double w[], mag)
+double f1(double r2, double w[], double mag)
 {
   double gamma = w[0], D = w[1], q = w[2], sig = D * exp(gamma * mag);
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
