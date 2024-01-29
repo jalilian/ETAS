@@ -996,13 +996,16 @@ void etas::mloglikGrMP(NumericVector theta,
         part2_p = part2 * (1/(p - 1) - log(1 + delta/c));
         g1temp[4] += A * part1 * part2_p * part3;
         
-        part3_d = part3 / D * (-1 + q * (1 - 1/(1 + r2/sig)));
+        //part3_d = part3 / D * (-1 + q * (1 - 1/(1 + r2/sig)));
+        part3_d = part3 * dsig_f1(r2, sig, q) * sig / D;
         g1temp[5] += A * part1 * part2 * part3_d;
         
-        part3_q = part3 * (1/(q - 1) - log(1 + r2/sig));
+        //part3_q = part3 * (1/(q - 1) - log(1 + r2/sig));
+        part3_q = part3 * dq_f1(r2, sig, q);
         g1temp[6] += A * part1 * part2 * part3_q;
         
-        part3_gamma = part3 * (-m[i] + q * m[i] * (1 - 1/(1 + r2/sig)));
+        //part3_gamma = part3 * (-m[i] + q * m[i] * (1 - 1/(1 + r2/sig)));
+        part3_gamma = part3 * * dsig_f1(r2, sig, q) * sig * m[i];
         g1temp[7]  += A * part1 * part2 * part3_gamma;
       }
       

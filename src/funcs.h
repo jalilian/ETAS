@@ -43,6 +43,16 @@ double f1(double r2, double sig, double q)
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 }
 
+double dq_f1(double r2, double sig, double q)
+{
+  return (1/(q - 1) - log(1 + r2/sig));
+}
+
+double dsig_f1(double r2, double sig, double q)
+{
+  return  (-1 + q * r2 /(r2 + sig)) / sig;
+}
+
 double fr(double r, double w[])
 {
   double gamma = w[0], D = w[1], q = w[2], mag = w[3], sig = D * exp(gamma * mag);
