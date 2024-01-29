@@ -35,6 +35,18 @@ double norm(double *x, int dim)
 }
 
 // ******************************************************************
+// temporal density function and its derivatives
+// ******************************************************************
+
+double g1(double t, double c, double p)
+{
+  if (t <= 0)
+    return 0;
+  else
+    return (p - 1) / c * pow(1 + t / c, - p);
+}
+
+// ******************************************************************
 // spatial density function and its derivatives
 // ******************************************************************
 

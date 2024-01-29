@@ -184,9 +184,8 @@ double etas::mloglik(NumericVector theta)
       {
         sig   = D * exp(gamma * m[i]);
         sumpart += A * exp(alpha * m[i]) *
-          (p - 1)/c * pow(1 + (t[j] - t[i]) / c, - p) *
-          (q - 1)/(sig * M_PI) *
-          pow(1 + dist2(x[j], y[j], x[i], y[i])/sig, - q);
+          g1(t[j] - t[i], c, p) *
+          f1(dist2(x[j], y[j], x[i], y[i]), sig, q);
       }
       
       if (sumpart > 1.0e-25)
