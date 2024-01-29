@@ -59,6 +59,18 @@ double f1r(double r, double w[])
   return (1 - pow(1 + r * r / sig, 1 - q)) / (2 * M_PI);
 }
 
+double dq_f1r(double r, double w[])
+{
+  double sig = w[0], q = w[1];
+  return pow(1 + r * r / sig, 1 - q) * log(1 + r * r / sig) / (2 * M_PI);
+}
+
+double dsig_f1r(double r, double w[])
+{
+  double sig = w[0], q = w[1];
+  return (1 - q) * pow(1 + r * r / sig, -q) * r * r / (sig * sig) / (2 * M_PI);
+}
+
 double fr(double r, double w[])
 {
   double gamma = w[0], D = w[1], q = w[2], mag = w[3], sig = D * exp(gamma * mag);

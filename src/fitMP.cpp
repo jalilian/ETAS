@@ -1053,11 +1053,9 @@ void etas::mloglikGrMP(NumericVector theta,
       gip = gip2 - gip1;
     }
     
-    double w[4];
-    w[0] = gamma;
-    w[1] = D;
-    w[2] = q;
-    w[3] = m[j];
+    double w[2];
+    w[0] = D * exp(gamma * m[j]);
+    w[1] = q;
     
     //si      = polyintegXX(fr, w, data.px, data.py, data.x[j], data.y[j]);
     //sid     = polyintegXX(dD_fr, w, data.px, data.py, data.x[j], data.y[j]);
@@ -1102,14 +1100,14 @@ void etas::mloglikGrMP(NumericVector theta,
                     y1 + r1/(r1 + r2) * (y2 - y1),
                     x[j], y[j]);
           
-          si += id * (fr(r1, w)/6 + (fr(r0, w) * 2)/3 +
-            fr(r2, w)/6) * phi;
-          sid += id * (dD_fr(r1, w)/6 + (dD_fr(r0, w) * 2)/3 +
-            dD_fr(r2, w)/6) * phi;
-          siq += id * (dq_fr(r1, w)/6 + (dq_fr(r0, w) * 2)/3 +
-            dq_fr(r2, w)/6) * phi;
-          sigamma += id * (dgamma_fr(r1, w)/6 + (dgamma_fr(r0, w) * 2)/3 +
-            dgamma_fr(r2, w)/6) * phi;
+          si += id * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
+            f1r(r2, w)/6) * phi;
+          siq += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
+            dq_f1r(r2, w)/6) * phi;
+          double sisig = id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
+            dsig_f1r(r2, w)/6) * phi;
+          sid += sisig * sig / D;
+          sigamma += sisig * m[j] * sig;
         }
       }
     }
