@@ -1106,8 +1106,8 @@ void etas::mloglikGrMP(NumericVector theta,
             dq_f1r(r2, w)/6) * phi;
           double sisig = id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
             dsig_f1r(r2, w)/6) * phi;
-          sid += sisig * sig / D;
-          sigamma += sisig * m[j] * sig;
+          sid += sisig * w[0] / D;
+          sigamma += sisig * m[j] * w[0];
         }
       }
     }
