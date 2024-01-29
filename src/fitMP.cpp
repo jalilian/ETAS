@@ -173,7 +173,7 @@ double etas::mloglik(NumericVector theta)
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
   
-  double fv1 = 0, fv2 = 0, sumpart, sig, w[4], si, gi;
+  double fv1 = 0, fv2 = 0, sumpart, sig, w[2], si, gi;
   
   for (int j = 0; j < t.length(); ++j)
   {
@@ -206,10 +206,8 @@ double etas::mloglik(NumericVector theta)
     }
     
     si = 0;
-    w[ 0 ] = gamma;
-    w[ 1 ] = D;
-    w[ 2 ] = q;
-    w[ 3 ] = m[j];
+    w[ 0 ] = D * exp(gamma * m[j]);
+    w[ 1 ] = q;
     double dpx, dpy, x1, x2, y1, y2, det, r0, r1, r2, phi;
     for (int k = 0; k < (px.length() - 1); ++k)
     {
@@ -240,8 +238,8 @@ double etas::mloglik(NumericVector theta)
           r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
-          si += sgn(det) * (fr(r1, w)/6 + fr(r0, w) * 2/3 +
-            fr(r2, w)/6) * phi;
+          si += sgn(det) * (f1r(r1, w)/6 + f1r(r0, w) * 2/3 +
+            f1r(r2, w)/6) * phi;
         }
       }
     }
