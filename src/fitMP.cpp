@@ -857,7 +857,7 @@ double etas::mloglikMP(NumericVector theta,
       {
         s_thread += A * exp(alpha * m[i]) *
           (p - 1)/c * pow(1 + (t[j] - t[i])/c, - p) *
-          fr(dist(x[j], y[j], x[i], y[i]), w);
+          f1(dist2(x[j], y[j], x[i], y[i]), w, m[i]);
          /* (q - 1) / (D * exp(gamma * m[i]) * M_PI) *
           pow(1 + dist2(x[j], y[j], x[i], y[i]) /
             (D * exp(gamma * m[i])), - q); */
