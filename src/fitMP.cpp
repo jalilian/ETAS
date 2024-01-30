@@ -850,12 +850,9 @@ double etas::mloglikMP(NumericVector theta,
       for (int i = 0; i < j; ++i)
       {
         s_thread += A * exp(alpha * m[i]) *
-          (p - 1)/c * pow(1 + (t[j] - t[i])/c, - p) *
+          g1(t[j] - t[i], c, p) *
           f1(dist2(x[j], y[j], x[i], y[i]),
              D * exp(gamma * m[i]), q);
-         /* (q - 1) / (D * exp(gamma * m[i]) * M_PI) *
-          pow(1 + dist2(x[j], y[j], x[i], y[i]) /
-            (D * exp(gamma * m[i])), - q); */
       }
       
       if (s_thread > 1.0e-25)
@@ -971,7 +968,7 @@ void etas::mloglikGrMP(NumericVector theta,
         part1 = exp(alpha * m[i]);
         
         delta = t[j] - t[i];
-        part2 = (p - 1)/c * pow(1 + delta / c, - p);
+        part2 = g1(delta, c, p);
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
@@ -1585,9 +1582,8 @@ NumericVector lambda(NumericVector tv,
     {
       sig = D * exp(gamma * m[i]);
       s += A * exp(alpha * m[i]) *
-        (p - 1)/c * pow(1 + (tv[j] - t[i])/c, - p) *
-        (q - 1) / (sig * M_PI) *
-        pow(1 + dist2(xv[j], yv[j], x[i], y[i]) / sig, - q);
+        g1(tv[j] - t[i], c, p) *
+        f1(dist2(xv[j], yv[j], x[i], y[i]), sig, q);
       i++;
     }
     out[j] = s;
@@ -1710,9 +1706,8 @@ List cxxdeclust(NumericVector param,
     for (int j = 0; j < i; ++j)
     {
       s_thread += A * exp(alpha * m[j]) *
-        (p - 1)/c * pow(1 + (t[i] - t[j])/c, - p) *
-        (q - 1) / (D * exp(gamma * m[j]) * M_PI) *
-        pow(1 + dist2(x[i], y[i], x[j], y[j]) / (D * exp(gamma * m[j])), - q);
+        g1(t[i] - t[j], c, p) *
+        f1(dist2(x[i], y[i], x[j], y[j]), D * exp(gamma * m[j]), q);
     }
     
     lam[i] = s_thread;
@@ -1776,9 +1771,8 @@ List cxxrates(NumericVector param,
       for (int l = 0; l < N; l++)
       {
         lamb(i, j) += A * exp(alpha * m[l]) *
-          (p - 1)/c * pow(1 + (tlength - t[l])/c, - p) *
-          (q - 1) / (D * exp(gamma * m[l]) * M_PI) *
-          pow(1 + dist2(x[l], y[l], gx[i], gy[j]) / (D * exp(gamma * m[l])), - q);
+          g1(tlength - t[l], c, p) *
+          f1(dist2(x[l], y[l], gx[i], gy[j]), D * exp(gamma * m[l]), q);
       }
     }
   
@@ -1881,7 +1875,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
     {
       if (t[i] < tg[j])
       {
-        sum += (p - 1)/c * pow(1 + (tg[j] - t[i])/c, - p) * sinteg[i];
+        sum += g1(tg[j] - t[i], c, p) * sinteg[i];
       }
     }
     out[j] = mu * integ0 /(tlength - tstart2) + sum;
@@ -1931,9 +1925,7 @@ NumericVector cxxlambspat(NumericVector xg,
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
       double sig = D * exp(gamma * m[i]);
-      sum += A * exp(alpha * m[i]) * gint *
-        (q - 1) / (sig * M_PI) *
-        pow(1 + r2 / sig, - q);
+      sum += A * exp(alpha * m[i]) * gint * f1(r2, sig, q);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
