@@ -201,8 +201,6 @@ double etas::mloglik(NumericVector theta)
     else
     {
       gi = g1i(tstart2 - t[j], tlength - t[j], c, p);
-      /*gi = pow(1 + (tstart2 - t[j])/c, 1 - p) -
-        pow(1 + (tlength - t[j])/c, 1 - p);*/
     }
     
     si = 0;
@@ -345,7 +343,7 @@ void etas::mloglikGr(NumericVector theta,
     {
       ttemp = tlength - t[j];
       
-      gi  = 1 - pow(1 + ttemp/c, 1 - p);
+      gi = g1i(0, ttemp, c, p);
       gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
       gip = - (1 - gi) * (log(c) - log(c + ttemp));
     }
@@ -354,8 +352,8 @@ void etas::mloglikGr(NumericVector theta,
       ttemp1 = tstart2 - t[j];
       ttemp2 = tlength - t[j];
       
-      gi1  = 1 - pow(1 + ttemp1/c, 1 - p);
-      gi2  = 1 - pow(1 + ttemp2/c, 1 - p);
+      gi1 = g1i(0, ttemp1, c, p);
+      gi2 = g1i(0, ttemp2, c, p);
       gic1 = - (1 - gi1) * (1 - p) * (1/(c + ttemp1) - 1/c);
       gic2 = - (1 - gi2) * (1 - p) * (1/(c + ttemp2) - 1/c);
       gip1 = - (1 - gi1) * (log(c) - log(c + ttemp1));
