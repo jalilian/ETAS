@@ -173,7 +173,7 @@ double etas::mloglik(NumericVector theta)
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
   
-  double fv1 = 0, fv2 = 0, sumpart, sig, w[2], si, gi;
+  double fv1 = 0, fv2 = 0, sumpart, w[2], si, gi;
   
   for (int j = 0; j < t.length(); ++j)
   {
@@ -182,10 +182,10 @@ double etas::mloglik(NumericVector theta)
       sumpart = mu * bk[j];
       for (int i = 0; i < j; i++)
       {
-        sig   = D * exp(gamma * m[i]);
         sumpart += A * exp(alpha * m[i]) *
           g1(t[j] - t[i], c, p) *
-          f1(dist2(x[j], y[j], x[i], y[i]), sig, q);
+          f1(dist2(x[j], y[j], x[i], y[i]),
+             D * exp(gamma * m[i]), q);
       }
       
       if (sumpart > 1.0e-25)
