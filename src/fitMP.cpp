@@ -1025,7 +1025,7 @@ void etas::mloglikGrMP(NumericVector theta,
     {
       ttemp = tlength - t[j];
       
-      gi  = 1 - pow(1 + ttemp/c, 1 - p);
+      gi = g1i(0, ttemp, c, p);
       gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
       gip = - (1 - gi) * (log(c) - log(c + ttemp));
     }
@@ -1034,8 +1034,8 @@ void etas::mloglikGrMP(NumericVector theta,
       ttemp1 = tstart2 - t[j];
       ttemp2 = tlength - t[j];
       
-      gi1  = 1 - pow(1 + ttemp1/c, 1 - p);
-      gi2  = 1 - pow(1 + ttemp2/c, 1 - p);
+      gi1 = g1i(0, ttemp1, c, p);
+      gi2 = g1i(0, ttemp2, c, p);
       gic1 = - (1 - gi1) * (1 - p) * (1/(c + ttemp1) - 1/c);
       gic2 = - (1 - gi2) * (1 - p) * (1/(c + ttemp2) - 1/c);
       gip1 = - (1 - gi1) * (log(c) - log(c + ttemp1));
@@ -1820,10 +1820,10 @@ NumericVector cxxtimetrans(NumericVector theta,
     for (int i=0; i < j; i++)
     {
       if (t[i] > tstart2)
-        sum += (1 - pow(1 + (t[j] - t[i])/c, 1 - p)) * sinteg[i];
+        sum += g1i(0, t[j] - t[i], c, p) * sinteg[i];
       else
-        sum += (pow(1 + (tstart2 - t[i])/c, 1 - p) -
-          pow(1 + (t[j] - t[i])/c, 1 - p)) * sinteg[i];
+        sum += (g1i(0, t[j] - t[i], c, p) -
+          g1i(0, tstart2 - t[i], c, p)) * sinteg[i];
     }
     out[j] = mu * integ0 * (t[j] - tstart2) / (tlength - tstart2) + sum;
   }
@@ -1915,12 +1915,12 @@ NumericVector cxxlambspat(NumericVector xg,
     {
       if (t[i] > tstart2)
       {
-        gint  = 1 - pow(1 + (tlength - t[i])/c, 1 - p);
+        gint = g1i(0, tlength - t[i], c, p);
       }
       else
       {
-        gint   = pow(1 + (tstart2 - t[i])/c, 1 - p) -
-          pow(1 + (tlength - t[i])/c, 1 - p);
+        gint = g1i(0, tlength - t[i], c, p) -
+          g1i(0, tstart2 - t[i], c, p);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
       double sig = D * exp(gamma * m[i]);
