@@ -46,6 +46,14 @@ double g1(double t, double c, double p)
     return (p - 1) / c * pow(1 + t / c, - p);
 }
 
+double g1i(double a, double b, double c, double p)
+{
+  if (a == 0)
+    return 1 - pow(1 + b / c, 1 - p);
+  else
+    return pow(1 + a / c, 1 - p) - pow(1 + b / c, 1 - p);
+}
+
 // ******************************************************************
 // spatial density function and its derivatives
 // ******************************************************************

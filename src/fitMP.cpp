@@ -196,12 +196,13 @@ double etas::mloglik(NumericVector theta)
     
     if (t[j] > tstart2)
     {
-      gi  = 1 - pow(1 + (tlength - t[j])/c, 1 - p);
+      gi = g1i(0, tlength - t[j], c, p);
     }
     else
     {
-      gi  = pow(1 + (tstart2 - t[j])/c, 1 - p) -
-        pow(1 + (tlength - t[j])/c, 1 - p);
+      gi = g1i(tstart2 - t[j], tlength - t[j], c, p);
+      /*gi = pow(1 + (tstart2 - t[j])/c, 1 - p) -
+        pow(1 + (tlength - t[j])/c, 1 - p);*/
     }
     
     si = 0;
