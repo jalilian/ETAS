@@ -200,7 +200,7 @@ double etas::mloglik(NumericVector theta)
     }
     else
     {
-      gi = g1i(tstart2 - t[j], tlength - t[j], c, p);
+      gi = g1i(0, tlength - t[j], c, p) - g1i(0, tstart2 - t[j], c, p);
     }
     
     si = 0;
