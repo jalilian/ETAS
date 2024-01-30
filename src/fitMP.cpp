@@ -862,12 +862,12 @@ double etas::mloglikMP(NumericVector theta,
     
     if (t[j] > tstart2)
     {
-      gi  = 1 - pow(1 + (tlength - t[j])/c, 1 - p);
+      gi = g1i(0, tlength - t[j], c, p);
     }
     else
     {
-      gi   = (1 - pow(1 + (tlength - t[j])/c, 1 - p)) -
-        (1 - pow(1 + (tstart2 - t[j])/c, 1 - p));
+      gi = g1i(0, tlength - t[j], c, p) -
+        g1i(0, tstart2 - t[j], c, p);
     }
     
     double si = 0, dpx, dpy, x1, x2, y1, y2, det, r0, r1, r2, phi;
