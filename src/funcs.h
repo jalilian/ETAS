@@ -90,6 +90,7 @@ NumericVector dffun(double r2, double sig, double q)
   out[1] = out[0] * (-1 + q * r2 /(r2 + sig)) / sig;
   // d q
   out[2] = out[0] * (1 / (q - 1) - log(1 + r2 / sig));
+  return out;
 }
 
 double dq_f1(double r2, double sig, double q)
