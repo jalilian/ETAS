@@ -46,20 +46,9 @@ double g1(double t, double c, double p)
     return (p - 1) / c * pow(1 + t / c, - p);
 }
 
-NumericVector dgfun2(double t, double c, double p)
+NumericVector dgfun(double t, double c, double p)
 {
   NumericVector out(3);
-  out[0] = (p - 1) / c * pow(1 + t / c, - p);
-  // d c
-  out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
-  // d p
-  out[2] = out[0] * (1 / (p - 1) - log(1 + t / c));
-  return out;
-}
-
-double* dgfun(double t, double c, double p)
-{
-  static double out[3];
   out[0] = (p - 1) / c * pow(1 + t / c, - p);
   // d c
   out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
@@ -73,20 +62,9 @@ double g1i(double t, double c, double p)
   return 1 - pow(1 + t / c, 1 - p);
 }
 
-NumericVector dgifun2(double t, double c, double p)
+NumericVector dgifun(double t, double c, double p)
 {
   NumericVector out(3);
-  out[0] = 1 - pow(1 + t / c, 1 - p);
-  // d c
-  out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);
-  // d p
-  out[2] = - (1 - out[0]) * (log(c) - log(c + t));
-  return out;
-}
-
-double* dgifun(double t, double c, double p)
-{
-  static double out[3];
   out[0] = 1 - pow(1 + t / c, 1 - p);
   // d c
   out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);

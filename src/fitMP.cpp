@@ -294,7 +294,7 @@ void etas::mloglikGr(NumericVector theta,
         
         delta = t[j] - t[i];
         //tout = dgfun(delta, c, p);
-        tout = dgfun2(delta, c, p);
+        tout = dgfun(delta, c, p);
         part2 = tout[0]; //g1(delta, c, p);
         
         sig   = D * exp(gamma * m[i]);
@@ -346,7 +346,7 @@ void etas::mloglikGr(NumericVector theta,
     {
       ttemp = tlength - t[j];
       
-      tout = dgifun2(ttemp, c, p);
+      tout = dgifun(ttemp, c, p);
       gi = tout[0]; //g1i(ttemp, c, p);
       gic = tout[1]; //dc_g1i(ttemp, c, p);
       gip = tout[2]; //dp_g1i(ttemp, c, p);
@@ -360,11 +360,11 @@ void etas::mloglikGr(NumericVector theta,
       ttemp2 = tlength - t[j];
       
 
-      tout = dgifun2(ttemp1, c, p);
+      tout = dgifun(ttemp1, c, p);
       gi1 = tout[0]; //g1i(ttemp1, c, p);
       gic1 = tout[1]; //dc_g1i(ttemp1, c, p);
       gip1 = tout[2]; //dp_g1i(ttemp1, c, p);
-      tout = dgifun2(ttemp2, c, p);
+      tout = dgifun(ttemp2, c, p);
       gi2 = tout[0]; //g1i(ttemp2, c, p);
       gic2 = tout[1]; //dc_g1i(ttemp2, c, p);
       gip2 = tout[2]; //dp_g1i(ttemp2, c, p);*/
