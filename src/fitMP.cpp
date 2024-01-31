@@ -344,8 +344,10 @@ void etas::mloglikGr(NumericVector theta,
       ttemp = tlength - t[j];
       
       gi = g1i(ttemp, c, p);
-      gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
-      gip = - (1 - gi) * (log(c) - log(c + ttemp));
+      gic = dc_g1i(ttemp, c, p);
+      gip = dp_g1i(ttemp, c, p);
+      //gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
+      //gip = - (1 - gi) * (log(c) - log(c + ttemp));
     }
     else
     {
@@ -354,10 +356,14 @@ void etas::mloglikGr(NumericVector theta,
       
       gi1 = g1i(ttemp1, c, p);
       gi2 = g1i(ttemp2, c, p);
-      gic1 = - (1 - gi1) * (1 - p) * (1/(c + ttemp1) - 1/c);
-      gic2 = - (1 - gi2) * (1 - p) * (1/(c + ttemp2) - 1/c);
-      gip1 = - (1 - gi1) * (log(c) - log(c + ttemp1));
-      gip2 = - (1 - gi2) * (log(c) - log(c + ttemp2));
+      gic1 = dc_g1i(ttemp1, c, p);
+      gic2 = dc_g1i(ttemp2, c, p);
+      gip1 = dp_g1i(ttemp1, c, p);
+      gip2 = dp_g1i(ttemp2, c, p);
+      //gic1 = - (1 - gi1) * (1 - p) * (1/(c + ttemp1) - 1/c);
+      //gic2 = - (1 - gi2) * (1 - p) * (1/(c + ttemp2) - 1/c);
+      //gip1 = - (1 - gi1) * (log(c) - log(c + ttemp1));
+      //gip2 = - (1 - gi2) * (log(c) - log(c + ttemp2));
       
       gi  = gi2 - gi1;
       gic = gic2 - gic1;

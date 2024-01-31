@@ -62,6 +62,16 @@ double g1i(double t, double c, double p)
   return 1 - pow(1 + t / c, 1 - p);
 }
 
+double dc_g1i(double t, double c, double p)
+{
+  return (1 - p) * t / (c * c) * pow(1 + t / c, -p);
+}
+
+double dp_g1i(double t, double c, double p)
+{
+  return pow(1 + t / c, 1 - p) * log(1 + t / c);
+}
+
 // ******************************************************************
 // spatial density function and its derivatives
 // ******************************************************************
