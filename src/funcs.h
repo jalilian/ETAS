@@ -46,6 +46,17 @@ double g1(double t, double c, double p)
     return (p - 1) / c * pow(1 + t / c, - p);
 }
 
+double* dgfun(double t, double c, double p)
+{
+  static double out[3];
+  out[0] = g1(t, c, p);
+  // d c
+  out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
+  // d p
+  out[2] = out[0] * (1 / (p - 1) - log(1 + t / c));
+  return out;
+}
+
 // d g1 / g1
 double dc_g1(double t, double c, double p)
 {
