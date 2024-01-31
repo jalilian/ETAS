@@ -57,30 +57,20 @@ double* dgfun(double t, double c, double p)
   return out;
 }
 
-// d g1 / g1
-double dc_g1(double t, double c, double p)
-{
-  return -1 / c - p / (c + t) + p / c;
-}
-
-double dp_g1(double t, double c, double p)
-{
-  return 1 / (p - 1) - log(1 + t / c);
-}
-
 double g1i(double t, double c, double p)
 {
   return 1 - pow(1 + t / c, 1 - p);
 }
 
-double dc_g1i(double t, double c, double p)
+double* dgifun(double t, double c, double p)
 {
-  return (1 - p) * t / (c * c) * pow(1 + t / c, -p);
-}
-
-double dp_g1i(double t, double c, double p)
-{
-  return pow(1 + t / c, 1 - p) * log(1 + t / c);
+  static double out[3];
+  out[0] = g1i(t, c, p);
+  // d c
+  out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c)
+  // d p
+  out[2] = - (1 - out[0]) * (log(c) - log(c + t))
+  return out;
 }
 
 // ******************************************************************
