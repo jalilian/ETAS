@@ -273,7 +273,7 @@ void etas::mloglikGr(NumericVector theta,
   part2_c, part2_p, part3_d, part3_q, part3_gamma, delta, sig, r2;
   double fv2temp, g2temp[8], ttemp, ttemp1, ttemp2, gi, gi1, gi2, gic,
   gic1, gic2, gip, gip1, gip2;
-  NumericVector tout(3), sout(3);
+  NumericVector part2(3), tout(3), sout(3);
   double w[2];
   double si, sid, siq, sigamma, sk, dpx, dpy, x1, x2, y1, y2, det,
   r0, r1, phi;
