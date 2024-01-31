@@ -346,13 +346,13 @@ void etas::mloglikGr(NumericVector theta,
       ttemp = tlength - t[j];
       
       double* touti;
-      /*touti = dgifun(ttemp, c, p);
+      touti = dgifun(ttemp, c, p);
       gi = touti[0]; //g1i(ttemp, c, p);
       gic = touti[1]; //dc_g1i(ttemp, c, p);
-      gip = touti[2]; //dp_g1i(ttemp, c, p);*/
-      gi = g1i(ttemp, c, p);
+      gip = touti[2]; //dp_g1i(ttemp, c, p);
+      /*gi = g1i(ttemp, c, p);
       gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
-      gip = - (1 - gi) * (log(c) - log(c + ttemp));
+      gip = - (1 - gi) * (log(c) - log(c + ttemp));*/
     }
     else
     {
