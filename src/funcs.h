@@ -82,6 +82,16 @@ double f1(double r2, double sig, double q)
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 }
 
+NumericVector dffun(double r2, double sig, double q)
+{
+  NumericVector out(3);
+  out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
+  // d sig
+  out[1] = out[0] * (-1 + q * r2 /(r2 + sig)) / sig
+  // d q
+  out[2] = out[0] * (1 / (q - 1) - log(1 + r2 / sig));
+}
+
 double dq_f1(double r2, double sig, double q)
 {
   return (1/(q - 1) - log(1 + r2/sig));

@@ -273,7 +273,7 @@ void etas::mloglikGr(NumericVector theta,
   part2_c, part2_p, part3_d, part3_q, part3_gamma, delta, sig, r2;
   double fv2temp, g2temp[8], ttemp, ttemp1, ttemp2, gi, gi1, gi2, gic,
   gic1, gic2, gip, gip1, gip2;
-  NumericVector tout(3);
+  NumericVector tout(3), sout(3);
   double w[2];
   double si, sid, siq, sigamma, sk, dpx, dpy, x1, x2, y1, y2, det,
   r0, r1, phi;
@@ -299,7 +299,8 @@ void etas::mloglikGr(NumericVector theta,
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
-        part3 = f1(r2, sig, q);
+        sout = dffun(r2, sig, q);
+        part3 = sout[0]; //f1(r2, sig, q);
 
         fv1temp    += A * part1 * part2 * part3;
         g1temp[1]  += part1 * part2 * part3;
@@ -313,11 +314,11 @@ void etas::mloglikGr(NumericVector theta,
         part2_p = tout[2]; //part2 * dp_g1(delta, c, p);
         g1temp[4] += A * part1 * part2_p * part3;
         
-        double part3_sig = part3 * dsig_f1(r2, sig, q);
-        part3_d = part3_sig * sig / D;
+        //double part3_sig = part3 * dsig_f1(r2, sig, q);
+        part3_d = sout[1] * sig / D; //part3_sig * sig / D;
         g1temp[5] += A * part1 * part2 * part3_d;
         
-        part3_q = part3 * dq_f1(r2, sig, q);
+        part3_q = sout[2]; //part3 * dq_f1(r2, sig, q);
         g1temp[6] += A * part1 * part2 * part3_q;
         
         part3_gamma = part3_sig * sig * m[i];
