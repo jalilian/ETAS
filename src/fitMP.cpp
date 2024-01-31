@@ -345,8 +345,7 @@ void etas::mloglikGr(NumericVector theta,
     {
       ttemp = tlength - t[j];
       
-      double* touti;
-      touti = dgifun(ttemp, c, p);
+      double* touti = dgifun(ttemp, c, p);
       gi = touti[0]; //g1i(ttemp, c, p);
       gic = touti[1]; //dc_g1i(ttemp, c, p);
       gip = touti[2]; //dp_g1i(ttemp, c, p);
