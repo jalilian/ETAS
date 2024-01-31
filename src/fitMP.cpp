@@ -273,7 +273,7 @@ void etas::mloglikGr(NumericVector theta,
   part2_c, part2_p, part3_d, part3_q, part3_gamma, delta, sig, r2;
   double fv2temp, g2temp[8], ttemp, ttemp1, ttemp2, gi, gi1, gi2, gic,
   gic1, gic2, gip, gip1, gip2;
-  double* tout;
+  NumericVector tout(3);
   double w[2];
   double si, sid, siq, sigamma, sk, dpx, dpy, x1, x2, y1, y2, det,
   r0, r1, phi;
@@ -294,8 +294,8 @@ void etas::mloglikGr(NumericVector theta,
         
         delta = t[j] - t[i];
         //tout = dgfun(delta, c, p);
-        NumericVector tout0 = dgfun2(delta, c, p);
-        part2 = tout0[0]; //g1(delta, c, p);
+        tout = dgfun2(delta, c, p);
+        part2 = tout[0]; //g1(delta, c, p);
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
@@ -304,13 +304,13 @@ void etas::mloglikGr(NumericVector theta,
         fv1temp    += A * part1 * part2 * part3;
         g1temp[1]  += part1 * part2 * part3;
         
-        part2_c = tout0[1]; //part2 * dc_g1(delta, c,p);
+        part2_c = tout[1]; //part2 * dc_g1(delta, c,p);
         g1temp[2] += A * part1 * part2_c * part3;
         
         part1_alpha = part1 * m[i];
         g1temp[3]  += A * part1_alpha * part2 * part3;
         
-        part2_p = tout0[2]; //part2 * dp_g1(delta, c, p);
+        part2_p = tout[2]; //part2 * dp_g1(delta, c, p);
         g1temp[4] += A * part1 * part2_p * part3;
         
         double part3_sig = part3 * dsig_f1(r2, sig, q);
@@ -346,7 +346,7 @@ void etas::mloglikGr(NumericVector theta,
     {
       ttemp = tlength - t[j];
       
-      tout = dgifun(ttemp, c, p);
+      tout = dgifun2(ttemp, c, p);
       gi = tout[0]; //g1i(ttemp, c, p);
       gic = tout[1]; //dc_g1i(ttemp, c, p);
       gip = tout[2]; //dp_g1i(ttemp, c, p);
@@ -360,11 +360,11 @@ void etas::mloglikGr(NumericVector theta,
       ttemp2 = tlength - t[j];
       
 
-      tout = dgifun(ttemp1, c, p);
+      tout = dgifun2(ttemp1, c, p);
       gi1 = tout[0]; //g1i(ttemp1, c, p);
       gic1 = tout[1]; //dc_g1i(ttemp1, c, p);
       gip1 = tout[2]; //dp_g1i(ttemp1, c, p);
-      tout = dgifun(ttemp2, c, p);
+      tout = dgifun2(ttemp2, c, p);
       gi2 = tout[0]; //g1i(ttemp2, c, p);
       gic2 = tout[1]; //dc_g1i(ttemp2, c, p);
       gip2 = tout[2]; //dp_g1i(ttemp2, c, p);*/
