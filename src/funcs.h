@@ -46,6 +46,17 @@ double g1(double t, double c, double p)
     return (p - 1) / c * pow(1 + t / c, - p);
 }
 
+// d g1 / g1
+double dc_g1(double t, double c, double p)
+{
+  return -1 / c - p / (c + t) + p / c
+}
+
+double dp_g1(double t, double c, double p)
+{
+  return 1 / (p - 1) - log(1 + t / c);
+}
+
 double g1i(double t, double c, double p)
 {
   return 1 - pow(1 + t / c, 1 - p);
