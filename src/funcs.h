@@ -49,7 +49,7 @@ double g1(double t, double c, double p)
 double* dgfun(double t, double c, double p)
 {
   static double out[3];
-  out[0] = g1(t, c, p);
+  out[0] = (p - 1) / c * pow(1 + t / c, - p);
   // d c
   out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
   // d p
