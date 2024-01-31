@@ -49,7 +49,7 @@ double g1(double t, double c, double p)
 // d g1 / g1
 double dc_g1(double t, double c, double p)
 {
-  return -1 / c - p / (c + t) + p / c
+  return -1 / c - p / (c + t) + p / c;
 }
 
 double dp_g1(double t, double c, double p)
