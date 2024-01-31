@@ -67,9 +67,9 @@ double* dgifun(double t, double c, double p)
   static double out[3];
   out[0] = g1i(t, c, p);
   // d c
-  out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c)
+  out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);
   // d p
-  out[2] = - (1 - out[0]) * (log(c) - log(c + t))
+  out[2] = - (1 - out[0]) * (log(c) - log(c + t));
   return out;
 }
 
