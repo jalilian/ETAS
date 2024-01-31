@@ -360,12 +360,12 @@ void etas::mloglikGr(NumericVector theta,
       
 
       double* touti1 = dgifun(ttemp1, c, p);
-      double* touti2 = dgifun(ttemp2, c, p);
       gi1 = touti1[0]; //g1i(ttemp1, c, p);
-      gi2 = touti2[0]; //g1i(ttemp2, c, p);
       gic1 = touti1[1]; //dc_g1i(ttemp1, c, p);
-      gic2 = touti2[1]; //dc_g1i(ttemp2, c, p);
       gip1 = touti1[2]; //dp_g1i(ttemp1, c, p);
+      double* touti2 = dgifun(ttemp2, c, p);
+      gi2 = touti2[0]; //g1i(ttemp2, c, p);
+      gic2 = touti2[1]; //dc_g1i(ttemp2, c, p);
       gip2 = touti2[2]; //dp_g1i(ttemp2, c, p);*/
       /*gi1 = g1i(ttemp1, c, p);
       gi2 = g1i(ttemp2, c, p);
