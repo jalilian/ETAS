@@ -75,7 +75,7 @@ double g1i(double t, double c, double p)
 
 NumericVector dgifun2(double t, double c, double p)
 {
-  NumericVector out[3];
+  NumericVector out(3);
   out[0] = 1 - pow(1 + t / c, 1 - p);
   // d c
   out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);
