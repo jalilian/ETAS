@@ -330,10 +330,6 @@ void etas::mloglikGr(NumericVector theta,
     {
       int_part2 = dgifun(tlength - t[j], c, p) -
         dgifun(tstart2 - t[j], c, p);
-      /*NumericVector nv1 = dgifun(tstart2 - t[j], c, p);
-      NumericVector nv2 = dgifun(tlength - t[j], c, p);
-      for (int u = 0; u < 3; u++)
-        int_part2[u] = nv2[u] - nv1[u];*/
     }
 
     double sig_j = D * exp(gamma * m[j]);
@@ -373,13 +369,8 @@ void etas::mloglikGr(NumericVector theta,
           double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
-          NumericVector nv0 = dfrifun(r0, sig_j, q);
-          NumericVector nv1 = dfrifun(r1, sig_j, q);
-          NumericVector nv2 = dfrifun(r2, sig_j, q);
-          int_part3 += id * (nv1 / 6 + nv0 * 2.0 / 3 + nv2 / 6) * phi;
-          /*int_part3[0] += id * (nv1[0] / 6 + nv0[0] * 2 / 3 + nv2[0] / 6) * phi;
-          int_part3[1] += id * (nv1[1] / 6 + nv0[1] * 2 / 3 + nv2[1] / 6) * phi;
-          int_part3[2] += id * (nv1[2] / 6 + nv0[2] * 2 / 3 + nv2[2] / 6) * phi;*/
+          int_part3 += id * (dfrifun(r1, sig_j, q) / 6 +
+              dfrifun(r0, sig_j, q) * 2.0 / 3 + dfrifun(r2, sig_j, q) / 6) * phi;
         }
       }
     }
