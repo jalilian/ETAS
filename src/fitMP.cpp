@@ -319,14 +319,14 @@ void etas::mloglikGr(NumericVector theta,
         g1temp[7]  += A * part1 * part2[0] * (part3[1] * sig * m[i]);
       }
       
-      g1temp[0] *= 2 * theta[0];
+      /*g1temp[0] *= 2 * theta[0];
       g1temp[1] *= 2 * theta[1];
       g1temp[2] *= 2 * theta[2];
       g1temp[3] *= 2 * theta[3];
       g1temp[4] *= 2 * theta[4];
       g1temp[5] *= 2 * theta[5];
       g1temp[6] *= 2 * theta[6];
-      g1temp[7] *= 2 * theta[7];
+      g1temp[7] *= 2 * theta[7];*/
       
       if (fv1temp > 1.0e-25)
         fv1 += log(fv1temp);
@@ -334,7 +334,10 @@ void etas::mloglikGr(NumericVector theta,
         fv1 += -100;
       
       for (int i = 0; i < 8; i++)
+      {
+        g1temp[i] *= 2 * theta[i];
         df1[i] += g1temp[i] / fv1temp;
+      }
     }
     
     if (t[j] > tstart2)
