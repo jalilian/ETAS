@@ -389,10 +389,10 @@ void etas::mloglikGr(NumericVector theta,
           
           int_part3[0] += id * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
             f1r(r2, w)/6) * phi;
+          int_part3[1] +=   id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
+            dsig_f1r(r2, w)/6) * phi;
           int_part3[2] += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
             dq_f1r(r2, w)/6) * phi;
-          int_part3[1] =   id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
-            dsig_f1r(r2, w)/6) * phi;
           /*double sisig = id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
             dsig_f1r(r2, w)/6) * phi;
           sid += sisig * w[0] / D;
