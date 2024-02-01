@@ -269,11 +269,10 @@ void etas::mloglikGr(NumericVector theta,
   
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
-  double fv1temp, g1temp[8], part1, part3, part1_alpha,
-  part2_c, part2_p, part3_d, part3_q, part3_gamma, delta, sig, r2;
+  double fv1temp, g1temp[8], part1, part1_alpha, delta, sig, r2;
   double fv2temp, g2temp[8], ttemp, ttemp1, ttemp2, gi, gi1, gi2, gic,
   gic1, gic2, gip, gip1, gip2;
-  NumericVector part2(3), tout(3), sout(3);
+  NumericVector part2(3), part3(3), tout(3), sout(3);
   double w[2];
   double si, sid, siq, sigamma, sk, dpx, dpy, x1, x2, y1, y2, det,
   r0, r1, phi;
@@ -297,30 +296,28 @@ void etas::mloglikGr(NumericVector theta,
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
-        sout = dffun(r2, sig, q);
-        part3 = sout[0]; //f1(r2, sig, q);
+        part3 = dffun(r2, sig, q);
 
-        fv1temp    += A * part1 * part2[0] * part3;
-        g1temp[1]  += part1 * part2[0] * part3;
+        fv1temp    += A * part1 * part2[0] * part3[0];
+        g1temp[1]  += part1 * part2[0] * part3[0];
         
         // part2_c
-        g1temp[2] += A * part1 * part2[1] * part3;
+        g1temp[2] += A * part1 * part2[1] * part3[0];
         
         part1_alpha = part1 * m[i];
-        g1temp[3]  += A * part1_alpha * part2[0] * part3;
+        g1temp[3]  += A * part1_alpha * part2[0] * part3[0];
         
         // part2_p
-        g1temp[4] += A * part1 * part2[2] * part3;
+        g1temp[4] += A * part1 * part2[2] * part3[3];
         
-        //double part3_sig = part3 * dsig_f1(r2, sig, q);
-        part3_d = sout[1] * sig / D; //part3_sig * sig / D;
-        g1temp[5] += A * part1 * part2[0] * part3_d;
+        // part3_d from part3_sig
+        g1temp[5] += A * part1 * part2[0] * (part3[1] * sig / D);
         
-        part3_q = sout[2]; //part3 * dq_f1(r2, sig, q);
-        g1temp[6] += A * part1 * part2[0] * part3_q;
+        // part3_q
+        g1temp[6] += A * part1 * part2[0] * part3[2];
         
-        part3_gamma = sout[1] * sig * m[i]; // part3_sig * sig * m[i];
-        g1temp[7]  += A * part1 * part2[0] * part3_gamma;
+        // part3_gamma from part3_sig
+        g1temp[7]  += A * part1 * part2[0] * (part3[1] * sig * m[i]);
       }
       
       g1temp[0] *= 2 * theta[0];
