@@ -310,15 +310,14 @@ void etas::mloglikGr(NumericVector theta,
         // part2_p
         g1temp[4] += A * part1 * part2[2] * part3[0];
         
-        //double part3_sig = part3 * dsig_f1(r2, sig, q);
-        part3_d = part3[1] * sig / D; //part3_sig * sig / D;
-        g1temp[5] += A * part1 * part2[0] * part3_d;
+        // part3_d from part3_sig
+        g1temp[5] += A * part1 * part2[0] * (part3[1] * sig / D);
         
-        part3_q = part3[2]; //part3 * dq_f1(r2, sig, q);
-        g1temp[6] += A * part1 * part2[0] * part3_q;
+        // part3_q
+        g1temp[6] += A * part1 * part2[0] * part3[2];
         
-        part3_gamma = part3[1] * sig * m[i]; // part3_sig * sig * m[i];
-        g1temp[7]  += A * part1 * part2[0] * part3_gamma;
+        // part3_gamma from part3_sig
+        g1temp[7]  += A * part1 * part2[0] * (part3[1] * sig * m[i]);
       }
       
       g1temp[0] *= 2 * theta[0];
