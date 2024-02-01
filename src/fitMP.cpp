@@ -368,7 +368,7 @@ void etas::mloglikGr(NumericVector theta,
         if (fabs(det) < 1.0e-10)
           continue;
         
-        int id (det < 0) ? -1 : 1;
+        int id = (det < 0) ? -1 : 1;
         
         r1 = dist(x1, y1, x[j], y[j]);
         r2 = dist(x2, y2, x[j], y[j]);
