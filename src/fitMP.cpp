@@ -328,10 +328,12 @@ void etas::mloglikGr(NumericVector theta,
     }
     else
     {
-      NumericVector nv1 = dgifun(tstart2 - t[j], c, p);
+      int_part2 = dgifun(tlength - t[j], c, p) -
+        dgifun(tstart2 - t[j], c, p);
+      /*NumericVector nv1 = dgifun(tstart2 - t[j], c, p);
       NumericVector nv2 = dgifun(tlength - t[j], c, p);
       for (int u = 0; u < 3; u++)
-        int_part2[u] = nv2[u] - nv1[u];
+        int_part2[u] = nv2[u] - nv1[u];*/
     }
 
     double sig_j = D * exp(gamma * m[j]);
