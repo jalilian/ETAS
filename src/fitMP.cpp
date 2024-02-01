@@ -350,7 +350,7 @@ void etas::mloglikGr(NumericVector theta,
     
     int_part3[0] = 0;
     sid = 0;
-    siq = 0;
+    int_part3[2] = 0;
     sigamma = 0;
     for (int k = 0; k < (np - 1); ++k)
     {
@@ -388,7 +388,7 @@ void etas::mloglikGr(NumericVector theta,
           
           int_part3[0] += id * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
             f1r(r2, w)/6) * phi;
-          siq += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
+          int_part3[2] += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
             dq_f1r(r2, w)/6) * phi;
           double sisig = id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
             dsig_f1r(r2, w)/6) * phi;
@@ -409,7 +409,7 @@ void etas::mloglikGr(NumericVector theta,
     // d p
     g2temp[ 4 ] = sk * int_part2[2] * int_part3[0]            * 2 * theta[4];
     g2temp[ 5 ] = sk * int_part2[0]  * sid           * 2 * theta[5];
-    g2temp[ 6 ] = sk * int_part2[0]  * siq           * 2 * theta[6];
+    g2temp[ 6 ] = sk * int_part2[0]  * int_part3[2]           * 2 * theta[6];
     g2temp[ 7 ] = sk * int_part2[0]  * sigamma       * 2 * theta[7];
     
     fv2 += fv2temp;
