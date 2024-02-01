@@ -113,11 +113,12 @@ NumericVector dfrifun(double r, double sig, double q)
 {
   NumericVector out(3);
   double r2 = r * r / sig;
-  out[0] = (1 - pow(1 + r2, 1 - q)) / (2 * M_PI);
+  double v = pow(1 + r2, 1 - q) / (2 * M_PI);
+  out[0] = 1 / (2 * M_PI) - v;
   // d sig
-  out[1] = (1 - q) * pow(1 + r2, -q) * r2 / sig / (2 * M_PI);
+  out[1] = (1 - q) * v / (1 + r2) * r2 / sig;
   // d q
-  out[2] =  pow(1 + r2, 1 - q) * log(1 + r2) / (2 * M_PI);
+  out[2] =  v * log(1 + r2);
   return out;
 }
 
