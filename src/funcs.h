@@ -109,6 +109,17 @@ double f1r(double r, double w[])
   return (1 - pow(1 + r * r / sig, 1 - q)) / (2 * M_PI);
 }
 
+NumericVector dfrifun(double r, double sig, double q)
+{
+  NumericVector out(3);
+  out[0] = (1 - pow(1 + r * r / sig, 1 - q)) / (2 * M_PI);
+  // d sig
+  out[1] = (1 - q) * pow(1 + r * r / sig, -q) * r * r / (sig * sig) / (2 * M_PI);
+  // d q
+  out[2] =  pow(1 + r * r / sig, 1 - q) * log(1 + r * r / sig) / (2 * M_PI);
+  return out;
+}
+
 double dq_f1r(double r, double w[])
 {
   double sig = w[0], q = w[1];
