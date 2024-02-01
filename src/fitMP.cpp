@@ -342,7 +342,7 @@ void etas::mloglikGr(NumericVector theta,
     
     w[0] = D * exp(gamma * m[j]);
     w[1] = q;
-    
+    double sig_j = D * exp(gamma * m[j]);
     //si      = polyintegXX(fr, w, data.px, data.py, data.x[j], data.y[j]);
     //sid     = polyintegXX(dD_fr, w, data.px, data.py, data.x[j], data.y[j]);
     //siq     = polyintegXX(dq_fr, w, data.px, data.py, data.x[j], data.y[j]);
@@ -386,9 +386,9 @@ void etas::mloglikGr(NumericVector theta,
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
           NumericVector nv0(3), nv1(3), nv2(3);
-          nv0 = dfrifun(r0, sig, q);
-          nv1 = dfrifun(r1, sig, q);
-          nv2 = dfrifun(r2, sig, q);
+          nv0 = dfrifun(r0, sig_j, q);
+          nv1 = dfrifun(r1, sig_j, q);
+          nv2 = dfrifun(r2, sig_j, q);
           int_part3[0] += id * (nv1[0] / 6 + nv0[0] * 2 / 3 + nv2[0] / 6) * phi;
           int_part3[1] += id * (nv1[1] / 6 + nv0[1] * 2 / 3 + nv2[1] / 6) * phi;
           int_part3[2] += id * (nv1[2] / 6 + nv0[2] * 2 / 3 + nv2[2] / 6) * phi;
