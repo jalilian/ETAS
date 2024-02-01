@@ -269,7 +269,7 @@ void etas::mloglikGr(NumericVector theta,
   
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
-  double fv1temp, g1temp[8], part1, part1_alpha, sig, r2;
+  double part1, part1_alpha, sig, r2;
   double fv2temp, g2temp[8], ttemp, ttemp1, ttemp2, gi, gi1, gi2, gic,
   gic1, gic2, gip, gip1, gip2;
   NumericVector part2(3), tout(3), part3(3);
@@ -281,11 +281,12 @@ void etas::mloglikGr(NumericVector theta,
   {
     if (flag[j] == 1)
     {
-      fv1temp = mu * bk[j];
+      double fv1temp = mu * bk[j];
+      double g1temp[8] = {0}
       g1temp[0] = bk[j];
       
-      g1temp[1] = g1temp[2] = g1temp[3] = g1temp[4] = 0;
-      g1temp[5] = g1temp[6] = g1temp[7] = 0;
+      /*g1temp[1] = g1temp[2] = g1temp[3] = g1temp[4] = 0;
+      g1temp[5] = g1temp[6] = g1temp[7] = 0;*/
       
       for (int i = 0; i < j; i++)
       {
@@ -294,8 +295,7 @@ void etas::mloglikGr(NumericVector theta,
         part2 = dgfun(t[j] - t[i], c, p);
         
         sig   = D * exp(gamma * m[i]);
-        r2 = dist2(x[j], y[j], x[i], y[i]);
-        part3 = dffun(r2, sig, q);
+        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), sig, q);
 
         fv1temp    += A * part1 * part2[0] * part3[0];
         g1temp[1]  += part1 * part2[0] * part3[0];
@@ -318,15 +318,6 @@ void etas::mloglikGr(NumericVector theta,
         // part3_gamma from part3_sig
         g1temp[7]  += A * part1 * part2[0] * (part3[1] * sig * m[i]);
       }
-      
-      /*g1temp[0] *= 2 * theta[0];
-      g1temp[1] *= 2 * theta[1];
-      g1temp[2] *= 2 * theta[2];
-      g1temp[3] *= 2 * theta[3];
-      g1temp[4] *= 2 * theta[4];
-      g1temp[5] *= 2 * theta[5];
-      g1temp[6] *= 2 * theta[6];
-      g1temp[7] *= 2 * theta[7];*/
       
       if (fv1temp > 1.0e-25)
         fv1 += log(fv1temp);
