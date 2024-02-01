@@ -282,7 +282,7 @@ void etas::mloglikGr(NumericVector theta,
     if (flag[j] == 1)
     {
       double fv1temp = mu * bk[j];
-      double g1temp[8] = {0}
+      double g1temp[8] = {0};
       g1temp[0] = bk[j];
       
       /*g1temp[1] = g1temp[2] = g1temp[3] = g1temp[4] = 0;
