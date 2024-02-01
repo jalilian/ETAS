@@ -385,8 +385,8 @@ void etas::mloglikGr(NumericVector theta,
           r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
-          NumericVector nv0(3), nv1(3), nv2(3);
-          nv0 = dfrifun(r0, sig_j, q);
+          NumericVector nv1(3), nv2(3);
+          NumericVector nv0 = dfrifun(r0, sig_j, q);
           nv1 = dfrifun(r1, sig_j, q);
           nv2 = dfrifun(r2, sig_j, q);
           int_part3[0] += id * (nv1[0] / 6 + nv0[0] * 2 / 3 + nv2[0] / 6) * phi;
