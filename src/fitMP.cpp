@@ -330,30 +330,31 @@ void etas::mloglikGr(NumericVector theta,
     
     if (t[j] > tstart2)
     {
-      ttemp = tlength - t[j];
-      
-      int_part2 = dgifun(ttemp, c, p);
-      /*gi = tout[0]; //g1i(ttemp, c, p);
-      gic = tout[1]; //dc_g1i(ttemp, c, p);
-      gip = tout[2]; //dp_g1i(ttemp, c, p);*/
+      int_part2 = dgifun(tlength - t[j], c, p);
     }
     else
     {
       ttemp1 = tstart2 - t[j];
       ttemp2 = tlength - t[j];
       
-      tout = dgifun(ttemp1, c, p);
+      NumericVector nv1(3), nv2(3);
+      nv1 = dgifun(ttemp1, c, p);
+      nv2 = dgifun(ttemp2, c, p);
+      for (int u = 0; u < 3; u++)
+        int_part2[u] = nv2[u] - nv1[u];
+
+      /*tout = dgifun(ttemp1, c, p);
       gi1 = tout[0]; //g1i(ttemp1, c, p);
       gic1 = tout[1]; //dc_g1i(ttemp1, c, p);
       gip1 = tout[2]; //dp_g1i(ttemp1, c, p);
       tout = dgifun(ttemp2, c, p);
       gi2 = tout[0]; //g1i(ttemp2, c, p);
       gic2 = tout[1]; //dc_g1i(ttemp2, c, p);
-      gip2 = tout[2]; //dp_g1i(ttemp2, c, p);*/
+      gip2 = tout[2]; //dp_g1i(ttemp2, c, p);
       
       int_part2[0]  = gi2 - gi1;
       int_part2[1] = gic2 - gic1;
-      int_part2[2] = gip2 - gip1;
+      int_part2[2] = gip2 - gip1;*/
     }
     
     w[0] = D * exp(gamma * m[j]);
