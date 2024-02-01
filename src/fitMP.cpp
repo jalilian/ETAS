@@ -271,7 +271,7 @@ void etas::mloglikGr(NumericVector theta,
   
   double part1, part1_alpha, r2;
   double fv2temp, g2temp[8];
-  NumericVector part2(3), int_part2(3), tout(3), part3(3);
+  NumericVector part2(3), int_part2(3), part3(3), int_part3(3);
   double w[2];
   double si, sid, siq, sigamma, sk, dpx, dpy, x1, x2, y1, y2, det,
   r0, r1, phi;
@@ -348,7 +348,7 @@ void etas::mloglikGr(NumericVector theta,
     //siq     = polyintegXX(dq_fr, w, data.px, data.py, data.x[j], data.y[j]);
     //sigamma = polyintegXX(dgamma_fr, w, data.px, data.py, data.x[j], data.y[j]);
     
-    si = 0;
+    int_part3[0] = 0;
     sid = 0;
     siq = 0;
     sigamma = 0;
@@ -386,7 +386,7 @@ void etas::mloglikGr(NumericVector theta,
           r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
-          si += id * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
+          int_part3[0] += id * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
             f1r(r2, w)/6) * phi;
           siq += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
             dq_f1r(r2, w)/6) * phi;
@@ -400,14 +400,14 @@ void etas::mloglikGr(NumericVector theta,
     
     sk = A * exp(alpha * m[j]);
 
-    fv2temp  = sk * int_part2[0] * si;
+    fv2temp  = sk * int_part2[0] * int_part3[0];
     g2temp[ 0 ] = 0;
-    g2temp[ 1 ] = sk * int_part2[0]  * si / A        * 2 * theta[1];
+    g2temp[ 1 ] = sk * int_part2[0]  * int_part3[0] / A        * 2 * theta[1];
     // d c
-    g2temp[ 2 ] = sk * int_part2[1] * si            * 2 * theta[2];
-    g2temp[ 3 ] = sk * int_part2[0]  * si * m[j]     * 2 * theta[3];
+    g2temp[ 2 ] = sk * int_part2[1] * int_part3[0]            * 2 * theta[2];
+    g2temp[ 3 ] = sk * int_part2[0]  * int_part3[0] * m[j]     * 2 * theta[3];
     // d p
-    g2temp[ 4 ] = sk * int_part2[2] * si            * 2 * theta[4];
+    g2temp[ 4 ] = sk * int_part2[2] * int_part3[0]            * 2 * theta[4];
     g2temp[ 5 ] = sk * int_part2[0]  * sid           * 2 * theta[5];
     g2temp[ 6 ] = sk * int_part2[0]  * siq           * 2 * theta[6];
     g2temp[ 7 ] = sk * int_part2[0]  * sigamma       * 2 * theta[7];
