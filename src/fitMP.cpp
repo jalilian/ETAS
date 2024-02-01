@@ -269,7 +269,6 @@ void etas::mloglikGr(NumericVector theta,
   
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
-  double part1, part1_alpha, r2;
   NumericVector part2(3), int_part2(3), part3(3), int_part3(3);
   
   for (int j = 0; j < N; ++j)
@@ -282,7 +281,7 @@ void etas::mloglikGr(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        part1 = exp(alpha * m[i]);
+        double part1 = exp(alpha * m[i]);
         
         part2 = dgfun(t[j] - t[i], c, p);
         
@@ -295,8 +294,8 @@ void etas::mloglikGr(NumericVector theta,
         // part2_csig
         g1temp[2] += A * part1 * part2[1] * part3[0];
         
-        part1_alpha = part1 * m[i];
-        g1temp[3]  += A * part1_alpha * part2[0] * part3[0];
+        //part1_alpha
+        g1temp[3]  += A * (part1 * m[i]) * part2[0] * part3[0];
         
         // part2_p
         g1temp[4] += A * part1 * part2[2] * part3[0];
@@ -375,9 +374,10 @@ void etas::mloglikGr(NumericVector theta,
           NumericVector nv0 = dfrifun(r0, sig_j, q);
           NumericVector nv1 = dfrifun(r1, sig_j, q);
           NumericVector nv2 = dfrifun(r2, sig_j, q);
-          int_part3[0] += id * (nv1[0] / 6 + nv0[0] * 2 / 3 + nv2[0] / 6) * phi;
+          int_part3 += id * (nv1 / 6 + nv0 * 2.0 / 3 + nv2 / 6) * phi;
+          /*int_part3[0] += id * (nv1[0] / 6 + nv0[0] * 2 / 3 + nv2[0] / 6) * phi;
           int_part3[1] += id * (nv1[1] / 6 + nv0[1] * 2 / 3 + nv2[1] / 6) * phi;
-          int_part3[2] += id * (nv1[2] / 6 + nv0[2] * 2 / 3 + nv2[2] / 6) * phi;
+          int_part3[2] += id * (nv1[2] / 6 + nv0[2] * 2 / 3 + nv2[2] / 6) * phi;*/
         }
       }
     }
