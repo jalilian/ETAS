@@ -269,7 +269,7 @@ void etas::mloglikGr(NumericVector theta,
   
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
-  NumericVector part1(3), int_part3(3), part2(3), int_part2(3), part3(3), int_part3(3);
+  NumericVector part1(3), int_part1(3), part2(3), int_part2(3), part3(3), int_part3(3);
   
   for (int j = 0; j < N; ++j)
   {
@@ -377,25 +377,25 @@ void etas::mloglikGr(NumericVector theta,
       }
     }
     
-    int_part3 = dkappafun(m[j], A, alpha);
+    int_part1 = dkappafun(m[j], A, alpha);
 
-    double fv2temp  = int_part3[0] * int_part2[0] * int_part3[0];
+    double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
 
     // d A
-    g2temp[ 1 ] = int_part3[1] * int_part2[0]  * int_part3[0];
+    g2temp[ 1 ] = int_part1[1] * int_part2[0]  * int_part3[0];
     // d c
-    g2temp[ 2 ] = int_part3[0] * int_part2[1] * int_part3[0];
+    g2temp[ 2 ] = int_part1[0] * int_part2[1] * int_part3[0];
     // d alpha
-    g2temp[ 3 ] = int_part3[2] * int_part2[0]  * int_part3[0];
+    g2temp[ 3 ] = int_part1[2] * int_part2[0]  * int_part3[0];
     // d p
-    g2temp[ 4 ] = int_part3[0] * int_part2[2] * int_part3[0];
+    g2temp[ 4 ] = int_part1[0] * int_part2[2] * int_part3[0];
     // d D
-    g2temp[ 5 ] = int_part3[0] * int_part2[0]  * (int_part3[1] * sig_j / D);
+    g2temp[ 5 ] = int_part1[0] * int_part2[0]  * (int_part3[1] * sig_j / D);
     // d q
-    g2temp[ 6 ] = int_part3[0] * int_part2[0]  * int_part3[2];
+    g2temp[ 6 ] = int_part1[0] * int_part2[0]  * int_part3[2];
     // d gamma
-    g2temp[ 7 ] = int_part3[0] * int_part2[0]  * (int_part3[1] * sig_j * m[j]);
+    g2temp[ 7 ] = int_part1[0] * int_part2[0]  * (int_part3[1] * sig_j * m[j]);
     
     fv2 += fv2temp;
     for (int i = 0; i < 8; i++)
