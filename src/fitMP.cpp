@@ -269,7 +269,7 @@ void etas::mloglikGr(NumericVector theta,
   
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
-  NumericVector part2(3), int_part2(3), part3(3), int_part3(3);
+  NumericVector part1(3), part2(3), int_part2(3), part3(3), int_part3(3);
   
   for (int j = 0; j < N; ++j)
   {
@@ -281,33 +281,35 @@ void etas::mloglikGr(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        double part1 = exp(alpha * m[i]);
+        part1 = dkappafun(m[i], A, alpha);
         
         part2 = dgfun(t[j] - t[i], c, p);
         
         double sig   = D * exp(gamma * m[i]);
         part3 = dffun(dist2(x[j], y[j], x[i], y[i]), sig, q);
 
-        fv1temp    += A * part1 * part2[0] * part3[0];
-        g1temp[1]  += part1 * part2[0] * part3[0];
+        fv1temp    += part1[0] * part2[0] * part3[0];
+
+        // part1_A
+        g1temp[1]  += part1[1] * part2[0] * part3[0];
         
         // part2_csig
-        g1temp[2] += A * part1 * part2[1] * part3[0];
+        g1temp[2] += part1[0] * part2[1] * part3[0];
         
         //part1_alpha
-        g1temp[3]  += A * (part1 * m[i]) * part2[0] * part3[0];
+        g1temp[3]  += part1[2] * part2[0] * part3[0];
         
         // part2_p
-        g1temp[4] += A * part1 * part2[2] * part3[0];
+        g1temp[4] += part1[0] * part2[2] * part3[0];
         
         // part3_d from part3_sig
-        g1temp[5] += A * part1 * part2[0] * (part3[1] * sig / D);
+        g1temp[5] += part1[0] * part2[0] * (part3[1] * sig / D);
         
         // part3_q
-        g1temp[6] += A * part1 * part2[0] * part3[2];
+        g1temp[6] += part1[0] * part2[0] * part3[2];
         
         // part3_gamma from part3_sig
-        g1temp[7]  += A * part1 * part2[0] * (part3[1] * sig * m[i]);
+        g1temp[7]  += part1[0] * part2[0] * (part3[1] * sig * m[i]);
       }
       
       if (fv1temp > 1.0e-25)
@@ -379,6 +381,7 @@ void etas::mloglikGr(NumericVector theta,
 
     double fv2temp  = sk * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
+
     g2temp[ 1 ] = sk * int_part2[0]  * int_part3[0] / A;
     // d c
     g2temp[ 2 ] = sk * int_part2[1] * int_part3[0];

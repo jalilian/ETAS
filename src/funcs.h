@@ -35,6 +35,26 @@ double norm(double *x, int dim)
 }
 
 // ******************************************************************
+// expected number of triggered events
+// ******************************************************************
+
+double kappafun(double m, double A, double alpha)
+{
+  return A * exp(alpha * m);
+}
+
+NumericVector dkappafun(double m, double A, double alpha)
+{
+  NumericVector out(3);
+  out[0] = A * exp(alpha * m);
+  // d A
+  out[1] = out[0] / A;
+  // d alpha
+  out[2] = out[0] * m;
+  return out;
+}
+
+// ******************************************************************
 // temporal density function and its derivatives
 // ******************************************************************
 
