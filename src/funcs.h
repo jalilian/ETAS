@@ -44,7 +44,7 @@ double kappafun(double m, double kparam[])
   double A = kparam[0], alpha = kparam[1];
   return A * exp(alpha * m);
 }
-
+/*
 NumericVector dkappafun(double m, double kparam[])
 {
   double A = kparam[0], alpha = kparam[1];
@@ -68,7 +68,7 @@ double* dkappafun2(double m, double kparam[])
   out[2] = out[0] * m;
   return out;
 }
-
+*/
 std::array<double, 3> dkappafun3(double m, double kparam[])
 {
   double A = kparam[0], alpha = kparam[1];
@@ -92,7 +92,7 @@ double gfun(double t, double gparam[])
   else
     return (p - 1) / c * pow(1 + t / c, - p);
 }
-
+/*
 NumericVector dgfun(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
@@ -116,7 +116,7 @@ double* dgfun2(double t, double gparam[])
   out[2] = out[0] * (1 / (p - 1) - log(1 + t / c));
   return out;
 }
-
+*/
 std::array<double, 3> dgfun3(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
@@ -135,7 +135,7 @@ double gfunint(double t, double gparam[])
   double c = gparam[0], p = gparam[1];
   return 1 - pow(1 + t / c, 1 - p);
 }
-
+/*
 NumericVector dgfunint(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
@@ -159,7 +159,7 @@ double* dgfunint2(double t, double gparam[])
   out[2] = - (1 - out[0]) * (log(c) - log(c + t));
   return out;
 }
-
+*/
 std::array<double, 3> dgfunint3(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
@@ -181,7 +181,7 @@ double ffun(double r2, double m, double fparam[])
   double sig = D * exp(gamma * m);
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 }
-
+/*
 NumericVector dffun(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -211,7 +211,7 @@ double* dffun2(double r2, double m, double fparam[])
   out[3] = out[0] * (-1 + q * r2  / (r2 + sig)) * m;
   return out;
 }
-
+*/
 std::array<double, 4> dffun3(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -233,7 +233,7 @@ double frfunint(double r, double m, double fparam[])
   double sig = D * exp(gamma * m);
   return (1 - pow(1 + r * r / sig, 1 - q)) / (2 * M_PI);
 }
-
+/*
 NumericVector dfrfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -267,7 +267,7 @@ double* dfrfunint2(double r, double m, double fparam[])
   out[3] = (1 - q) * v / (1 + r2) * r2 * m;
   return out;
 }
-
+*/
 std::array<double, 4> dfrfunint3(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
