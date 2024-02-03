@@ -913,6 +913,8 @@ void etas::mloglikGrMP(NumericVector theta,
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
+  Rprintf("Passed Here1 !!!\n");
+
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
 #pragma omp parallel num_threads(nthreads)
@@ -1241,9 +1243,6 @@ List etas::fitfunMP(NumericVector tht,
     for (int j = 0; j < 8; j++)
       h[i][j] = ihess(i, j);
   
-  Rprintf("Passed Here1 !!!\n");
-  double fv2 = mloglikMP(tht, nthreads);
-  Rprintf("Passed Here22 !!!\n");
   mloglikGrMP(tht, &fv, g, nthreads);
   
   if (verbose)
