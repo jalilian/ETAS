@@ -923,12 +923,14 @@ void etas::mloglikGrMP(NumericVector theta,
 #pragma omp for //schedule(static)
   for (int j = 0; j < N; ++j)
   {
+    double* int_part2;
+
     if (flag[j] == 1)
     {
       double fv1temp = mu * bk[j];
       double g1temp[8] = {0};
       g1temp[0] = bk[j];
-      
+
       for (int i = 0; i < j; i++)
       {
         double* part1 = dkappafun2(m[i], kparam);
@@ -971,17 +973,16 @@ void etas::mloglikGrMP(NumericVector theta,
       }
     }
     
-    double* int_part2;
     if (t[j] > tstart2)
     {
       int_part2 = dgfunint2(tlength - t[j], gparam);
     }
     else
     {
-      double* a1 = dgfunint2(tlength - t[j], gparam);
-      double* a2 = dgfunint2(tstart2 - t[j], gparam);
+      double* g1 = dgfunint2(tlength - t[j], gparam);
+      double* g2 = dgfunint2(tstart2 - t[j], gparam);
       for (int i = 0; i < 3; i++)
-        int_part2[i] = a1[i] - a2[i];
+        int_part2[i] = g1[i] - g2[i];
     }
 
     NumericVector int_part3(4);
