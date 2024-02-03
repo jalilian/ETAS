@@ -1027,7 +1027,7 @@ void etas::mloglikGrMP(NumericVector theta,
       }
     }
 
-    double int_part1 = dkappafun2(m[j], kparam);
+    double* int_part1 = dkappafun2(m[j], kparam);
 
     double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
