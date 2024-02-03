@@ -801,7 +801,9 @@ double etas::mloglikMP(NumericVector theta,
   const double D = theta[5] * theta[5];
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
-  
+
+  double gparam[] = {c, p};
+
   double fv1 = 0, fv2 = 0;
   
 #pragma omp parallel num_threads(nthreads)
@@ -822,7 +824,7 @@ double etas::mloglikMP(NumericVector theta,
       for (int i = 0; i < j; ++i)
       {
         s_thread += A * exp(alpha * m[i]) *
-          g1(t[j] - t[i], c, p) *
+          gfun(t[j] - t[i], gparam) *
           f1(dist2(x[j], y[j], x[i], y[i]),
              D * exp(gamma * m[i]), q);
       }
@@ -911,7 +913,9 @@ void etas::mloglikGrMP(NumericVector theta,
   const double D = theta[5] * theta[5];
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
-  
+
+  double gparam[] = {c, p};
+
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
   
@@ -939,7 +943,7 @@ void etas::mloglikGrMP(NumericVector theta,
         part1 = exp(alpha * m[i]);
         
         delta = t[j] - t[i];
-        part2 = g1(delta, c, p);
+        part2 = gfun(delta, gparam);
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
@@ -1542,7 +1546,9 @@ NumericVector lambda(NumericVector tv,
   const double D =  theta[5];
   const double q=  theta[6];
   const double gamma = theta[7];
-  
+
+  double gparam[] = {c, p};
+
   NumericVector out(tv.length());
   double sig, s = 0; //= mu * bk[j];
   
@@ -1553,7 +1559,7 @@ NumericVector lambda(NumericVector tv,
     {
       sig = D * exp(gamma * m[i]);
       s += A * exp(alpha * m[i]) *
-        g1(tv[j] - t[i], c, p) *
+        gfun(tv[j] - t[i], gparam) *
         f1(dist2(xv[j], yv[j], x[i], y[i]), sig, q);
       i++;
     }
@@ -1623,6 +1629,8 @@ List cxxdeclust(NumericVector param,
   const double q= param[6];
   const double gamma = param[7];
   
+  double gparam[] = {c, p};
+
   double integ0 = 0;
   for (int i = 0; i < N; i++)
   {
@@ -1677,7 +1685,7 @@ List cxxdeclust(NumericVector param,
     for (int j = 0; j < i; ++j)
     {
       s_thread += A * exp(alpha * m[j]) *
-        g1(t[i] - t[j], c, p) *
+        gfun(t[i] - t[j], gparam) *
         f1(dist2(x[i], y[i], x[j], y[j]), D * exp(gamma * m[j]), q);
     }
     
@@ -1718,6 +1726,8 @@ List cxxrates(NumericVector param,
   const double q= param[6];
   const double gamma = param[7];
   
+  double gparam[] = {c, p};
+
   int N = t.length(), ngx = gx.length(), ngy = gy.length();
   
   NumericMatrix bkgd(ngx, ngy), total(ngx, ngy), clust(ngx, ngy),
@@ -1742,7 +1752,7 @@ List cxxrates(NumericVector param,
       for (int l = 0; l < N; l++)
       {
         lamb(i, j) += A * exp(alpha * m[l]) *
-          g1(tlength - t[l], c, p) *
+          gfun(tlength - t[l], gparam) *
           f1(dist2(x[l], y[l], gx[i], gy[j]), D * exp(gamma * m[l]), q);
       }
     }
@@ -1823,6 +1833,8 @@ NumericVector cxxlambdtemp(NumericVector tg,
   const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
   
+  double gparam[] = {c, p};
+
   const int N = revents.nrow();
   NumericVector sinteg(N);
   const int ng = tg.length();
@@ -1836,7 +1848,6 @@ NumericVector cxxlambdtemp(NumericVector tg,
 
     sinteg[i] =  A * exp(alpha * m[i]) *
       polyintegXX(f1r, w, px, py, x[i], y[i], ndiv);
-    
   }
   
   for (int j=0; j < ng; ++j)
@@ -1846,7 +1857,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
     {
       if (t[i] < tg[j])
       {
-        sum += g1(tg[j] - t[i], c, p) * sinteg[i];
+        sum += gfun(tg[j] - t[i], gparam) * sinteg[i];
       }
     }
     out[j] = mu * integ0 /(tlength - tstart2) + sum;
