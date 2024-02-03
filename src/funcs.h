@@ -129,7 +129,7 @@ double* dffun2(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
   double sig = D * exp(gamma * m);
-  static out[4];
+  static double out[4];
   out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
   // d D
   out[1] = out[0] * (-1 + q * r2  / (r2 + sig)) / D;
