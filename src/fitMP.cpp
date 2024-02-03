@@ -326,14 +326,15 @@ void etas::mloglikGr(NumericVector theta,
         df1[i] += g1temp[i] / fv1temp;
       }
     }
-    
+
+    NumericVector int_part2(3);
     if (t[j] > tstart2)
     {
-      NumericVector int_part2 = dgfunint(tlength - t[j], gparam);
+      int_part2 = dgfunint(tlength - t[j], gparam);
     }
     else
     {
-      NumericVector int_part2 = dgfunint(tlength - t[j], gparam) -
+      int_part2 = dgfunint(tlength - t[j], gparam) -
         dgfunint(tstart2 - t[j], gparam);
     }
     
