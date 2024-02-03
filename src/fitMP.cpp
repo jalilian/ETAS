@@ -931,9 +931,9 @@ void etas::mloglikGrMP(NumericVector theta,
 
       for (int i = 0; i < j; i++)
       {
-        double* part1 = dkappafun2(m[i], kparam);
-        double* part2 = dgfun2(t[j] - t[i], gparam);
-        double* part3 = dffun2(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        std::array<double, 3> part1 = dkappafun2(m[i], kparam);
+        std::array<double, 3> part2 = dgfun2(t[j] - t[i], gparam);
+        std::array<double, 4> part3 = dffun2(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
@@ -971,10 +971,10 @@ void etas::mloglikGrMP(NumericVector theta,
       }
     }
     
-    double* int_part2 = dgfunint2(tlength - t[j], gparam);
+    std::array<double, 3> int_part2 = dgfunint2(tlength - t[j], gparam);
     if (t[j] <= tstart2)
     {
-      double* gtmp = dgfunint2(tstart2 - t[j], gparam);
+      std::array<double, 3> gtmp = dgfunint2(tstart2 - t[j], gparam);
       for (int i = 0; i < 3; i++)
         int_part2[i] -= gtmp[i];
     }
@@ -1013,16 +1013,16 @@ void etas::mloglikGrMP(NumericVector theta,
                     y1 + r1/(r1 + r2) * (y2 - y1),
                     x[j], y[j]);
           
-          double* a1 = dfrfunint2(r1, m[j], fparam);
-          double* a2 = dfrfunint2(r0, m[j], fparam);
-          double* a3 = dfrfunint2(r2, m[j], fparam);
+          std::array<double, 4> a1 = dfrfunint2(r1, m[j], fparam);
+          std::array<double, 4> a2 = dfrfunint2(r0, m[j], fparam);
+          std::array<double, 4> a3 = dfrfunint2(r2, m[j], fparam);
           for (int i = 0; i < 4; i++)
             int_part3[i] += id * (a1[i] / 6 + a2[i] * 2.0 / 3 + a3[i] / 6) * phi;
         }
       }
     }
 
-    double* int_part1 = dkappafun2(m[j], kparam);
+    std::array<double, 3> int_part1 = dkappafun2(m[j], kparam);
 
     double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
