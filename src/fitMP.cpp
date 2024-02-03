@@ -182,7 +182,7 @@ double etas::mloglik(NumericVector theta)
       sumpart = mu * bk[j];
       for (int i = 0; i < j; i++)
       {
-        sumpart += A * exp(alpha * m[i]) *
+        sumpart += kappafun(m[i], A, alpha) *
           g1(t[j] - t[i], c, p) *
           f1(dist2(x[j], y[j], x[i], y[i]),
              D * exp(gamma * m[i]), q);
@@ -242,7 +242,7 @@ double etas::mloglik(NumericVector theta)
       }
     }
     
-    fv2 += A * exp(alpha * m[j]) * gi * si;
+    fv2 += kappafun(m[j], A, alpha) * gi * si;
   }
   
   fv2 += mu * integ0;
