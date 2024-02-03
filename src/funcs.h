@@ -2,6 +2,7 @@
 #define FUNCS_H
 // ******************************************************************
 
+#include <array>
 #include <Rcpp.h>
 using namespace Rcpp;
 
@@ -68,6 +69,17 @@ double* dkappafun2(double m, double kparam[])
   return out;
 }
 
+std::array<double, 3> dkappafun3(double m, double kparam[])
+{
+  double A = kparam[0], alpha = kparam[1];
+  std::array<double, 3> out;
+  out[0] = A * exp(alpha * m);
+  // d A
+  out[1] = out[0] / A;
+  // d alpha
+  out[2] = out[0] * m;
+  return out;
+}
 // ******************************************************************
 // temporal density function and its derivatives
 // ******************************************************************
@@ -105,6 +117,19 @@ double* dgfun2(double t, double gparam[])
   return out;
 }
 
+std::array<double, 3> dgfun3(double t, double gparam[])
+{
+  double c = gparam[0], p = gparam[1];
+  std::array<double, 3> out;
+  out[0] = (p - 1) / c * pow(1 + t / c, - p);
+  // d c
+  out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
+  // d p
+  out[2] = out[0] * (1 / (p - 1) - log(1 + t / c));
+  return out;
+}
+
+
 double gfunint(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
@@ -127,6 +152,18 @@ double* dgfunint2(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   static double out[3];
+  out[0] = 1 - pow(1 + t / c, 1 - p);
+  // d c
+  out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);
+  // d p
+  out[2] = - (1 - out[0]) * (log(c) - log(c + t));
+  return out;
+}
+
+std::array<double, 3> dgfunint3(double t, double gparam[])
+{
+  double c = gparam[0], p = gparam[1];
+  std::array<double, 3> out;
   out[0] = 1 - pow(1 + t / c, 1 - p);
   // d c
   out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);
@@ -175,6 +212,21 @@ double* dffun2(double r2, double m, double fparam[])
   return out;
 }
 
+std::array<double, 4> dffun3(double r2, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1], q = fparam[2];
+  double sig = D * exp(gamma * m);
+  std::array<double, 4> out;
+  out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
+  // d D
+  out[1] = out[0] * (-1 + q * r2  / (r2 + sig)) / D;
+  // d q
+  out[2] = out[0] * (1 / (q - 1) - log(1 + r2 / sig));
+  // d gamma
+  out[3] = out[0] * (-1 + q * r2  / (r2 + sig)) * m;
+  return out;
+}
+
 double frfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -206,6 +258,23 @@ double* dfrfunint2(double r, double m, double fparam[])
   double r2 = r * r / sig;
   double v = pow(1 + r2, 1 - q) / (2 * M_PI);
   static double out[4];
+  out[0] = 1 / (2 * M_PI) - v;
+  // d D
+  out[1] = (1 - q) * v / (1 + r2) * r2 / D;
+  // d q
+  out[2] =  v * log(1 + r2);
+  // d gamma
+  out[3] = (1 - q) * v / (1 + r2) * r2 * m;
+  return out;
+}
+
+std::array<double, 4> dfrfunint3(double r, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1], q = fparam[2];
+  double sig = D * exp(gamma * m);
+  double r2 = r * r / sig;
+  double v = pow(1 + r2, 1 - q) / (2 * M_PI);
+  std::array<double, 4> out;
   out[0] = 1 / (2 * M_PI) - v;
   // d D
   out[1] = (1 - q) * v / (1 + r2) * r2 / D;
