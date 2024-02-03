@@ -923,7 +923,7 @@ void etas::mloglikGrMP(NumericVector theta,
 #pragma omp for //schedule(static)
   for (int j = 0; j < N; ++j)
   {
-    double* int_part2;
+    double int_part2[3];
 
     if (flag[j] == 1)
     {
@@ -1087,6 +1087,7 @@ void etas::linesearchMP(NumericVector xOld,
                         double *ram,
                         int nthreads)
 {
+  Rprintf("\nPassed here  ...\n");
   R_CheckUserInterrupt();
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     a1, a2, a3, b1, b2;
