@@ -913,8 +913,6 @@ void etas::mloglikGrMP(NumericVector theta,
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
-  Rprintf("Passed Here1 !!!\n");
-
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
 #pragma omp parallel num_threads(nthreads)
@@ -936,8 +934,6 @@ void etas::mloglikGrMP(NumericVector theta,
         NumericVector part1 = dkappafun(m[i], kparam);
         NumericVector part2 = dgfun(t[j] - t[i], gparam);
         NumericVector part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
-        Rprintf("Passed Here22222222222222222222222222222222222222222222222222222222222222222!!!\n");
-
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 

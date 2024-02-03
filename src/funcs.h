@@ -125,6 +125,21 @@ NumericVector dffun(double r2, double m, double fparam[])
   return out;
 }
 
+double* dffun2(double r2, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1], q = fparam[2];
+  double sig = D * exp(gamma * m);
+  static out[4];
+  out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
+  // d D
+  out[1] = out[0] * (-1 + q * r2  / (r2 + sig)) / D;
+  // d q
+  out[2] = out[0] * (1 / (q - 1) - log(1 + r2 / sig));
+  // d gamma
+  out[3] = out[0] * (-1 + q * r2  / (r2 + sig)) * m;
+  return out;
+}
+
 double frfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -136,7 +151,24 @@ NumericVector dfrfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
   double sig = D * exp(gamma * m);
-  NumericVector out(3);
+  NumericVector out(4);
+  double r2 = r * r / sig;
+  double v = pow(1 + r2, 1 - q) / (2 * M_PI);
+  out[0] = 1 / (2 * M_PI) - v;
+  // d D
+  out[1] = (1 - q) * v / (1 + r2) * r2 / D;
+  // d q
+  out[2] =  v * log(1 + r2);
+  // d gamma
+  out[3] = (1 - q) * v / (1 + r2) * r2 * m;
+  return out;
+}
+
+double* dfrfunint2(double r, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1], q = fparam[2];
+  double sig = D * exp(gamma * m);
+  static double out[4];
   double r2 = r * r / sig;
   double v = pow(1 + r2, 1 - q) / (2 * M_PI);
   out[0] = 1 / (2 * M_PI) - v;
