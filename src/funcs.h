@@ -40,13 +40,13 @@ double norm(double *x, int dim)
 
 double kappafun(double m, double kparam[])
 {
-  double A = k_param[0], alpha = kparam[1];
+  double A = kparam[0], alpha = kparam[1];
   return A * exp(alpha * m);
 }
 
 NumericVector dkappafun(double m, double kparam[])
 {
-  double A = k_param[0], alpha = kparam[1];
+  double A = kparam[0], alpha = kparam[1];
   NumericVector out(3);
   out[0] = A * exp(alpha * m);
   // d A
