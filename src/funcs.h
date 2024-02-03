@@ -56,6 +56,18 @@ NumericVector dkappafun(double m, double kparam[])
   return out;
 }
 
+double* dkappafun2(double m, double kparam[])
+{
+  double A = kparam[0], alpha = kparam[1];
+  static double out[3];
+  out[0] = A * exp(alpha * m);
+  // d A
+  out[1] = out[0] / A;
+  // d alpha
+  out[2] = out[0] * m;
+  return out;
+}
+
 // ******************************************************************
 // temporal density function and its derivatives
 // ******************************************************************
@@ -73,6 +85,18 @@ NumericVector dgfun(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   NumericVector out(3);
+  out[0] = (p - 1) / c * pow(1 + t / c, - p);
+  // d c
+  out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
+  // d p
+  out[2] = out[0] * (1 / (p - 1) - log(1 + t / c));
+  return out;
+}
+
+double* dgfun2(double t, double gparam[])
+{
+  double c = gparam[0], p = gparam[1];
+  static double out[3];
   out[0] = (p - 1) / c * pow(1 + t / c, - p);
   // d c
   out[1] = out[0] * (-1 / c - p / (c + t) + p / c);
@@ -99,6 +123,17 @@ NumericVector dgfunint(double t, double gparam[])
   return out;
 }
 
+double* dgfunint2(double t, double gparam[])
+{
+  double c = gparam[0], p = gparam[1];
+  static double out[3];
+  out[0] = 1 - pow(1 + t / c, 1 - p);
+  // d c
+  out[1] = - (1 - out[0]) * (1 - p) * (1 / (c + t) - 1 / c);
+  // d p
+  out[2] = - (1 - out[0]) * (log(c) - log(c + t));
+  return out;
+}
 // ******************************************************************
 // spatial density function and its derivatives
 // ******************************************************************
