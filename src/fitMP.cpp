@@ -923,7 +923,7 @@ void etas::mloglikGrMP(NumericVector theta,
 #pragma omp for //schedule(static)
   for (int j = 0; j < N; ++j)
   {
-    double int_part2[3];
+    double* int_part2;
 
     if (flag[j] == 1)
     {
