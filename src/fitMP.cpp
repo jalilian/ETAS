@@ -813,23 +813,23 @@ double etas::mloglikMP(NumericVector theta,
 #pragma omp for
   for (int j = 0; j < N; ++j)
   {
-    double s_thread, gi;
     if (flag[j] == 1)
     {
-      s_thread = mu * bk[j];
+      double sumpart = mu * bk[j];
       for (int i = 0; i < j; ++i)
       {
-        s_thread += kappafun(m[i], kparam) *
+        sumpart += kappafun(m[i], kparam) *
           gfun(t[j] - t[i], gparam) *
           ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
       }
       
-      if (s_thread > 1.0e-25)
-        fv1_thread += log(s_thread);
+      if (sumpart > 1.0e-25)
+        fv1_thread += log(sumpart);
       else
         fv1_thread += -100;
     }
     
+    double gi;
     if (t[j] > tstart2)
     {
       gi = gfunint(tlength - t[j], gparam);
