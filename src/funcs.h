@@ -103,21 +103,25 @@ NumericVector dgfunint(double t, double gparam[])
 // spatial density function and its derivatives
 // ******************************************************************
 
-double ffun(double r2, double fparam[])
+double ffun(double r2, double m, double fparam[])
 {
-  double sig = fparam[0], q = fparam[1];
+  double D = fparam[0], gamma = fparam[1], q = fparam[2];
+  double sig = D * exp(gamma * m)
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 }
 
-NumericVector dffun(double r2, double fparam[])
+NumericVector dffun(double r2, double m, double fparam[])
 {
-  double sig = fparam[0], q = fparam[1];
-  NumericVector out(3);
+  double D = fparam[0], gamma = fparam[1], q = fparam[2];
+  double sig = D * exp(gamma * m)
+  NumericVector out(4);
   out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
-  // d sig
-  out[1] = out[0] * (-1 + q * r2  / (r2 + sig)) / sig;
+  // d D
+  out[1] = out[0] * (-1 + q * r2  / (r2 + sig)) / D;
   // d q
   out[2] = out[0] * (1 / (q - 1) - log(1 + r2 / sig));
+  // d gamma
+  out[3] = out[0] * (-1 + q * r2  / (r2 + sig)) * m;
   return out;
 }
 

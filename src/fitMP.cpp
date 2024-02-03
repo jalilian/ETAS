@@ -175,6 +175,7 @@ double etas::mloglik(NumericVector theta)
 
   double kparam[] = {A, alpha};
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
   
   double fv1 = 0, fv2 = 0, sumpart, w[2], si, gi;
   
@@ -185,10 +186,9 @@ double etas::mloglik(NumericVector theta)
       sumpart = mu * bk[j];
       for (int i = 0; i < j; i++)
       {
-        double fparam[] = {D * exp(gamma * m[i]), q};
         sumpart += kappafun(m[i], kparam) *
           gfun(t[j] - t[i], gparam) *
-          ffun(dist2(x[j], y[j], x[i], y[i]), fparam);
+          ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
       }
       
       if (sumpart > 1.0e-25)
@@ -272,6 +272,7 @@ void etas::mloglikGr(NumericVector theta,
 
   double kparam[] = {A, alpha};
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
@@ -291,8 +292,7 @@ void etas::mloglikGr(NumericVector theta,
         
         part2 = dgfun(t[j] - t[i], gparam);
         
-        double fparam[] = {D * exp(gamma * m[i]), q};
-        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), fparam);
+        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
@@ -308,14 +308,14 @@ void etas::mloglikGr(NumericVector theta,
         // part2_p
         g1temp[4] += part1[0] * part2[2] * part3[0];
         
-        // part3_d from part3_sig
-        g1temp[5] += part1[0] * part2[0] * (part3[1] * sig / D);
+        // part3_d
+        g1temp[5] += part1[0] * part2[0] * part3[1];
         
         // part3_q
         g1temp[6] += part1[0] * part2[0] * part3[2];
         
-        // part3_gamma from part3_sig
-        g1temp[7]  += part1[0] * part2[0] * (part3[1] * sig * m[i]);
+        // part3_gamma
+        g1temp[7]  += part1[0] * part2[0] * part3[3];
       }
       
       if (fv1temp > 1.0e-25)
@@ -803,6 +803,7 @@ double etas::mloglikMP(NumericVector theta,
   const double gamma = theta[7] * theta[7];
 
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   double fv1 = 0, fv2 = 0;
   
@@ -823,10 +824,9 @@ double etas::mloglikMP(NumericVector theta,
       s_thread = mu * bk[j];
       for (int i = 0; i < j; ++i)
       {
-        double fparam[] = {D * exp(gamma * m[i]), q};
         s_thread += A * exp(alpha * m[i]) *
           gfun(t[j] - t[i], gparam) *
-          ffun(dist2(x[j], y[j], x[i], y[i]), fparam);
+          ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
       }
       
       if (s_thread > 1.0e-25)
@@ -915,6 +915,8 @@ void etas::mloglikGrMP(NumericVector theta,
   const double gamma = theta[7] * theta[7];
 
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
+
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
@@ -947,8 +949,7 @@ void etas::mloglikGrMP(NumericVector theta,
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
-        double fparam[] = {D * exp(gamma * m[i]), q};
-        part3 = ffun(r2, fparam);
+        part3 = ffun(r2, m[i], fparam);
        // part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
         
         fv1temp    += A * part1 * part2 * part3;
@@ -1549,6 +1550,7 @@ NumericVector lambda(NumericVector tv,
   const double gamma = theta[7];
 
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   NumericVector out(tv.length());
   double s = 0; //= mu * bk[j];
@@ -1558,10 +1560,9 @@ NumericVector lambda(NumericVector tv,
     int i = 0;
     while (t[i] < tv[j])
     {
-      double fparam[] = {D * exp(gamma * m[i]), q};
       s += A * exp(alpha * m[i]) *
         gfun(tv[j] - t[i], gparam) *
-        ffun(dist2(xv[j], yv[j], x[i], y[i]), fparam);
+        ffun(dist2(xv[j], yv[j], x[i], y[i]), m[i], fparam);
       i++;
     }
     out[j] = s;
@@ -1631,6 +1632,7 @@ List cxxdeclust(NumericVector param,
   const double gamma = param[7];
   
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   double integ0 = 0;
   for (int i = 0; i < N; i++)
@@ -1685,10 +1687,9 @@ List cxxdeclust(NumericVector param,
     double s_thread = mu * bk[i];
     for (int j = 0; j < i; ++j)
     {
-      double fparam[] = {D * exp(gamma * m[j]), q};
       s_thread += A * exp(alpha * m[j]) *
         gfun(t[i] - t[j], gparam) *
-        ffun(dist2(x[i], y[i], x[j], y[j]), fparam);
+        ffun(dist2(x[i], y[i], x[j], y[j]), m[j], fparam);
     }
     
     lam[i] = s_thread;
@@ -1729,6 +1730,8 @@ List cxxrates(NumericVector param,
   const double gamma = param[7];
   
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
+
 
   int N = t.length(), ngx = gx.length(), ngy = gy.length();
   
@@ -1753,10 +1756,9 @@ List cxxrates(NumericVector param,
       
       for (int l = 0; l < N; l++)
       {
-        double fparam[] = {D * exp(gamma * m[l]), q};
         lamb(i, j) += A * exp(alpha * m[l]) *
           gfun(tlength - t[l], gparam) *
-          ffun(dist2(x[l], y[l], gx[i], gy[j]), fparam);
+          ffun(dist2(x[l], y[l], gx[i], gy[j]), m[l], fparam);
       }
     }
   
@@ -1892,6 +1894,7 @@ NumericVector cxxlambspat(NumericVector xg,
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
   
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   const int N = revents.nrow();
   
@@ -1913,8 +1916,7 @@ NumericVector cxxlambspat(NumericVector xg,
           gfunint(tstart2 - t[i], gparam);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
-      double fparam[] = {D * exp(gamma * m[i]), q};
-      sum += A * exp(alpha * m[i]) * gint * ffun(r2, fparam);
+      sum += A * exp(alpha * m[i]) * gint * ffun(r2, m[i], fparam);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
