@@ -291,7 +291,7 @@ void etas::mloglikGr(NumericVector theta,
         
         part2 = dgfun(t[j] - t[i], gparam);
         
-        double sig   = D * exp(gamma * m[i]);
+        double fparam[] = {D * exp(gamma * m[i]), q};
         part3 = dffun(dist2(x[j], y[j], x[i], y[i]), fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
@@ -1551,7 +1551,7 @@ NumericVector lambda(NumericVector tv,
   double gparam[] = {c, p};
 
   NumericVector out(tv.length());
-  double sig, s = 0; //= mu * bk[j];
+  double s = 0; //= mu * bk[j];
   
   for (int j = 0; j < tv.length(); j++)
   {
