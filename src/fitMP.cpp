@@ -276,7 +276,9 @@ void etas::mloglikGr(NumericVector theta,
   double fparam[] = {D, gamma, q};
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
-
+  
+  NumericVector part1(3), int_part1(3), part2(3), int_part2(3), part3(3);
+  
   for (int j = 0; j < N; ++j)
   {
     if (flag[j] == 1)
@@ -287,9 +289,11 @@ void etas::mloglikGr(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        NumericVector part1 = dkappafun(m[i], kparam);
-        NumericVector part2 = dgfun(t[j] - t[i], gparam);
-        NumericVector part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        part1 = dkappafun(m[i], kparam);
+        
+        part2 = dgfun(t[j] - t[i], gparam);
+        
+        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
@@ -326,8 +330,7 @@ void etas::mloglikGr(NumericVector theta,
         df1[i] += g1temp[i] / fv1temp;
       }
     }
-
-    NumericVector int_part2(3);
+    
     if (t[j] > tstart2)
     {
       int_part2 = dgfunint(tlength - t[j], gparam);
@@ -378,7 +381,7 @@ void etas::mloglikGr(NumericVector theta,
       }
     }
     
-    NumericVector int_part1 = dkappafun(m[j], kparam);
+    int_part1 = dkappafun(m[j], kparam);
 
     double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
@@ -1238,6 +1241,7 @@ List etas::fitfunMP(NumericVector tht,
     for (int j = 0; j < 8; j++)
       h[i][j] = ihess(i, j);
   
+  Rprintf("Passed here!!!!!!!!!!!!!!!!!!!!!!!!\n");
   mloglikGrMP(tht, &fv, g, nthreads);
   
   if (verbose)
