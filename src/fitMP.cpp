@@ -287,7 +287,7 @@ void etas::mloglikGr(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        part1 = dkappafun(m[i], k_param);
+        part1 = dkappafun(m[i], kparam);
         
         part2 = dgfun(t[j] - t[i], c, p);
         
@@ -383,7 +383,7 @@ void etas::mloglikGr(NumericVector theta,
       }
     }
     
-    int_part1 = dkappafun(m[j], k_param);
+    int_part1 = dkappafun(m[j], kparam);
 
     double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
