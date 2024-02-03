@@ -173,7 +173,8 @@ double etas::mloglik(NumericVector theta)
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
 
-  double k_param[] = {A, alpha};
+  double kparam[] = {A, alpha};
+  double gparam[] = {c, p};
   
   double fv1 = 0, fv2 = 0, sumpart, w[2], si, gi;
   
@@ -184,8 +185,8 @@ double etas::mloglik(NumericVector theta)
       sumpart = mu * bk[j];
       for (int i = 0; i < j; i++)
       {
-        sumpart += kappafun(m[i], k_param) *
-          g1(t[j] - t[i], c, p) *
+        sumpart += kappafun(m[i], kparam) *
+          dgfun(t[j] - t[i], gparam) *
           f1(dist2(x[j], y[j], x[i], y[i]),
              D * exp(gamma * m[i]), q);
       }
@@ -244,7 +245,7 @@ double etas::mloglik(NumericVector theta)
       }
     }
     
-    fv2 += kappafun(m[j], k_param) * gi * si;
+    fv2 += kappafun(m[j], kparam) * gi * si;
   }
   
   fv2 += mu * integ0;
@@ -269,7 +270,8 @@ void etas::mloglikGr(NumericVector theta,
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
 
-  double k_param[] = {A, alpha};
+  double kparam[] = {A, alpha};
+  double gparam[] = {c, p};
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   

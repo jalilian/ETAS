@@ -38,15 +38,15 @@ double norm(double *x, int dim)
 // expected number of triggered events
 // ******************************************************************
 
-double kappafun(double m, double k_param[])
+double kappafun(double m, double kparam[])
 {
-  double A = k_param[0], alpha = k_param[1];
+  double A = k_param[0], alpha = kparam[1];
   return A * exp(alpha * m);
 }
 
-NumericVector dkappafun(double m, double k_param[])
+NumericVector dkappafun(double m, double kparam[])
 {
-  double A = k_param[0], alpha = k_param[1];
+  double A = k_param[0], alpha = kparam[1];
   NumericVector out(3);
   out[0] = A * exp(alpha * m);
   // d A
@@ -60,16 +60,18 @@ NumericVector dkappafun(double m, double k_param[])
 // temporal density function and its derivatives
 // ******************************************************************
 
-double g1(double t, double c, double p)
+double gfun(double t, double gparam[])
 {
+  double c = gparam[0], p = gparam[1];
   if (t <= 0)
     return 0;
   else
     return (p - 1) / c * pow(1 + t / c, - p);
 }
 
-NumericVector dgfun(double t, double c, double p)
+NumericVector dgfun(double t, double gparam[])
 {
+  double c = gparam[0], p = gparam[1];
   NumericVector out(3);
   out[0] = (p - 1) / c * pow(1 + t / c, - p);
   // d c
