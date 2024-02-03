@@ -185,7 +185,7 @@ double etas::mloglik(NumericVector theta)
       sumpart = mu * bk[j];
       for (int i = 0; i < j; i++)
       {
-        double fparam[] = {D * exp(gamma * m[i]), q}
+        double fparam[] = {D * exp(gamma * m[i]), q};
         sumpart += kappafun(m[i], kparam) *
           gfun(t[j] - t[i], gparam) *
           ffun(dist2(x[j], y[j], x[i], y[i]), fparam);
@@ -292,7 +292,7 @@ void etas::mloglikGr(NumericVector theta,
         part2 = dgfun(t[j] - t[i], gparam);
         
         double sig   = D * exp(gamma * m[i]);
-        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), sig, q);
+        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
@@ -947,7 +947,7 @@ void etas::mloglikGrMP(NumericVector theta,
         
         sig   = D * exp(gamma * m[i]);
         r2 = dist2(x[j], y[j], x[i], y[i]);
-        double fparam[] = {D * exp(gamma * m[i]), q}
+        double fparam[] = {D * exp(gamma * m[i]), q};
         part3 = ffun(r2, fparam);
        // part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
         
