@@ -38,13 +38,15 @@ double norm(double *x, int dim)
 // expected number of triggered events
 // ******************************************************************
 
-double kappafun(double m, double A, double alpha)
+double kappafun(double m, double k_param[])
 {
+  double A = k_param[0], alpha = k_param[1];
   return A * exp(alpha * m);
 }
 
-NumericVector dkappafun(double m, double A, double alpha)
+NumericVector dkappafun(double m, double k_param[])
 {
+  double A = k_param[0], alpha = k_param[1];
   NumericVector out(3);
   out[0] = A * exp(alpha * m);
   // d A
