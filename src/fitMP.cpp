@@ -179,7 +179,7 @@ double etas::mloglik(NumericVector theta)
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
   
-  double fv1 = 0, fv2 = 0, si, gi;
+  double fv1 = 0, fv2 = 0;
   
   for (int j = 0; j < t.length(); ++j)
   {
@@ -199,6 +199,7 @@ double etas::mloglik(NumericVector theta)
         fv1 += -100;
     }
     
+    double gi;
     if (t[j] > tstart2)
     {
       gi = gfunint(tlength - t[j], gparam);
@@ -208,27 +209,26 @@ double etas::mloglik(NumericVector theta)
       gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
     }
     
-    si = 0;
-    double dpx, dpy, x1, x2, y1, y2, det, r0, r1, r2, phi;
+    double si = 0;
     for (int k = 0; k < (px.length() - 1); ++k)
     {
-      dpx = (px[k + 1] - px[k]) / ndiv;
-      dpy = (py[k + 1] - py[k]) / ndiv;
+      double dpx = (px[k + 1] - px[k]) / ndiv;
+      double dpy = (py[k + 1] - py[k]) / ndiv;
       for (int l = 0; l < ndiv; ++l)
       {
-        x1 = px[k] + dpx * l;
-        y1 = py[k] + dpy * l;
-        x2 = px[k] + dpx * (l + 1);
-        y2 = py[k] + dpy * (l + 1);
+        double x1 = px[k] + dpx * l;
+        double y1 = py[k] + dpy * l;
+        double x2 = px[k] + dpx * (l + 1);
+        double y2 = py[k] + dpy * (l + 1);
         
-        det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
+        double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
           (x2 * y1 + y2 * x[j] + x1 * y[j]);
         if (fabs(det) < 1.0e-10)
           continue;
         
-        r1 = dist(x1, y1, x[j], y[j]);
-        r2 = dist(x2, y2, x[j], y[j]);
-        phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+        double r1 = dist(x1, y1, x[j], y[j]);
+        double r2 = dist(x2, y2, x[j], y[j]);
+        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
         if (fabs(phi) > 1)
           phi = 1 - 1.0e-10;
         
@@ -236,7 +236,7 @@ double etas::mloglik(NumericVector theta)
         
         if (r1 + r2 > 1.0e-20)
         {
-          r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
           si += sgn(det) * (frfunint(r1, m[j], fparam) / 6 +
