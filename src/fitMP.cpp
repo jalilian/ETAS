@@ -979,7 +979,7 @@ void etas::mloglikGrMP(NumericVector theta,
         int_part2[i] -= gtmp[i];
     }
 
-    NumericVector int_part3(4);
+    double int_part3[4];
     for (int k = 0; k < (np - 1); ++k)
     {
       double dpx = (px[k + 1] - px[k]) / ndiv;
