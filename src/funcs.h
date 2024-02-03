@@ -69,7 +69,7 @@ double* dkappafun2(double m, double kparam[])
   return out;
 }
 */
-std::array<double, 3> dkappafun3(double m, double kparam[])
+std::array<double, 3> dkappafun(double m, double kparam[])
 {
   double A = kparam[0], alpha = kparam[1];
   std::array<double, 3> out;
@@ -117,7 +117,7 @@ double* dgfun2(double t, double gparam[])
   return out;
 }
 */
-std::array<double, 3> dgfun3(double t, double gparam[])
+std::array<double, 3> dgfun(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   std::array<double, 3> out;
@@ -160,7 +160,7 @@ double* dgfunint2(double t, double gparam[])
   return out;
 }
 */
-std::array<double, 3> dgfunint3(double t, double gparam[])
+std::array<double, 3> dgfunint(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   std::array<double, 3> out;
@@ -212,7 +212,7 @@ double* dffun2(double r2, double m, double fparam[])
   return out;
 }
 */
-std::array<double, 4> dffun3(double r2, double m, double fparam[])
+std::array<double, 4> dffun(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
   double sig = D * exp(gamma * m);
@@ -268,7 +268,7 @@ double* dfrfunint2(double r, double m, double fparam[])
   return out;
 }
 */
-std::array<double, 4> dfrfunint3(double r, double m, double fparam[])
+std::array<double, 4> dfrfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
   double sig = D * exp(gamma * m);
