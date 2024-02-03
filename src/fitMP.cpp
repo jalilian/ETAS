@@ -276,9 +276,7 @@ void etas::mloglikGr(NumericVector theta,
   double fparam[] = {D, gamma, q};
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
-  
-  NumericVector part1(3), int_part1(3), part2(3), int_part2(3), part3(3);
-  
+
   for (int j = 0; j < N; ++j)
   {
     if (flag[j] == 1)
@@ -289,11 +287,9 @@ void etas::mloglikGr(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        part1 = dkappafun(m[i], kparam);
-        
-        part2 = dgfun(t[j] - t[i], gparam);
-        
-        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        NumericVector part1 = dkappafun(m[i], kparam);
+        NumericVector part2 = dgfun(t[j] - t[i], gparam);
+        NumericVector part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
@@ -333,11 +329,11 @@ void etas::mloglikGr(NumericVector theta,
     
     if (t[j] > tstart2)
     {
-      int_part2 = dgfunint(tlength - t[j], gparam);
+      NumericVector int_part2 = dgfunint(tlength - t[j], gparam);
     }
     else
     {
-      int_part2 = dgfunint(tlength - t[j], gparam) -
+      NumericVector int_part2 = dgfunint(tlength - t[j], gparam) -
         dgfunint(tstart2 - t[j], gparam);
     }
     
@@ -381,7 +377,7 @@ void etas::mloglikGr(NumericVector theta,
       }
     }
     
-    int_part1 = dkappafun(m[j], kparam);
+    NumericVector int_part1 = dkappafun(m[j], kparam);
 
     double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
@@ -816,7 +812,7 @@ double etas::mloglikMP(NumericVector theta,
     if (flag[j] == 1)
     {
       double sumpart = mu * bk[j];
-      for (int i = 0; i < j; ++i)
+      for (int i = 0; i < j; i++)
       {
         sumpart += kappafun(m[i], kparam) *
           gfun(t[j] - t[i], gparam) *
