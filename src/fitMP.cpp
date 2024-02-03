@@ -1087,11 +1087,11 @@ void etas::linesearchMP(NumericVector xOld,
                         double *ram,
                         int nthreads)
 {
-  Rprintf("\nPassed here  ...\n");
   R_CheckUserInterrupt();
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     a1, a2, a3, b1, b2;
-  
+  Rprintf("\nPassed here  1111...\n");
+
   NumericVector xNew(8);
   
   if (*ram <= 1.0e-30)
