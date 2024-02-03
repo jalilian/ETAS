@@ -837,11 +837,11 @@ double etas::mloglikMP(NumericVector theta,
     
     if (t[j] > tstart2)
     {
-      gi = g1i(tlength - t[j], c, p);
+      gi = gfunint(tlength - t[j], gparam);
     }
     else
     {
-      gi = g1i(tlength - t[j], c, p) - g1i(tstart2 - t[j], c, p);
+      gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
     }
     
     double si = 0, dpx, dpy, x1, x2, y1, y2, det, r0, r1, r2, phi;
@@ -1001,7 +1001,7 @@ void etas::mloglikGrMP(NumericVector theta,
     {
       ttemp = tlength - t[j];
       
-      gi = g1i(ttemp, c, p);
+      gi = gfunint(ttemp, gparam);
       gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
       gip = - (1 - gi) * (log(c) - log(c + ttemp));
     }
@@ -1010,8 +1010,8 @@ void etas::mloglikGrMP(NumericVector theta,
       ttemp1 = tstart2 - t[j];
       ttemp2 = tlength - t[j];
       
-      gi1 = g1i(ttemp1, c, p);
-      gi2 = g1i(ttemp2, c, p);
+      gi1 = gfunint(ttemp1, gparam);
+      gi2 = gfunint(ttemp2, gparam);
       gic1 = - (1 - gi1) * (1 - p) * (1/(c + ttemp1) - 1/c);
       gic2 = - (1 - gi2) * (1 - p) * (1/(c + ttemp2) - 1/c);
       gip1 = - (1 - gi1) * (log(c) - log(c + ttemp1));
@@ -1782,7 +1782,9 @@ NumericVector cxxtimetrans(NumericVector theta,
   
   const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
-  
+
+  double gparam[] = {c, p};
+
   const int N = revents.nrow();
   NumericVector sinteg(N), out(N);
   
@@ -1802,10 +1804,10 @@ NumericVector cxxtimetrans(NumericVector theta,
     for (int i=0; i < j; i++)
     {
       if (t[i] > tstart2)
-        sum += g1i(t[j] - t[i], c, p) * sinteg[i];
+        sum += gfunint(t[j] - t[i], gparam) * sinteg[i];
       else
-        sum += (g1i(t[j] - t[i], c, p) -
-          g1i(tstart2 - t[i], c, p)) * sinteg[i];
+        sum += (gfunint(t[j] - t[i], gparam) -
+          gfunint(tstart2 - t[i], gparam)) * sinteg[i];
     }
     out[j] = mu * integ0 * (t[j] - tstart2) / (tlength - tstart2) + sum;
   }
@@ -1886,6 +1888,8 @@ NumericVector cxxlambspat(NumericVector xg,
   const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
   
+  double gparam[] = {c, p};
+
   const int N = revents.nrow();
   
   const int ng = xg.length();
@@ -1898,12 +1902,12 @@ NumericVector cxxlambspat(NumericVector xg,
     {
       if (t[i] > tstart2)
       {
-        gint = g1i(tlength - t[i], c, p);
+        gint = gfunint(tlength - t[i], gparam);
       }
       else
       {
-        gint = g1i(tlength - t[i], c, p) -
-          g1i(tstart2 - t[i], c, p);
+        gint = gfunint(tlength - t[i], gparam) -
+          gfunint(tstart2 - t[i], gparam);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
       double sig = D * exp(gamma * m[i]);
