@@ -14,6 +14,7 @@ using namespace Rcpp;
 // ******************************************************************
 
 double polyintegXX(double (*func)(double, double []),
+                   double m,
                    double funcpara[],
                                   NumericVector px,
                                   NumericVector py,
@@ -57,8 +58,9 @@ double polyintegXX(double (*func)(double, double []),
         r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                   y1 + r1/(r1 + r2) * (y2 - y1), cx, cy);
         
-        sum += id * (func(r1, funcpara)/6 + func(r0, funcpara) * 2/3 +
-          func(r2, funcpara)/6) * theta;
+        sum += id * (func(r1, m, funcpara) / 6 +
+          func(r0, m, funcpara) * 2 / 3 +
+          func(r2, m, funcpara) / 6) * theta;
       }
     }
   }
@@ -810,10 +812,6 @@ double etas::mloglikMP(NumericVector theta,
 #pragma omp for
   for (int j = 0; j < N; ++j)
   {
-    double w[2];
-    w[ 0 ] = D * exp(gamma * m[j]);
-    w[ 1 ] = q;
-
     double s_thread, gi;
     if (flag[j] == 1)
     {
@@ -873,8 +871,9 @@ double etas::mloglikMP(NumericVector theta,
                     y1 + r1/(r1 + r2) * (y2 - y1),
                     x[j], y[j]);
           
-          si += sgn(det) * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
-            f1r(r2, w)/6) * phi;
+          si += sgn(det) * (frfunint(r1, m[j], fparam) / 6 +
+            (frfunint(r0, m[j], fparam) * 2) / 3 +
+            frfunint(r2, m[j], fparam) / 6) * phi;
         }
       }
     }
@@ -1067,8 +1066,9 @@ void etas::mloglikGrMP(NumericVector theta,
                     y1 + r1/(r1 + r2) * (y2 - y1),
                     x[j], y[j]);
           
-          si += id * (f1r(r1, w)/6 + (f1r(r0, w) * 2)/3 +
-            f1r(r2, w)/6) * phi;
+          si += id * (frfunint(r1, m[j], fparam) / 6 +
+            (frfunint(r0, m[j], fparam) * 2) / 3 +
+            frfunint(r2, m[j], fparam) / 6) * phi;
           siq += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
             dq_f1r(r2, w)/6) * phi;
           double sisig = id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
@@ -1785,18 +1785,15 @@ NumericVector cxxtimetrans(NumericVector theta,
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
 
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   const int N = revents.nrow();
   NumericVector sinteg(N), out(N);
   
-  double w[2];
   for (int i=0; i < N; i++)
   {
-    w[ 0 ] = D * exp(gamma * m[i]);
-    w[ 1 ] = q;
-    
     sinteg[i] =  A * exp(alpha * m[i]) *
-      polyintegXX(f1r, w, px, py, x[i], y[i], ndiv);
+      polyintegXX(frfunint, m[i], fparam, px, py, x[i], y[i], ndiv);
   }
   
   for (int j=0; j < N; ++j)
@@ -1837,20 +1834,17 @@ NumericVector cxxlambdtemp(NumericVector tg,
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
   
   double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
 
   const int N = revents.nrow();
   NumericVector sinteg(N);
   const int ng = tg.length();
   NumericVector out(ng);
   
-  double w[2];
   for (int i=0; i < N; i++)
   {
-    w[ 0 ] = D * exp(gamma * m[i]);
-    w[ 1 ] = q;
-
     sinteg[i] =  A * exp(alpha * m[i]) *
-      polyintegXX(f1r, w, px, py, x[i], y[i], ndiv);
+      polyintegXX(frfunint, m[i], fparam, px, py, x[i], y[i], ndiv);
   }
   
   for (int j=0; j < ng; ++j)
