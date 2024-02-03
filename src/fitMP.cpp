@@ -1241,7 +1241,7 @@ List etas::fitfunMP(NumericVector tht,
     for (int j = 0; j < 8; j++)
       h[i][j] = ihess(i, j);
   
-  Rprintf("Passed here!!!!!!!!!!!!!!!!!!!!!!!!\n");
+  Rprintf("Passed Here !!!\n");
   mloglikGrMP(tht, &fv, g, nthreads);
   
   if (verbose)
