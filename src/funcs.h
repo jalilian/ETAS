@@ -125,16 +125,6 @@ NumericVector dffun(double r2, double m, double fparam[])
   return out;
 }
 
-double dq_f1(double r2, double sig, double q)
-{
-  return (1/(q - 1) - log(1 + r2/sig));
-}
-
-double dsig_f1(double r2, double sig, double q)
-{
-  return  (-1 + q * r2 /(r2 + sig)) / sig;
-}
-
 double frfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -157,18 +147,6 @@ NumericVector dfrfunint(double r, double m, double fparam[])
   // d gamma
   out[3] = (1 - q) * v / (1 + r2) * r2 * m;
   return out;
-}
-
-double dq_f1r(double r, double w[])
-{
-  double sig = w[0], q = w[1];
-  return pow(1 + r * r / sig, 1 - q) * log(1 + r * r / sig) / (2 * M_PI);
-}
-
-double dsig_f1r(double r, double w[])
-{
-  double sig = w[0], q = w[1];
-  return (1 - q) * pow(1 + r * r / sig, -q) * r * r / (sig * sig) / (2 * M_PI);
 }
 
 // ******************************************************************

@@ -931,14 +931,13 @@ void etas::mloglikGrMP(NumericVector theta,
       double g1temp[8] = {0};
       g1temp[0] = bk[j];
       
-      g1temp[1] = g1temp[2] = g1temp[3] = g1temp[4] = 0;
-      g1temp[5] = g1temp[6] = g1temp[7] = 0;
-      
       for (int i = 0; i < j; i++)
       {
         NumericVector part1 = dkappafun(m[i], kparam);
         NumericVector part2 = dgfun(t[j] - t[i], gparam);
         NumericVector part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        Rprintf("Passed Here22222222222222222222222222222222222222222222222222222222222222222!!!\n");
+
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
