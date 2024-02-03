@@ -199,11 +199,11 @@ double etas::mloglik(NumericVector theta)
     
     if (t[j] > tstart2)
     {
-      gi = g1i(tlength - t[j], c, p);
+      gi = gfunint(tlength - t[j], gparam);
     }
     else
     {
-      gi = g1i(tlength - t[j], c, p) - g1i(tstart2 - t[j], c, p);
+      gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
     }
     
     si = 0;
@@ -332,12 +332,12 @@ void etas::mloglikGr(NumericVector theta,
     
     if (t[j] > tstart2)
     {
-      int_part2 = dgifun(tlength - t[j], c, p);
+      int_part2 = dgfunint(tlength - t[j], gparam);
     }
     else
     {
-      int_part2 = dgifun(tlength - t[j], c, p) -
-        dgifun(tstart2 - t[j], c, p);
+      int_part2 = dgfunint(tlength - t[j], gparam) -
+        dgfunint(tstart2 - t[j], gparam);
     }
 
     double sig_j = D * exp(gamma * m[j]);
