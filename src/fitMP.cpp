@@ -13,7 +13,7 @@ using namespace Rcpp;
 // approximating the integral of a function on a polygon region
 // ******************************************************************
 
-double polyintegXX(double (*func)(double, double []),
+double polyintegXX(double (*func)(double, double, double []),
                    double m,
                    double funcpara[],
                                   NumericVector px,
