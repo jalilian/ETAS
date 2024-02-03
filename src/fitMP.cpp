@@ -1090,7 +1090,6 @@ void etas::linesearchMP(NumericVector xOld,
   R_CheckUserInterrupt();
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     a1, a2, a3, b1, b2;
-  Rprintf("\nPassed here  1111...\n");
 
   NumericVector xNew(8);
   
@@ -1108,6 +1107,8 @@ void etas::linesearchMP(NumericVector xOld,
   for (int i = 0; i < 8; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
   fv2 = mloglikMP(xNew, nthreads);
+  Rprintf("\nPassed here  1111...\n");
+
   
   if (fv2 > fv1)
     goto stat50;
