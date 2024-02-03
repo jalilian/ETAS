@@ -289,7 +289,7 @@ void etas::mloglikGr(NumericVector theta,
       {
         part1 = dkappafun(m[i], kparam);
         
-        part2 = dgfun(t[j] - t[i], c, p);
+        part2 = dgfun(t[j] - t[i], gparam);
         
         double sig   = D * exp(gamma * m[i]);
         part3 = dffun(dist2(x[j], y[j], x[i], y[i]), sig, q);
