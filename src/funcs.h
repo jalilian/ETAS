@@ -139,7 +139,6 @@ double frfunint(double r, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
   double sig = D * exp(gamma * m);
-  double sig = w[0], q = w[1];
   return (1 - pow(1 + r * r / sig, 1 - q)) / (2 * M_PI);
 }
 
