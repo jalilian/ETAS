@@ -976,7 +976,7 @@ void etas::mloglikGrMP(NumericVector theta,
     {
       double* gtmp = dgfunint2(tstart2 - t[j], gparam);
       for (int i = 0; i < 3; i++)
-        int_part2[i] -= g1tmp[i];
+        int_part2[i] -= gtmp[i];
     }
 
     NumericVector int_part3(4);
