@@ -909,12 +909,11 @@ void etas::mloglikGrMP(NumericVector theta,
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
 
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
-
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
-  
   
 #pragma omp parallel num_threads(nthreads)
 {
@@ -924,12 +923,10 @@ void etas::mloglikGrMP(NumericVector theta,
 #pragma omp for //schedule(static)
   for (int j = 0; j < N; ++j)
   {
-    double fv1temp, g1temp[8], part1, part2, part3, part1_alpha,
-    part2_c, part2_p, part3_d, part3_q, part3_gamma, delta, sig, r2;
-    
     if (flag[j] == 1)
     {
-      fv1temp = mu * bk[j];
+      double fv1temp = mu * bk[j];
+      double g1temp[8] = {0};
       g1temp[0] = bk[j];
       
       g1temp[1] = g1temp[2] = g1temp[3] = g1temp[4] = 0;
@@ -937,50 +934,33 @@ void etas::mloglikGrMP(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        part1 = exp(alpha * m[i]);
-        
-        delta = t[j] - t[i];
-        part2 = gfun(delta, gparam);
-        
-        sig   = D * exp(gamma * m[i]);
-        r2 = dist2(x[j], y[j], x[i], y[i]);
-        part3 = ffun(r2, m[i], fparam);
-       // part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
-        
-        fv1temp    += A * part1 * part2 * part3;
-        g1temp[1]  += part1 * part2 * part3;
-        
-        part2_c = part2 * (-1/c - p/(c + delta) + p/c);
-        g1temp[2] += A * part1 * part2_c * part3;
-        
-        part1_alpha = part1 * m[i];
-        g1temp[3]  += A * part1_alpha * part2 * part3;
-        
-        part2_p = part2 * (1/(p - 1) - log(1 + delta/c));
-        g1temp[4] += A * part1 * part2_p * part3;
-        
-        double part3_sig = part3 * dsig_f1(r2, sig, q);
-        //part3_d = part3 / D * (-1 + q * (1 - 1/(1 + r2/sig)));
-        part3_d = part3_sig * sig / D;
-        g1temp[5] += A * part1 * part2 * part3_d;
-        
-        //part3_q = part3 * (1/(q - 1) - log(1 + r2/sig));
-        part3_q = part3 * dq_f1(r2, sig, q);
-        g1temp[6] += A * part1 * part2 * part3_q;
-        
-        //part3_gamma = part3 * (-m[i] + q * m[i] * (1 - 1/(1 + r2/sig)));
-        part3_gamma = part3_sig * sig * m[i];
-        g1temp[7]  += A * part1 * part2 * part3_gamma;
+        NumericVector part1 = dkappafun(m[i], kparam);
+        NumericVector part2 = dgfun(t[j] - t[i], gparam);
+        NumericVector part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+
+        fv1temp    += part1[0] * part2[0] * part3[0];
+
+        // part1_A
+        g1temp[1]  += part1[1] * part2[0] * part3[0];
+
+        // part2_csig
+        g1temp[2] += part1[0] * part2[1] * part3[0];
+
+        //part1_alpha
+        g1temp[3]  += part1[2] * part2[0] * part3[0];
+
+        // part2_p
+        g1temp[4] += part1[0] * part2[2] * part3[0];
+
+        // part3_d
+        g1temp[5] += part1[0] * part2[0] * part3[1];
+
+        // part3_q
+        g1temp[6] += part1[0] * part2[0] * part3[2];
+
+        // part3_gamma
+        g1temp[7]  += part1[0] * part2[0] * part3[3];
       }
-      
-      g1temp[0] *= 2 * theta[0];
-      g1temp[1] *= 2 * theta[1];
-      g1temp[2] *= 2 * theta[2];
-      g1temp[3] *= 2 * theta[3];
-      g1temp[4] *= 2 * theta[4];
-      g1temp[5] *= 2 * theta[5];
-      g1temp[6] *= 2 * theta[6];
-      g1temp[7] *= 2 * theta[7];
       
       if (fv1temp > 1.0e-25)
         fv1_thread += log(fv1temp);
@@ -988,73 +968,45 @@ void etas::mloglikGrMP(NumericVector theta,
         fv1_thread += -100;
       
       for (int i = 0; i < 8; i++)
+      {
+        g1temp[i] *= 2 * theta[i];
         df1_thread[i] += g1temp[i] / fv1temp;
+      }
     }
-    
-    double fv2temp, g2temp[8], ttemp, ttemp1, ttemp2, gi, gi1, gi2, gic,
-    gic1, gic2, gip, gip1, gip2;
     
     if (t[j] > tstart2)
     {
-      ttemp = tlength - t[j];
-      
-      gi = gfunint(ttemp, gparam);
-      gic = - (1 - gi) * (1 - p) * ( 1/(c + ttemp) - 1/c);
-      gip = - (1 - gi) * (log(c) - log(c + ttemp));
+      NumericVector int_part2 = dgfunint(tlength - t[j], gparam);
     }
     else
     {
-      ttemp1 = tstart2 - t[j];
-      ttemp2 = tlength - t[j];
-      
-      gi1 = gfunint(ttemp1, gparam);
-      gi2 = gfunint(ttemp2, gparam);
-      gic1 = - (1 - gi1) * (1 - p) * (1/(c + ttemp1) - 1/c);
-      gic2 = - (1 - gi2) * (1 - p) * (1/(c + ttemp2) - 1/c);
-      gip1 = - (1 - gi1) * (log(c) - log(c + ttemp1));
-      gip2 = - (1 - gi2) * (log(c) - log(c + ttemp2));
-      
-      gi  = gi2 - gi1;
-      gic = gic2 - gic1;
-      gip = gip2 - gip1;
+      NumericVector int_part2 = dgfunint(tlength - t[j], gparam) -
+        dgfunint(tstart2 - t[j], gparam);
     }
-    
-    double w[2];
-    w[0] = D * exp(gamma * m[j]);
-    w[1] = q;
-    
-    //si      = polyintegXX(fr, w, data.px, data.py, data.x[j], data.y[j]);
-    //sid     = polyintegXX(dD_fr, w, data.px, data.py, data.x[j], data.y[j]);
-    //siq     = polyintegXX(dq_fr, w, data.px, data.py, data.x[j], data.y[j]);
-    //sigamma = polyintegXX(dgamma_fr, w, data.px, data.py, data.x[j], data.y[j]);
-    
-    double sk, si = 0, sid = 0 , siq = 0, sigamma = 0, dpx, dpy,
-      x1, x2, y1, y2, det, r0, r1, phi;
-    
+
+    NumericVector int_part3(4);
     for (int k = 0; k < (np - 1); ++k)
     {
-      dpx = (px[k + 1] - px[k]) / ndiv;
-      dpy = (py[k + 1] - py[k]) / ndiv;
+      double dpx = (px[k + 1] - px[k]) / ndiv;
+      double dpy = (py[k + 1] - py[k]) / ndiv;
       for (int l = 0; l < ndiv; ++l)
       {
-        x1 = px[k] + dpx * l;
-        y1 = py[k] + dpy * l;
-        x2 = px[k] + dpx * (l + 1);
-        y2 = py[k] + dpy * (l + 1);
+        double x1 = px[k] + dpx * l;
+        double y1 = py[k] + dpy * l;
+        double x2 = px[k] + dpx * (l + 1);
+        double y2 = py[k] + dpy * (l + 1);
         
-        det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
+        double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
           (x2 * y1 + y2 * x[j] + x1 * y[j]);
         
         if (fabs(det) < 1.0e-10)
           continue;
         
-        int id = 1;
-        if (det < 0)
-          id = -1;
+        int id = (det < 0) ? -1 : 1;
         
-        r1 = dist(x1, y1, x[j], y[j]);
-        r2 = dist(x2, y2, x[j], y[j]);
-        phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+        double r1 = dist(x1, y1, x[j], y[j]);
+        double r2 = dist(x2, y2, x[j], y[j]);
+        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
         if (fabs(phi) > 1)
           phi = 1 - 1.0e-10;
         
@@ -1062,37 +1014,43 @@ void etas::mloglikGrMP(NumericVector theta,
         
         if (r1 + r2 > 1.0e-20)
         {
-          r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1),
                     x[j], y[j]);
           
-          si += id * (frfunint(r1, m[j], fparam) / 6 +
-            (frfunint(r0, m[j], fparam) * 2) / 3 +
-            frfunint(r2, m[j], fparam) / 6) * phi;
-          siq += id * (dq_f1r(r1, w)/6 + (dq_f1r(r0, w) * 2)/3 +
-            dq_f1r(r2, w)/6) * phi;
-          double sisig = id * (dsig_f1r(r1, w)/6 + (dsig_f1r(r0, w) * 2)/3 +
-            dsig_f1r(r2, w)/6) * phi;
-          sid += sisig * w[0] / D;
-          sigamma += sisig * m[j] * w[0];
+          int_part3 += id * (dfrfunint(r1, m[j], fparam) / 6 +
+              dfrfunint(r0, m[j], fparam) * 2.0 / 3 +
+              dfrfunint(r2, m[j], fparam) / 6) * phi;
         }
       }
     }
-    
-    sk = A * exp(alpha * m[j]);
-    fv2temp  = sk * gi * si;
-    g2temp[ 0 ] = 0;
-    g2temp[ 1 ] = sk * gi  * si / A        * 2 * theta[1];
-    g2temp[ 2 ] = sk * gic * si            * 2 * theta[2];
-    g2temp[ 3 ] = sk * gi  * si * m[j]     * 2 * theta[3];
-    g2temp[ 4 ] = sk * gip * si            * 2 * theta[4];
-    g2temp[ 5 ] = sk * gi  * sid           * 2 * theta[5];
-    g2temp[ 6 ] = sk * gi  * siq           * 2 * theta[6];
-    g2temp[ 7 ] = sk * gi  * sigamma       * 2 * theta[7];
+
+    NumericVector int_part1 = dkappafun(m[j], kparam);
+
+    double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
+    double g2temp[8] = {0};
+
+    // d A
+    g2temp[ 1 ] = int_part1[1] * int_part2[0]  * int_part3[0];
+    // d c
+    g2temp[ 2 ] = int_part1[0] * int_part2[1] * int_part3[0];
+    // d alpha
+    g2temp[ 3 ] = int_part1[2] * int_part2[0]  * int_part3[0];
+    // d p
+    g2temp[ 4 ] = int_part1[0] * int_part2[2] * int_part3[0];
+    // d D
+    g2temp[ 5 ] = int_part1[0] * int_part2[0]  * int_part3[1];
+    // d q
+    g2temp[ 6 ] = int_part1[0] * int_part2[0]  * int_part3[2];
+    // d gamma
+    g2temp[ 7 ] = int_part1[0] * int_part2[0]  * int_part3[3];
     
     fv2_thread += fv2temp;
     for (int i = 0; i < 8; i++)
+    {
+      g2temp[i] *= 2 * theta[i];
       df2_thread[i] += g2temp[i];
+    }
   }
 #pragma omp critical
 {
