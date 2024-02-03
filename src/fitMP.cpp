@@ -186,7 +186,7 @@ double etas::mloglik(NumericVector theta)
       for (int i = 0; i < j; i++)
       {
         sumpart += kappafun(m[i], kparam) *
-          dgfun(t[j] - t[i], gparam) *
+          gfun(t[j] - t[i], gparam) *
           f1(dist2(x[j], y[j], x[i], y[i]),
              D * exp(gamma * m[i]), q);
       }
