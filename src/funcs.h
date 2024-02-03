@@ -106,14 +106,14 @@ NumericVector dgfunint(double t, double gparam[])
 double ffun(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
-  double sig = D * exp(gamma * m)
+  double sig = D * exp(gamma * m);
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 }
 
 NumericVector dffun(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
-  double sig = D * exp(gamma * m)
+  double sig = D * exp(gamma * m);
   NumericVector out(4);
   out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
   // d D
