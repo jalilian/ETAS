@@ -81,13 +81,13 @@ NumericVector dgfun(double t, double gparam[])
   return out;
 }
 
-double gfunint(double t, double gparam)
+double gfunint(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   return 1 - pow(1 + t / c, 1 - p);
 }
 
-NumericVector dgfunint(double t, double gparam)
+NumericVector dgfunint(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   NumericVector out(3);
