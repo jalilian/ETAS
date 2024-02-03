@@ -971,7 +971,7 @@ void etas::mloglikGrMP(NumericVector theta,
       }
     }
     
-    double int_part2*;
+    double* int_part2;
     if (t[j] > tstart2)
     {
       int_part2 = dgfunint2(tlength - t[j], gparam);
