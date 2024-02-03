@@ -173,7 +173,7 @@ double etas::mloglik(NumericVector theta)
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
 
-  const double k_param[] = {A, alpha};
+  double k_param[] = {A, alpha};
   
   double fv1 = 0, fv2 = 0, sumpart, w[2], si, gi;
   
@@ -269,7 +269,7 @@ void etas::mloglikGr(NumericVector theta,
   const double q= theta[6] * theta[6];
   const double gamma = theta[7] * theta[7];
 
-  const double k_param[] = {A, alpha};
+  double k_param[] = {A, alpha};
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   
