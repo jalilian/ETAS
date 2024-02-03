@@ -276,9 +276,7 @@ void etas::mloglikGr(NumericVector theta,
   double fparam[] = {D, gamma, q};
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
-  
-  NumericVector part1(3), int_part1(3), part2(3), int_part2(3), part3(3);
-  
+
   for (int j = 0; j < N; ++j)
   {
     if (flag[j] == 1)
@@ -289,11 +287,9 @@ void etas::mloglikGr(NumericVector theta,
       
       for (int i = 0; i < j; i++)
       {
-        part1 = dkappafun(m[i], kparam);
-        
-        part2 = dgfun(t[j] - t[i], gparam);
-        
-        part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        std::array<double, 3> part1 = dkappafun3(m[i], kparam);
+        std::array<double, 3> part2 = dgfun3(t[j] - t[i], gparam);
+        std::array<double, 4> part3 = dffun3(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
         fv1temp    += part1[0] * part2[0] * part3[0];
 
@@ -331,17 +327,17 @@ void etas::mloglikGr(NumericVector theta,
       }
     }
     
-    if (t[j] > tstart2)
+    std::array<double, 3> int_part2 = dgfunint3(tlength - t[j], gparam);
+    if (t[j] <= tstart2)
     {
-      int_part2 = dgfunint(tlength - t[j], gparam);
-    }
-    else
-    {
-      int_part2 = dgfunint(tlength - t[j], gparam) -
-        dgfunint(tstart2 - t[j], gparam);
+      std::array<double, 3> gtmp = dgfunint3(tstart2 - t[j], gparam);
+      for (int i = 0; i < 3; i++)
+      {
+        int_part2[i] -= gtmp[i];
+      }
     }
     
-    NumericVector int_part3(4);
+    double int_part3[4];
     for (int k = 0; k < (np - 1); ++k)
     {
       double dpx = (px[k + 1] - px[k]) / ndiv;
@@ -374,14 +370,16 @@ void etas::mloglikGr(NumericVector theta,
           double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
           
-          int_part3 += id * (dfrfunint(r1, m[j], fparam) / 6 +
-              dfrfunint(r0, m[j], fparam) * 2.0 / 3 +
-              dfrfunint(r2, m[j], fparam) / 6) * phi;
+          std::array<double, 4> a1 = dfrfunint3(r1, m[j], fparam);
+          std::array<double, 4> a2 = dfrfunint3(r0, m[j], fparam);
+          std::array<double, 4> a3 = dfrfunint3(r2, m[j], fparam);
+          for (int i = 0; i < 4; i++)
+            int_part3[i] += id * (a1[i] / 6 + a2[i]* 2.0 / 3 + a3[i] / 6) * phi;
         }
       }
     }
     
-    int_part1 = dkappafun(m[j], kparam);
+    std::array<double, 3> int_part1 = dkappafun3(m[j], kparam);
 
     double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
     double g2temp[8] = {0};
