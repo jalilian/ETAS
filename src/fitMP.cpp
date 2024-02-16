@@ -397,8 +397,10 @@ void etas::linesearch(NumericVector xOld,
   R_CheckUserInterrupt();
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     a1, a2, a3, b1, b2;
+
+  const int dimparam = xOld.length();
   
-  NumericVector xNew(8);
+  NumericVector xNew(dimparam);
   
   if (*ram <= 1.0e-30)
     *ram = 0.1;
