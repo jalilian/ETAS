@@ -1098,6 +1098,7 @@ void etas::mloglikGrMP(NumericVector theta,
                        double *dfv,
                        int nthreads)
 {
+  /*
   const double mu = theta[0] * theta[0];
   const double A = theta[1] * theta[1];
   const double c = theta[2] * theta[2];
@@ -1111,16 +1112,20 @@ void etas::mloglikGrMP(NumericVector theta,
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
-  double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
+  double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};*/
+  double fvtemp = 0, dfvtemp[8] = {0};
   
 #pragma omp parallel num_threads(nthreads)
 {
-  double fv1_thread = 0, fv2_thread = 0,
-    df1_thread[8] = {0}, df2_thread[8] = {0};
+  /*double fv1_thread = 0, fv2_thread = 0,
+    df1_thread[8] = {0}, df2_thread[8] = {0};*/
+
+   double fvtemp_thread = 0, dfvtemp_thread[8] = {0};
   
 #pragma omp for //schedule(static)
   for (int j = 0; j < N; ++j)
   {
+    /*
     if (flag[j] == 1)
     {
       double fv1temp = mu * bk[j];
@@ -1246,9 +1251,18 @@ void etas::mloglikGrMP(NumericVector theta,
       g2temp[i] *= 2 * theta[i];
       df2_thread[i] += g2temp[i];
     }
+    */
+    double fvj, dfvj[8];
+    mloglikjGr(j, theta, &fvj, dfvj);
+
+    fvtemp_thread += fvj;
+
+    for (int i = 0; i < 8; ++i)
+      dfvtemp_thread[i] += dfvj[i];
   }
 #pragma omp critical
 {
+  /*
   fv1 += fv1_thread;
   fv2 += fv2_thread;
   for (int i = 0; i < 8; ++i)
@@ -1256,15 +1270,23 @@ void etas::mloglikGrMP(NumericVector theta,
     df1[i] += df1_thread[i];
     df2[i] += df2_thread[i];
   }
+  */
+  fvtemp += fvtemp_thread;
+  for (int i = 0; i < 8; ++i)
+    dfvtemp += dfvtemp_thread[i];
 }
 }
+/*
 fv2 += mu * integ0;
 df2[0] = integ0 * theta[0] * 2;
 
 *fv = -fv1 + fv2;
 for (int i = 0; i < 8; ++i)
   dfv[i] = -df1[i] + df2[i];
-
+*/
+*fv = fvtemp;
+for (int i = 0; i < 8; ++i)
+  dfv[i] = dfvtemp[i];
 return;
 }
 
