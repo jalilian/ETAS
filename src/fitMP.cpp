@@ -822,6 +822,7 @@ List etas::fitfun(NumericVector tht,
 double etas::mloglikMP(NumericVector theta,
                        int nthreads)
 {
+  /*
   const double mu = theta[0] * theta[0];
   const double A = theta[1] * theta[1];
   const double c = theta[2] * theta[2];
@@ -836,14 +837,18 @@ double etas::mloglikMP(NumericVector theta,
   double fparam[] = {D, gamma, q};
 
   double fv1 = 0, fv2 = 0;
+  */
+  double fv = 0;
   
 #pragma omp parallel num_threads(nthreads)
 {
-  double fv1_thread = 0, fv2_thread = 0;
+  //double fv1_thread = 0, fv2_thread = 0;
+  double fv_thread = 0;
   
 #pragma omp for
   for (int j = 0; j < N; ++j)
   {
+    /*
     if (flag[j] == 1)
     {
       double sumpart = mu * bk[j];
@@ -910,16 +915,20 @@ double etas::mloglikMP(NumericVector theta,
     }
     
     fv2_thread += kappafun(m[j], kparam) * gi * si;
+    */
+    fv_thread += mloglikj(j, theta);
   }
 #pragma omp critical
 {
-  fv1 += fv1_thread;
-  fv2 += fv2_thread;
+  //fv1 += fv1_thread;
+  //fv2 += fv2_thread;
+  fv += fv_thread;
 }
 }
 
-fv2 += mu * integ0;
-return -fv1 + fv2;
+//fv2 += mu * integ0;
+//return -fv1 + fv2;
+return fv;
 }
 
 // ******************************************************************
