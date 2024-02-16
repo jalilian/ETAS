@@ -187,7 +187,7 @@ double etas::mloglikj1(int j,
     {
       sumj += kappafun(m[i], kparam) *
         gfun(t[j] - t[i], gparam) *
-        ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        ffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
     }
 
     sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
