@@ -824,7 +824,7 @@ void etas::mloglikGrMP(NumericVector theta,
 
   *fv = fvtemp;
   for (int i = 0; i < 8; ++i)
-    dfv[i] = dfvtemp[i];
+    dfv[i] = dfvtemp[i]  * 2 * theta[i];
 
 return;
 }
