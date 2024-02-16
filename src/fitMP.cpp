@@ -31,6 +31,7 @@ private:
   double tlength;
   double integ0;
   int ndiv;
+  int mver;
   
 public:
   void set(NumericMatrix revents,
