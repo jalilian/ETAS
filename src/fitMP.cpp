@@ -50,14 +50,8 @@ public:
                   double fparam[],
                   double *fv,
                   double *df);
-  double mloglik(double mu,
-                 double kparam[],
-                 double gparam[],
-                 double fparam[]);
-  void mloglikGr(double mu,
-                 double kparam[],
-                 double gparam[],
-                 double fparam[],
+  double mloglik(NumericVector theta);
+  void mloglikGr(NumericVector theta,
                  double *fv,
                  double *df);
   void linesearch(NumericVector xOld,
@@ -353,7 +347,7 @@ void etas::mloglikjGr(int j,
 double etas::mloglik(NumericVector theta)
 {
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandel(theta, &mu, kparam, gparam, fparam);
+  paramhandler(theta, &mu, kparam, gparam, fparam);
 
   double fv = 0;
 
@@ -367,13 +361,13 @@ double etas::mloglik(NumericVector theta)
 // gradient of minus log likelihood function
 // ******************************************************************
 
-void etas::mloglikGr(double mu,
-                     double kparam[],
-                     double gparam[],
-                     double fparam[],
+void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
 {
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandler(theta, &mu, kparam, gparam, fparam);
+
   double fvtemp = 0, dfvtemp[8] = {0};
 
   for (int j = 0; j < N; ++j)
@@ -425,10 +419,7 @@ void etas::linesearch(NumericVector xOld,
   
   for (int i = 0; i < dimparam; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
-
-  double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(xNew, &mu, kparam, gparam, fparam);
-  fv2 = mloglik(mu, kparam, gparam, fparam);
+  fv2 = mloglik(xNew);
 
   if (fv2 > fv1)
     goto stat50;
@@ -437,8 +428,7 @@ void etas::linesearch(NumericVector xOld,
     ram3 = ram2*2.0;
   for (int i = 0; i < dimparam ; i++)
     xNew[i] = xOld[i] + ram3 * h[i];
-  paramhandler(xNew, &mu, kparam, gparam, fparam);
-  fv3 = mloglik(mu, kparam, gparam, fparam);
+  fv3 = mloglik(xNew);
   if (fv3 > fv2)
     goto stat70;
   ram1 = ram2;
@@ -458,8 +448,7 @@ void etas::linesearch(NumericVector xOld,
   }
   for (int i = 0; i < dimparam; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
-  paramhandler(xNew, &mu, kparam, gparam, fparam);
-  fv2 = mloglik(mu, kparam, gparam, fparam);
+  fv2 = mloglik(xNew);
   if (fv2 > fv1)
     goto stat50;
   
@@ -479,8 +468,7 @@ void etas::linesearch(NumericVector xOld,
     *ram = b1 / b2;
     for (int i = 0; i < dimparam; i++)
       xNew[i] = xOld[i] + *ram*h[i];
-    paramhandler(xNew, &mu, kparam, gparam, fparam);
-    *fv = mloglik(mu, kparam, gparam, fparam);
+    *fv = mloglik(xNew);
     if (*ram > ram2)
     {
       if (*fv <= fv2)
@@ -534,8 +522,7 @@ void etas::linesearch(NumericVector xOld,
     *ram = b1 /b2;
     for (int i = 0; i < dimparam; i++)
       xNew[i] = xOld[i] + *ram * h[i];
-    paramhandler(xNew, &mu, kparam, gparam, fparam);
-    *fv = mloglik(mu, kparam, gparam, fparam);
+    *fv = mloglik(xNew);
     if (fv2 < *fv)
       *ram = ram2;
     return;
@@ -570,10 +557,8 @@ List etas::fitfun(NumericVector tht,
   for (int i = 0; i < dimparam; i++)
     for (int j = 0; j < dimparam; j++)
       h[i][j] = ihess(i, j);
-
-  double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(tht, &mu, kparam, gparam, fparam);
-  mloglikGr(mu, kparam, gparam, fparam, &fv, g);
+  
+  mloglikGr(tht, &fv, g);
   
   if (verbose)
   {
@@ -729,8 +714,7 @@ List etas::fitfun(NumericVector tht,
       }
       
       double fv0 = fv;
-      paramhandler(tht, &mu, kparam, gparam, fparam);
-      mloglikGr(mu, kparam, gparam, fparam, &fv, g);
+      mloglikGr(tht, &fv, g);
       
       if (verbose)
       {
@@ -781,7 +765,7 @@ double etas::mloglikMP(NumericVector theta,
                        int nthreads)
 {
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandel(theta, &mu, kparam, gparam, fparam);
+  paramhandler(theta, &mu, kparam, gparam, fparam);
 
   double fv = 0;
   
@@ -814,7 +798,7 @@ void etas::mloglikGrMP(NumericVector theta,
                        int nthreads)
 {
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandel(theta, &mu, kparam, gparam, fparam);
+  paramhandler(theta, &mu, kparam, gparam, fparam);
 
   double fvtemp = 0, dfvtemp[8] = {0};
   
