@@ -110,20 +110,6 @@ void etas::set(NumericMatrix revents,
 
 double etas::mloglikj(int j, NumericVector theta)
 {
-  /*
-  const double mu = theta[0] * theta[0];
-  const double A = theta[1] * theta[1];
-  const double c = theta[2] * theta[2];
-  const double alpha = theta[3] * theta[3];
-  const double p = theta[4] * theta[4];
-  const double D = theta[5] * theta[5];
-  const double q= theta[6] * theta[6];
-  const double gamma = theta[7] * theta[7];
-
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};*/
-
   const double mu = theta[0] * theta[0];
   double kparam[] = {
     theta[1] * theta[1], // A
@@ -166,7 +152,7 @@ double etas::mloglikj(int j, NumericVector theta)
   }
 
   double si = 0;
-  for (int k = 0; k < (px.length() - 1); ++k)
+  for (int k = 0; k < (np - 1); ++k)
   {
     double dpx = (px[k + 1] - px[k]) / ndiv;
     double dpy = (py[k + 1] - py[k]) / ndiv;
@@ -211,20 +197,6 @@ void etas::mloglikjGr(int j, NumericVector theta,
                       double *fvj,
                       double *dfvj)
 {
-  /*
-  const double mu = theta[0] * theta[0];
-  const double A = theta[1] * theta[1];
-  const double c = theta[2] * theta[2];
-  const double alpha = theta[3] * theta[3];
-  const double p = theta[4] * theta[4];
-  const double D = theta[5] * theta[5];
-  const double q= theta[6] * theta[6];
-  const double gamma = theta[7] * theta[7];
-
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};*/
-
   const double mu = theta[0] * theta[0];
   double kparam[] = {
     theta[1] * theta[1], // A
