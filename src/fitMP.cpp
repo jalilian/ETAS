@@ -339,100 +339,11 @@ void etas::mloglikjGr(int j, NumericVector theta,
 
 double etas::mloglik(NumericVector theta)
 {
-  /*
-  const double mu = theta[0] * theta[0];
-  const double A = theta[1] * theta[1];
-  const double c = theta[2] * theta[2];
-  const double alpha = theta[3] * theta[3];
-  const double p = theta[4] * theta[4];
-  const double D = theta[5] * theta[5];
-  const double q= theta[6] * theta[6];
-  const double gamma = theta[7] * theta[7];
-
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
-
-  double fv1 = 0, fv2 = 0;
-  */
   double fv = 0;
 
   for (int j = 0; j < t.length(); ++j)
-  {
-    /*
-    if (flag[j] == 1)
-    {
-      double sumpart = mu * bk[j];
-      for (int i = 0; i < j; i++)
-      {
-        sumpart += kappafun(m[i], kparam) *
-          gfun(t[j] - t[i], gparam) *
-          ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
-      }
-      
-      if (sumpart > 1.0e-25)
-        fv1 += log(sumpart);
-      else
-        fv1 += -100;
-    }
-    
-    double gi;
-    if (t[j] > tstart2)
-    {
-      gi = gfunint(tlength - t[j], gparam);
-    }
-    else
-    {
-      gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
-    }
-    
-    double si = 0;
-    for (int k = 0; k < (px.length() - 1); ++k)
-    {
-      double dpx = (px[k + 1] - px[k]) / ndiv;
-      double dpy = (py[k + 1] - py[k]) / ndiv;
-      for (int l = 0; l < ndiv; ++l)
-      {
-        double x1 = px[k] + dpx * l;
-        double y1 = py[k] + dpy * l;
-        double x2 = px[k] + dpx * (l + 1);
-        double y2 = py[k] + dpy * (l + 1);
-        
-        double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
-          (x2 * y1 + y2 * x[j] + x1 * y[j]);
-        if (fabs(det) < 1.0e-10)
-          continue;
-        
-        double r1 = dist(x1, y1, x[j], y[j]);
-        double r2 = dist(x2, y2, x[j], y[j]);
-        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
-        if (fabs(phi) > 1)
-          phi = 1 - 1.0e-10;
-        
-        phi = acos(phi);
-        
-        if (r1 + r2 > 1.0e-20)
-        {
-          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
-                    y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
-          
-          si += sgn(det) * (frfunint(r1, m[j], fparam) / 6 +
-            frfunint(r0, m[j], fparam) * 2 / 3 +
-            frfunint(r2, m[j], fparam) / 6) * phi;
-        }
-      }
-    }
-    
-    fv2 += kappafun(m[j], kparam) * gi * si;
-    */
     fv += mloglikj(j, theta);
-  }
-  
-  /*
-  fv2 += mu * integ0;
-  
-  return -fv1 + fv2;
-  */
+
   return fv;
 }
 
@@ -444,154 +355,10 @@ void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
 {
-  /*
-  const double mu = theta[0] * theta[0];
-  const double A = theta[1] * theta[1];
-  const double c = theta[2] * theta[2];
-  const double alpha = theta[3] * theta[3];
-  const double p = theta[4] * theta[4];
-  const double D = theta[5] * theta[5];
-  const double q= theta[6] * theta[6];
-  const double gamma = theta[7] * theta[7];
-
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
-
-  double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
-  */
   double fvtemp = 0, dfvtemp[8] = {0};
 
   for (int j = 0; j < N; ++j)
   {
-    /*
-    if (flag[j] == 1)
-    {
-      double fv1temp = mu * bk[j];
-      double g1temp[8] = {0};
-      g1temp[0] = bk[j];
-      
-      for (int i = 0; i < j; i++)
-      {
-        std::array<double, 3> part1 = dkappafun(m[i], kparam);
-        std::array<double, 3> part2 = dgfun(t[j] - t[i], gparam);
-        std::array<double, 4> part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
-
-        fv1temp    += part1[0] * part2[0] * part3[0];
-
-        // part1_A
-        g1temp[1]  += part1[1] * part2[0] * part3[0];
-        
-        // part2_csig
-        g1temp[2] += part1[0] * part2[1] * part3[0];
-        
-        //part1_alpha
-        g1temp[3]  += part1[2] * part2[0] * part3[0];
-        
-        // part2_p
-        g1temp[4] += part1[0] * part2[2] * part3[0];
-        
-        // part3_d
-        g1temp[5] += part1[0] * part2[0] * part3[1];
-        
-        // part3_q
-        g1temp[6] += part1[0] * part2[0] * part3[2];
-        
-        // part3_gamma
-        g1temp[7]  += part1[0] * part2[0] * part3[3];
-      }
-      
-      if (fv1temp > 1.0e-25)
-        fv1 += log(fv1temp);
-      else
-        fv1 += -100;
-      
-      for (int i = 0; i < 8; i++)
-      {
-        g1temp[i] *= 2 * theta[i];
-        df1[i] += g1temp[i] / fv1temp;
-      }
-    }
-    
-    std::array<double, 3> int_part2 = dgfunint(tlength - t[j], gparam);
-    if (t[j] <= tstart2)
-    {
-      std::array<double, 3> gtmp = dgfunint(tstart2 - t[j], gparam);
-      for (int i = 0; i < 3; i++)
-      {
-        int_part2[i] -= gtmp[i];
-      }
-    }
-    
-    double int_part3[4] = {0};
-    for (int k = 0; k < (np - 1); ++k)
-    {
-      double dpx = (px[k + 1] - px[k]) / ndiv;
-      double dpy = (py[k + 1] - py[k]) / ndiv;
-      for (int l = 0; l < ndiv; ++l)
-      {
-        double x1 = px[k] + dpx * l;
-        double y1 = py[k] + dpy * l;
-        double x2 = px[k] + dpx * (l + 1);
-        double y2 = py[k] + dpy * (l + 1);
-        
-        double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
-          (x2 * y1 + y2 * x[j] + x1 * y[j]);
-        
-        if (fabs(det) < 1.0e-10)
-          continue;
-        
-        int id = (det < 0) ? -1 : 1;
-        
-        double r1 = dist(x1, y1, x[j], y[j]);
-        double r2 = dist(x2, y2, x[j], y[j]);
-        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
-        if (fabs(phi) > 1)
-          phi = 1 - 1.0e-10;
-        
-        phi = acos(phi);
-        
-        if (r1 + r2 > 1.0e-20)
-        {
-          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
-                    y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
-          
-          std::array<double, 4> a1 = dfrfunint(r1, m[j], fparam);
-          std::array<double, 4> a2 = dfrfunint(r0, m[j], fparam);
-          std::array<double, 4> a3 = dfrfunint(r2, m[j], fparam);
-          for (int i = 0; i < 4; i++)
-            int_part3[i] += id * (a1[i] / 6 + a2[i]* 2.0 / 3 + a3[i] / 6) * phi;
-        }
-      }
-    }
-    
-    std::array<double, 3> int_part1 = dkappafun(m[j], kparam);
-
-    double fv2temp  = int_part1[0] * int_part2[0] * int_part3[0];
-    double g2temp[8] = {0};
-
-    // d A
-    g2temp[ 1 ] = int_part1[1] * int_part2[0]  * int_part3[0];
-    // d c
-    g2temp[ 2 ] = int_part1[0] * int_part2[1] * int_part3[0];
-    // d alpha
-    g2temp[ 3 ] = int_part1[2] * int_part2[0]  * int_part3[0];
-    // d p
-    g2temp[ 4 ] = int_part1[0] * int_part2[2] * int_part3[0];
-    // d D
-    g2temp[ 5 ] = int_part1[0] * int_part2[0]  * int_part3[1];
-    // d q
-    g2temp[ 6 ] = int_part1[0] * int_part2[0]  * int_part3[2];
-    // d gamma
-    g2temp[ 7 ] = int_part1[0] * int_part2[0]  * int_part3[3];
-    
-    fv2 += fv2temp;
-    for (int i = 0; i < 8; i++)
-    {
-      g2temp[i] *= 2 * theta[i];
-      df2[i] += g2temp[i];
-    }
-    */
     double fvj, dfvj[8];
     mloglikjGr(j, theta, &fvj, dfvj);
 
@@ -980,113 +747,25 @@ List etas::fitfun(NumericVector tht,
 double etas::mloglikMP(NumericVector theta,
                        int nthreads)
 {
-  /*
-  const double mu = theta[0] * theta[0];
-  const double A = theta[1] * theta[1];
-  const double c = theta[2] * theta[2];
-  const double alpha = theta[3] * theta[3];
-  const double p = theta[4] * theta[4];
-  const double D = theta[5] * theta[5];
-  const double q= theta[6] * theta[6];
-  const double gamma = theta[7] * theta[7];
-
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
-
-  double fv1 = 0, fv2 = 0;
-  */
   double fv = 0;
   
-#pragma omp parallel num_threads(nthreads)
-{
-  //double fv1_thread = 0, fv2_thread = 0;
-  double fv_thread = 0;
-  
-#pragma omp for
-  for (int j = 0; j < N; ++j)
+  #pragma omp parallel num_threads(nthreads)
   {
-    /*
-    if (flag[j] == 1)
+    double fv_thread = 0;
+  
+    #pragma omp for
+    for (int j = 0; j < N; ++j)
     {
-      double sumpart = mu * bk[j];
-      for (int i = 0; i < j; i++)
-      {
-        sumpart += kappafun(m[i], kparam) *
-          gfun(t[j] - t[i], gparam) *
-          ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
-      }
-      
-      if (sumpart > 1.0e-25)
-        fv1_thread += log(sumpart);
-      else
-        fv1_thread += -100;
+      fv_thread += mloglikj(j, theta);
     }
-    
-    double gi;
-    if (t[j] > tstart2)
-    {
-      gi = gfunint(tlength - t[j], gparam);
-    }
-    else
-    {
-      gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
-    }
-    
-    double si = 0;
-    for (int k = 0; k < (np - 1); ++k)
-    {
-      double dpx = (px[k + 1] - px[k]) / ndiv;
-      double dpy = (py[k + 1] - py[k]) / ndiv;
-      for (int l = 0; l < ndiv; ++l)
-      {
-        double x1 = px[k] + dpx * l;
-        double y1 = py[k] + dpy * l;
-        double x2 = px[k] + dpx * (l + 1);
-        double y2 = py[k] + dpy * (l + 1);
-        
-        double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
-          (x2 * y1 + y2 * x[j] + x1 * y[j]);
-        
-        if (fabs(det) < 1.0e-10)
-          continue;
-        
-        double r1 = dist(x1, y1, x[j], y[j]);
-        double r2 = dist(x2, y2, x[j], y[j]);
-        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
-        if (fabs(phi) > 1)
-          phi = 1 - 1.0e-10;
-        
-        phi = acos(phi);
-        
-        if (r1 + r2 > 1.0e-20)
-        {
-          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
-                    y1 + r1/(r1 + r2) * (y2 - y1),
-                    x[j], y[j]);
-          
-          si += sgn(det) * (frfunint(r1, m[j], fparam) / 6 +
-            (frfunint(r0, m[j], fparam) * 2) / 3 +
-            frfunint(r2, m[j], fparam) / 6) * phi;
-        }
-      }
-    }
-    
-    fv2_thread += kappafun(m[j], kparam) * gi * si;
-    */
-    fv_thread += mloglikj(j, theta);
-  }
-#pragma omp critical
-{
-  //fv1 += fv1_thread;
-  //fv2 += fv2_thread;
-  fv += fv_thread;
-}
-}
 
-//fv2 += mu * integ0;
-//return -fv1 + fv2;
-return fv;
+    #pragma omp critical
+    {
+      fv += fv_thread;
+    }
+  }
+
+  return fv;
 }
 
 // ******************************************************************
