@@ -145,7 +145,7 @@ double etas::mloglikj(int j, NumericVector theta)
     theta[6] * theta[6] // q
   };*/
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandel(paramhandel, &mu, kparam, gparam, fparam);
+  paramhandel(theta, &mu, kparam, gparam, fparam);
 
   double sumpart = 0;
   if (flag[j] == 1)
