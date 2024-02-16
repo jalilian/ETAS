@@ -596,7 +596,7 @@ void etas::mloglikGr(NumericVector theta,
     double fvj, dfvj[8];
     mloglikjGr(j, theta, &fvj, dfvj);
 
-    *fv += fvj;
+    fv += fvj;
 
     for (int i = 0; i < 8; ++i)
       dfv[i] += dfvj[i];
