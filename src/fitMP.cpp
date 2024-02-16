@@ -143,6 +143,8 @@ void etas::paramhandler(NumericVector theta,
   gparam[0] = theta[2] * theta[2]; // c
   gparam[1] = theta[4] * theta[4]; // p
 
+   Rprintf("mver = %d", mver);
+
   switch (mver)
   {
     case 1:
