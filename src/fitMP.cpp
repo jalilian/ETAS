@@ -246,10 +246,10 @@ void etas::mloglikjGr(int j, NumericVector theta,
 
     sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
 
-    for (int i = 0; i < 8; i++)
+    for (int ip = 0; ip < 8; ip++)
     {
-      sumjGr[i] *= 2 * theta[i];
-      sumpartGr[i] += sumjGr[i] / sumj;
+      sumjGr[ip] *= 2 * theta[ip];
+      sumpartGr[ip] += sumjGr[ip] / sumj;
     }
   }
 
