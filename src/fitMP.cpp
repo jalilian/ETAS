@@ -38,7 +38,8 @@ public:
            NumericMatrix rpoly,
            NumericVector tperiod,
            double rinteg0,
-           int rndiv);
+           int rndiv,
+           int spdensity);
   double mloglikj(int j,
                   double mu,
                   double kparam[],
