@@ -264,7 +264,7 @@ void etas::mloglikjGr(int j, NumericVector theta,
 
     for (int ip = 0; ip < 8; ip++)
     {
-      sumjGr[ip] *= 2 * theta[ip];
+      //sumjGr[ip] *= 2 * theta[ip];
       sumpartGr[ip] += sumjGr[ip] / sumj;
     }
   }
@@ -345,10 +345,10 @@ void etas::mloglikjGr(int j, NumericVector theta,
   // d gamma
   intpartGr[ 7 ] = int_part1[0] * int_part2[0]  * int_part3[3];
 
-  for (int i = 0; i < 8; i++)
+/*  for (int i = 0; i < 8; i++)
   {
     intpartGr[i] *= 2 * theta[i];
-  }
+  }*/
 
   *fvj = -sumpart + intpart;
 
@@ -390,7 +390,7 @@ void etas::mloglikGr(NumericVector theta,
 
   *fv = fvtemp;
   for (int i = 0; i < 8; ++i)
-    dfv[i] = dfvtemp[i];
+    dfv[i] = dfvtemp[i] * 2 * theta[i];
   
   return;
 }
