@@ -193,7 +193,7 @@ double etas::mloglikj(int j, NumericVector theta)
 
 void etas::mloglikjGr(int j, NumericVector theta,
                       double *fvj,
-                      double *dfj)
+                      double *dfvj)
 {
   const double mu = theta[0] * theta[0];
   const double A = theta[1] * theta[1];
