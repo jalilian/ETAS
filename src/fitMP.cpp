@@ -211,6 +211,7 @@ void etas::mloglikjGr(int j, NumericVector theta,
                       double *fvj,
                       double *dfvj)
 {
+  /*
   const double mu = theta[0] * theta[0];
   const double A = theta[1] * theta[1];
   const double c = theta[2] * theta[2];
@@ -222,7 +223,22 @@ void etas::mloglikjGr(int j, NumericVector theta,
 
   double kparam[] = {A, alpha};
   double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
+  double fparam[] = {D, gamma, q};*/
+
+  const double mu = theta[0] * theta[0];
+  double kparam[] = {
+    theta[1] * theta[1], // A
+    theta[3] * theta[3] // alpha
+  };
+  double gparam[] = {
+    theta[2] * theta[2], // c
+    theta[4] * theta[4] // p
+  };
+  double fparam[] = {
+    theta[5] * theta[5], // D
+    theta[7] * theta[7], // gamma
+    theta[6] * theta[6] // q
+  };
 
   double sumpart = 0;
   double sumpartGr[8] = {0};
