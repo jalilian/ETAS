@@ -1738,7 +1738,7 @@ NumericVector cxxlambspat(NumericVector xg,
           gfunint(tstart2 - t[i], gparam);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
-      sum += kappafun1(m[i], kparam) * gint * ffun(r2, m[i], fparam);
+      sum += kappafun1(m[i], kparam) * gint * ffun1(r2, m[i], fparam);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
