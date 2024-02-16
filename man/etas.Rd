@@ -10,7 +10,8 @@
 \usage{
  etas(object, param0 = NULL, bwd = NULL, nnp = 5, bwm = 0.05,
       verbose = TRUE, plot.it = FALSE, ndiv = 1000, no.itr = 11,
-      rel.tol=1e-03, eps = 1e-06, cxxcode = TRUE, nthreads = 1)
+      rel.tol=1e-03, eps = 1e-06, cxxcode = TRUE, nthreads = 1,
+      spdensity = 1)
 }
 \arguments{
   \item{object}{An object of class \code{"catalog"} containing an
@@ -40,6 +41,11 @@
   The C++ code is slightly faster and allows parallel computing.}
   \item{nthreads}{An integer indicating number of threads in
   the parallel region of the C++ code}
+  \item{spdensity}{An integer indicating which spatial probability density 
+                   function for locations of triggered events should be use. 
+                   The default \code{spdensity=1} corresponds to the inverse 
+                   power density and \code{spdensity=2} corresponds to the 
+                   Gaussian density.}
 }
 \value{
   A list with components
@@ -87,11 +93,11 @@
            }
       \item{\eqn{f(x,y|m)}{f(x, y|m)}: }{is the p.d.f of
             the locations of the triggered events, considered to be
-            either the long tail inverse power density
+            either the long tail inverse power density (\code{spdensity = 1})
            \deqn{ f(x, y|m) = \frac{q-1}{\pi \sigma(m))}
              (1 + \frac{x^2 + y^2}{\sigma(m)})^{-q} }{ f(x, y|m) = (q - 1)/(pi sigma(m))
                  (1 + (x^2 + y^2)/(sigma(m)))^(-q)}
-           or the light tail Gaussian density (currently not implemented)
+           or the light tail Gaussian density (\code{spdensity = 2}, only can be used if \code{cxxcode = TRUE})
            \deqn{ f(x,y|m)= \frac{1}{2\pi \sigma(m)}\exp(-\frac{x^2 + y^2}{2\sigma(m)}) }{f(x,y|m)= exp(-(x^2 + y^2)/(2 sigma(m)))/(2 pi sigma(m))}
            with
            \deqn{ \sigma(m) = D\exp(\gamma(m - m_0)) }{ sigma(m) = D exp( gamma (m - m0) )}
@@ -133,13 +139,13 @@
 
 
   If \code{cxxcode = TRUE}, then the internal function \code{etasfit}
-  uses the {C++} code implemented using the \pkg{Rcpp} package,
+  uses the C++ code implemented using the \pkg{Rcpp} package,
   which allows multi-thread parallel computing on multi-core processors
   with OpenMP.
   The argument \code{nthreads} in this case determines
   the number of threads in the parallel region of the code.
   If \code{nthreads = 1} (the default case), then a serial version of the
-  {C++} code carries out the computations.
+  C++ code carries out the computations.
 
 
   This version of the ETAS model assumes that the earthquake catalog

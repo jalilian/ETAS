@@ -2,7 +2,7 @@
 etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
                  verbose = TRUE, plot.it = FALSE, ndiv = 1000,
                  no.itr = 11, rel.tol=1e-03, eps = 1e-06,
-                 cxxcode = TRUE, nthreads = 1)
+                 cxxcode = TRUE, nthreads = 1, spdensity = 1)
 {
   ptm <- proc.time()
   spatstat.geom::verifyclass(object, "catalog")
@@ -100,7 +100,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
     }
     cat("estimating:\n")
     opt <- etasfit(param1, revents, rpoly, rtperiod, integ0, ihess,
-                   verbose, ndiv, eps, cxxcode, nthreads)
+                   verbose, ndiv, eps, cxxcode, nthreads, spdensity)
     thetar[itr, ] <- opt$estimate
     loglikfv[itr] <- opt$loglik
     asd[itr, ] <- sqrt(diag(opt$avcov))

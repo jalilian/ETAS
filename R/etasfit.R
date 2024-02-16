@@ -1,6 +1,6 @@
 
 etasfit <- function(theta, revents, rpoly, tperiod, integ0, ihess,
-                    verbose, ndiv, eps, cxxcode, nthreads)
+                    verbose, ndiv, eps, cxxcode, nthreads, spdensity)
 {
   tht <- sqrt(theta)
   storage.mode(revents) <- storage.mode(rpoly) <- storage.mode(ihess) <- "double"
@@ -8,7 +8,7 @@ etasfit <- function(theta, revents, rpoly, tperiod, integ0, ihess,
   {
     cfit <- cxxfit(tht, revents, rpoly, tperiod, integ0, ihess,
                    as.integer(ndiv),  eps, as.logical(verbose),
-                   as.integer(nthreads))
+                   as.integer(nthreads), as.integer(spdensity))
   } else
   {
     rdata <- list(revents, rpoly, as.double(tperiod), as.double(integ0))

@@ -89,7 +89,8 @@ void etas::set(NumericMatrix revents,
                NumericMatrix rpoly,
                NumericVector tperiod,
                double rinteg0,
-               int rndiv)
+               int rndiv,
+               int rspdensity)
 {
   N = revents.nrow();
   t = revents( _, 0);
@@ -110,6 +111,7 @@ void etas::set(NumericMatrix revents,
   
   integ0 = rinteg0;
   ndiv = rndiv;
+  spdensity = rspdensity;
 }
 
 // ******************************************************************
@@ -833,7 +835,7 @@ void etas::mloglikGrMP(NumericVector theta,
   for (int i = 0; i < dimparam; ++i)
     dfv[i] = dfvtemp[i]  * 2 * theta[i];
 
-return;
+  return;
 }
 
 
@@ -1219,12 +1221,13 @@ List cxxfit(NumericVector tht,
             int ndiv,
             double eps,
             bool verbose,
-            int nthreads)
+            int nthreads,
+            int spdensity)
 {
   etas data;
-  data.set(revents, rpoly, tperiod, rinteg0, ndiv);
+  data.set(revents, rpoly, tperiod, rinteg0, ndiv, spdensity);
   
-#ifdef _OPENMP
+  #ifdef _OPENMP
   if (nthreads > 1)
   {
     //setenv("OMP_STACKSIZE", "200M", 1);
@@ -1233,10 +1236,10 @@ List cxxfit(NumericVector tht,
   }
   else
     return data.fitfun(tht, ihess, eps, verbose);
-#else
+  #else
   // serial version of code
   return data.fitfun(tht, ihess, eps, verbose);
-#endif
+  #endif
 }
 
 // *******************************************************************************
