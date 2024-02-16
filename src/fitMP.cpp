@@ -365,24 +365,26 @@ void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
 {
+  const int dimparam = theta.length();
+
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
 
-  double fvtemp = 0, dfvtemp[8] = {0};
+  double fvtemp = 0, dfvtemp[dimparam] = {0};
 
   for (int j = 0; j < N; ++j)
   {
-    double fvj, dfvj[8];
+    double fvj, dfvj[dimparam];
     mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
     fvtemp += fvj;
 
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < dimparam; ++i)
       dfvtemp[i] += dfvj[i];
   }
 
   *fv = fvtemp;
-  for (int i = 0; i < 8; ++i)
+  for (int i = 0; i < dimparam; ++i)
     dfv[i] = dfvtemp[i] * 2 * theta[i];
   
   return;
@@ -797,36 +799,38 @@ void etas::mloglikGrMP(NumericVector theta,
                        double *dfv,
                        int nthreads)
 {
+  const int dimparam = theta.length();
+
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
 
-  double fvtemp = 0, dfvtemp[8] = {0};
+  double fvtemp = 0, dfvtemp[dimparam] = {0};
   
   #pragma omp parallel num_threads(nthreads)
   {
-    double fvtemp_thread = 0, dfvtemp_thread[8] = {0};
+    double fvtemp_thread = 0, dfvtemp_thread[dimparam] = {0};
   
     #pragma omp for //schedule(static)
     for (int j = 0; j < N; ++j)
     {
-      double fvj, dfvj[8];
+      double fvj, dfvj[dimparam];
       mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
       fvtemp_thread += fvj;
-      for (int i = 0; i < 8; ++i)
+      for (int i = 0; i < dimparam; ++i)
         dfvtemp_thread[i] += dfvj[i];
     }
 
     #pragma omp critical
     {
       fvtemp += fvtemp_thread;
-      for (int i = 0; i < 8; ++i)
+      for (int i = 0; i < dimparam; ++i)
         dfvtemp[i] += dfvtemp_thread[i];
     }
   }
 
   *fv = fvtemp;
-  for (int i = 0; i < 8; ++i)
+  for (int i = 0; i < dimparam; ++i)
     dfv[i] = dfvtemp[i]  * 2 * theta[i];
 
 return;
