@@ -125,7 +125,7 @@ double etas::mloglikj(int j, NumericVector theta)
     theta[6] * theta[6] // q
   };
 
-  double sumpart;
+  double sumpart = 0;
   if (flag[j] == 1)
   {
     double sumj = mu * bk[j];
@@ -138,17 +138,11 @@ double etas::mloglikj(int j, NumericVector theta)
 
     sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
   }
-  else
-    sumpart = 0;
 
-  double gi;
-  if (t[j] > tstart2)
+  double gi = gfunint(tlength - t[j], gparam);
+  if (t[j] <= tstart2)
   {
-    gi = gfunint(tlength - t[j], gparam);
-  }
-  else
-  {
-    gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
+    gi -= gfunint(tstart2 - t[j], gparam);
   }
 
   double si = 0;
