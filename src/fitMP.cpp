@@ -980,7 +980,9 @@ List etas::fitfunMP(NumericVector tht,
                     bool verbose,
                     int nthreads)
 {
-  NumericVector estimate(8), dfvout(8);
+  const int dimparam = tht.length();
+
+  NumericVector estimate(dimparam), dfvout(dimparam);
   double fvout, aic;
   
   if (verbose)
@@ -989,12 +991,12 @@ List etas::fitfunMP(NumericVector tht,
   double tau1 = eps, tau2 = eps, eps1 = eps, eps2 = eps, const1 = 1.0e-17;
   
   double ramda = 0.05, fv, s1, s2;
-  double h[8][8], s[8] = {0}, dx[8] = {0}, g0[8] = {0},
-    g[8] = {0}, dg[8], wrk[8];
+  double h[dimparam][dimparam], s[dimparam] = {0}, dx[dimparam] = {0}, g0[dimparam] = {0},
+    g[dimparam] = {0}, dg[dimparam], wrk[dimparam];
   
   // Initial estimate of inverse of hessian matrix
-  for (int i = 0; i < 8; i++)
-    for (int j = 0; j < 8; j++)
+  for (int i = 0; i < dimparam; i++)
+    for (int j = 0; j < dimparam; j++)
       h[i][j] = ihess(i, j);
   
   mloglikGrMP(tht, &fv, g, nthreads);
@@ -1002,7 +1004,7 @@ List etas::fitfunMP(NumericVector tht,
   if (verbose)
   {
     Rprintf("Function Value = %8.4f\n", fv);
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < dimparam; ++i)
       Rprintf("Gradient[%d] = %8.2f\ttheta[%d] = %2.6f\n",
               i + 1, g[i], i + 1, tht[i]);
   }
@@ -1010,24 +1012,24 @@ List etas::fitfunMP(NumericVector tht,
   for (int iter = 1; iter < 10; iter++)
   {
     R_CheckUserInterrupt();
-    for (int ic = 0; ic < 8; ic++)
+    for (int ic = 0; ic < dimparam; ic++)
     {
       if (ic > 0 || iter > 1)
       {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < dimparam; i++)
           dg[i] = g[i] - g0[i];
         
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < dimparam; i++)
         {
           double sum = 0;
-          for (int j = 0; j < 8; j++)
+          for (int j = 0; j < dimparam; j++)
             sum += dg[j] * h[i][j];
           wrk[i] = sum;
         }
         
         s1 = 0.0;
         s2 = 0.0;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < dimparam; i++)
         {
           s1 += wrk[i] * dg[i];
           s2 += dx[i] * dg[i];
@@ -1036,14 +1038,14 @@ List etas::fitfunMP(NumericVector tht,
         if (s1 <= const1 || s2 <= const1)
         {
           fvout = -fv;
-          aic = 2 * (fv + 8);
+          aic = 2 * (fv + dimparam);
           if (verbose)
-            Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
-          for( int i = 0; i < 8; i++ )
+            Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, aic);
+          for( int i = 0; i < dimparam; i++ )
           {
             dfvout[i] = g[i];
             estimate[i] = tht[i];
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < dimparam; j++)
               ihess(i, j) = h[i][j];
             if (verbose)
               Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n",
@@ -1060,8 +1062,8 @@ List etas::fitfunMP(NumericVector tht,
         if (s1 <= s2)
         {
           // fletcher type correction
-          for (int i = 0; i < 8; i++)
-            for (int j = i; j < 8; j++)
+          for (int i = 0; i < dimparam; i++)
+            for (int j = i; j < dimparam; j++)
             {
               h[i][j] -= (dx[i] * wrk[j] + wrk[i] * dx[j] -
                 dx[i] * dx[j] * (1 + s1 / s2)) / s2;
@@ -1071,8 +1073,8 @@ List etas::fitfunMP(NumericVector tht,
         else
         {
           // Update the inverse of hessian matrix
-          for (int i = 0; i < 8; i++)
-            for (int j = i; j < 8; j++)
+          for (int i = 0; i < dimparam; i++)
+            for (int j = i; j < dimparam; j++)
             {	// davidon-fletcher-powell type correction
               h[i][j] += dx[i] * dx[j]/s2 - wrk[i] * wrk[j] / s1;
               h[j][i] = h[i][j];
@@ -1080,17 +1082,17 @@ List etas::fitfunMP(NumericVector tht,
         }
       }
       double ss = 0;
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < dimparam; i++)
       {
         double sum = 0;
-        for (int j = 0; j < 8; j++)
+        for (int j = 0; j < dimparam; j++)
           sum += h[i][j] * g[j];
         ss += sum * sum;
         s[i] = -sum;
       }
       s1 = 0.0;
       s2 = 0.0;
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < dimparam; i++)
       {
         s1 += s[i] * g[i];
         s2 += g[i] * g[i];
@@ -1099,15 +1101,15 @@ List etas::fitfunMP(NumericVector tht,
       if ((fabs(s1) / sqrt(s2) <= tau1) && (sqrt(s2) <= tau2))
       {
         fvout = -fv;
-        aic = 2 * (fv + 8);
+        aic = 2 * (fv + dimparam);
         if (verbose)
           Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n",
-                   -fv, 2 * (fv + 8));
-        for( int i = 0; i < 8; i++ )
+                   -fv, aic);
+        for( int i = 0; i < dimparam; i++ )
         {
           dfvout[i] = g[i];
           estimate[i] = tht[i];
-          for (int j = 0; j < 8; j++)
+          for (int j = 0; j < dimparam; j++)
             ihess(i, j) = h[i][j];
           if (verbose)
             Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n",
@@ -1122,9 +1124,9 @@ List etas::fitfunMP(NumericVector tht,
       }
       
       if (s1 >= 0)
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < dimparam; i++)
         {
-          for (int j = 0; j < 8; j++)
+          for (int j = 0; j < dimparam; j++)
             h[i][j] = 0.0;
           h[i][i] = 1.0;
           s[i] = -s[i];
@@ -1142,7 +1144,7 @@ List etas::fitfunMP(NumericVector tht,
       //R_CheckUserInterrupt();
       
       s1 = 0;
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < dimparam; i++)
       {
         dx[i] = s[i] * ramda;
         s1 += dx[i] * dx[i];
@@ -1156,27 +1158,27 @@ List etas::fitfunMP(NumericVector tht,
       if (verbose)
       {
         Rprintf("Function Value = %8.4f\n", fv);
-        for (int i = 0; i < 8; ++i)
+        for (int i = 0; i < dimparam; ++i)
           Rprintf("Gradient[%d] = %8.2f\ttheta[%d] = %2.6f\n",
                   i + 1, g[i], i + 1, tht[i]);
       }
       
       s2 = 0;
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < dimparam; i++)
         s2 += g[i] * g[i];
       if (sqrt(s2) > tau2)
         continue;
       if (fv0/fv - 1 < eps1 && sqrt(s1) < eps2)
       {
         fvout = -fv;
-        aic = 2 * (fv + 8);
+        aic = 2 * (fv + dimparam);
         if (verbose)
-          Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, 2 * (fv + 8));
-        for( int i = 0; i < 8; i++ )
+          Rprintf ("loglikelihood = %8.5f\tAIC = %8.5f\n", -fv, aic);
+        for( int i = 0; i < dimparam; i++ )
         {
           dfvout[i] = g[i];
           estimate[i] = tht[i];
-          for (int j = 0; j < 8; j++)
+          for (int j = 0; j < dimparam; j++)
             ihess(i, j) = h[i][j];
           if (verbose)
             Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
