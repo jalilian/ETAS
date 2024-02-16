@@ -110,7 +110,7 @@ void etas::set(NumericMatrix revents,
 
 double etas::mloglikj(int j, NumericVector theta)
 {
-  const double mu = theta[0] * theta[0];
+  double mu = theta[0] * theta[0];
   double kparam[] = {
     theta[1] * theta[1], // A
     theta[3] * theta[3] // alpha
@@ -197,7 +197,7 @@ void etas::mloglikjGr(int j, NumericVector theta,
                       double *fvj,
                       double *dfvj)
 {
-  const double mu = theta[0] * theta[0];
+  double mu = theta[0] * theta[0];
   double kparam[] = {
     theta[1] * theta[1], // A
     theta[3] * theta[3] // alpha
@@ -760,8 +760,7 @@ double etas::mloglikMP(NumericVector theta,
     #pragma omp for
     for (int j = 0; j < N; ++j)
     {
-      double a = mloglikj(j, theta);
-      fv_thread += a;
+      fv_thread += mloglikj(j, theta);
     }
 
     #pragma omp critical
