@@ -38,18 +38,18 @@ public:
            NumericVector tperiod,
            double rinteg0,
            int rndiv);
-  double mloglikj(int j,
-                  double mu,
-                  double kparam[],
-                  double gparam[],
-                  double fparam[]);
-  void mloglikjGr(int j,
-                  double mu,
-                  double kparam[],
-                  double gparam[],
-                  double fparam[],
-                  double *fv,
-                  double *df);
+  double mloglikj1(int j,
+                   double mu,
+                   double kparam[],
+                   double gparam[],
+                   double fparam[]);
+  void mloglikj1Gr(int j,
+                   double mu,
+                   double kparam[],
+                   double gparam[],
+                   double fparam[],
+                   double *fv,
+                   double *df);
   double mloglik(NumericVector theta);
   void mloglikGr(NumericVector theta,
                  double *fv,
@@ -116,11 +116,11 @@ void etas::set(NumericMatrix revents,
 // parameters of the model
 // ******************************************************************
 
-void paramhandler(NumericVector theta,
-                 double *mu,
-                 double *kparam,
-                 double *gparam,
-                 double *fparam)
+void paramhandler1(NumericVector theta,
+                  double *mu,
+                  double *kparam,
+                  double *gparam,
+                  double *fparam)
 {
   *mu = theta[0] * theta[0];
 
@@ -139,11 +139,11 @@ void paramhandler(NumericVector theta,
 // minus log likelihood function
 // ******************************************************************
 
-double etas::mloglikj(int j,
-                      double mu,
-                      double kparam[],
-                      double gparam[],
-                      double fparam[])
+double etas::mloglikj1(int j,
+                       double mu,
+                       double kparam[],
+                       double gparam[],
+                       double fparam[])
 {
   double sumpart = 0;
   if (flag[j] == 1)
@@ -207,13 +207,13 @@ double etas::mloglikj(int j,
   return -sumpart + intpart;
 }
 
-void etas::mloglikjGr(int j,
-                      double mu,
-                      double kparam[],
-                      double gparam[],
-                      double fparam[],
-                      double *fvj,
-                      double *dfvj)
+void etas::mloglikj1Gr(int j,
+                       double mu,
+                       double kparam[],
+                       double gparam[],
+                       double fparam[],
+                       double *fvj,
+                       double *dfvj)
 {
   double sumpart = 0;
   double sumpartGr[8] = {0};
@@ -347,12 +347,12 @@ void etas::mloglikjGr(int j,
 double etas::mloglik(NumericVector theta)
 {
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(theta, &mu, kparam, gparam, fparam);
+  paramhandler1(theta, &mu, kparam, gparam, fparam);
 
   double fv = 0;
 
   for (int j = 0; j < N; ++j)
-    fv += mloglikj(j, mu, kparam, gparam, fparam);
+    fv += mloglikj1(j, mu, kparam, gparam, fparam);
 
   return fv;
 }
@@ -368,14 +368,14 @@ void etas::mloglikGr(NumericVector theta,
   const int dimparam = theta.length();
 
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(theta, &mu, kparam, gparam, fparam);
+  paramhandler1(theta, &mu, kparam, gparam, fparam);
 
   double fvtemp = 0, dfvtemp[dimparam] = {0};
 
   for (int j = 0; j < N; ++j)
   {
     double fvj, dfvj[dimparam];
-    mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
+    mloglikj1Gr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
     fvtemp += fvj;
 
