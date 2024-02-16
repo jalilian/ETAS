@@ -38,8 +38,16 @@ public:
            NumericVector tperiod,
            double rinteg0,
            int rndiv);
-  double mloglikj(int j, NumericVector theta);
-  void mloglikjGr(int j, NumericVector theta,
+  double mloglikj(int j,
+                  double mu,
+                  double kparam[],
+                  double gparam[],
+                  double fparam[]);
+  void mloglikjGr(int j,
+                  double mu,
+                  double kparam[],
+                  double gparam[],
+                  double fparam[],
                   double *fv,
                   double *df);
   double mloglik(NumericVector theta);
@@ -127,26 +135,12 @@ void paramhandel(NumericVector theta,
   fparam[2] = theta[6] * theta[6]; // q
 }
 
-double etas::mloglikj(int j, NumericVector theta)
+double etas::mloglikj(int j,
+                      double mu,
+                      double kparam[],
+                      double gparam[],
+                      double fparam[])
 {
-  /*
-  double mu = theta[0] * theta[0];
-  double kparam[] = {
-    theta[1] * theta[1], // A
-    theta[3] * theta[3] // alpha
-  };
-  double gparam[] = {
-    theta[2] * theta[2], // c
-    theta[4] * theta[4] // p
-  };
-  double fparam[] = {
-    theta[5] * theta[5], // D
-    theta[7] * theta[7], // gamma
-    theta[6] * theta[6] // q
-  };*/
-  double mu, kparam[2], gparam[2], fparam[3];
-  paramhandel(theta, &mu, kparam, gparam, fparam);
-
   double sumpart = 0;
   if (flag[j] == 1)
   {
@@ -209,25 +203,14 @@ double etas::mloglikj(int j, NumericVector theta)
   return -sumpart + intpart;
 }
 
-void etas::mloglikjGr(int j, NumericVector theta,
+void etas::mloglikjGr(int j,
+                      double mu,
+                      double kparam[],
+                      double gparam[],
+                      double fparam[],
                       double *fvj,
                       double *dfvj)
 {
-  double mu = theta[0] * theta[0];
-  double kparam[] = {
-    theta[1] * theta[1], // A
-    theta[3] * theta[3] // alpha
-  };
-  double gparam[] = {
-    theta[2] * theta[2], // c
-    theta[4] * theta[4] // p
-  };
-  double fparam[] = {
-    theta[5] * theta[5], // D
-    theta[7] * theta[7], // gamma
-    theta[6] * theta[6] // q
-  };
-
   double sumpart = 0;
   double sumpartGr[8] = {0};
   if (flag[j] == 1)
@@ -359,10 +342,13 @@ void etas::mloglikjGr(int j, NumericVector theta,
 
 double etas::mloglik(NumericVector theta)
 {
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandel(theta, &mu, kparam, gparam, fparam);
+
   double fv = 0;
 
   for (int j = 0; j < N; ++j)
-    fv += mloglikj(j, theta);
+    fv += mloglikj(j, mu, kparam, gparam, fparam);
 
   return fv;
 }
@@ -375,12 +361,15 @@ void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
 {
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandel(theta, &mu, kparam, gparam, fparam);
+
   double fvtemp = 0, dfvtemp[8] = {0};
 
   for (int j = 0; j < N; ++j)
   {
     double fvj, dfvj[8];
-    mloglikjGr(j, theta, &fvj, dfvj);
+    mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
     fvtemp += fvj;
 
@@ -767,6 +756,9 @@ List etas::fitfun(NumericVector tht,
 double etas::mloglikMP(NumericVector theta,
                        int nthreads)
 {
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandel(theta, &mu, kparam, gparam, fparam);
+
   double fv = 0;
   
   #pragma omp parallel num_threads(nthreads)
@@ -776,7 +768,7 @@ double etas::mloglikMP(NumericVector theta,
     #pragma omp for
     for (int j = 0; j < N; ++j)
     {
-      fv_thread += mloglikj(j, theta);
+      fv_thread += mloglikj(j, mu, kparam, gparam, fparam);
     }
 
     #pragma omp critical
@@ -797,6 +789,9 @@ void etas::mloglikGrMP(NumericVector theta,
                        double *dfv,
                        int nthreads)
 {
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandel(theta, &mu, kparam, gparam, fparam);
+
   double fvtemp = 0, dfvtemp[8] = {0};
   
   #pragma omp parallel num_threads(nthreads)
@@ -807,7 +802,7 @@ void etas::mloglikGrMP(NumericVector theta,
     for (int j = 0; j < N; ++j)
     {
       double fvj, dfvj[8];
-      mloglikjGr(j, theta, &fvj, dfvj);
+      mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
       fvtemp_thread += fvj;
       for (int i = 0; i < 8; ++i)
