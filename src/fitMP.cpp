@@ -393,7 +393,7 @@ void etas::mloglikGr(NumericVector theta,
   for (int j = 0; j < N; ++j)
   {
     double fvj, dfvj[dimparam];
-    mloglikjGr(j, &fvj, dfvj);
+    mloglikj1Gr(j, &fvj, dfvj);
 
     fvtemp += fvj;
 
