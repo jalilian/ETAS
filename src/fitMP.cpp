@@ -377,7 +377,7 @@ void etas::mloglikGr(NumericVector theta,
   {
     case 1:
       paramhandler1(theta, &mu, kparam, gparam, fparam);
-      void mloglikjGr(int j, *fvj, *dfvj)
+      void mloglikjGr(int j, double *fvj, double *dfvj)
       {
         return mloglikj1Gr(j, mu, kparam, gparam, fparam, fvj, dfvj);
       }
