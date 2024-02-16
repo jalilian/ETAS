@@ -108,8 +108,28 @@ void etas::set(NumericMatrix revents,
 // minus log likelihood function
 // ******************************************************************
 
+void paramhandel(NumericVector theta,
+                 double *mu,
+                 double *kparam,
+                 double *gparam,
+                 double *fparam)
+{
+  *mu = theta[0] * theta[0];
+
+  kparam[0] = theta[1] * theta[1]; // A
+  kparam[1] = theta[3] * theta[3]; // alpha
+
+  gparam[0] = theta[2] * theta[2]; // c
+  gparam[1] = theta[4] * theta[4]; // p
+
+  fparam[0] = theta[5] * theta[5]; // D
+  fparam[1] = theta[7] * theta[7]; // gamma
+  fparam[2] = theta[6] * theta[6]; // q
+}
+
 double etas::mloglikj(int j, NumericVector theta)
 {
+  /*
   double mu = theta[0] * theta[0];
   double kparam[] = {
     theta[1] * theta[1], // A
@@ -123,7 +143,9 @@ double etas::mloglikj(int j, NumericVector theta)
     theta[5] * theta[5], // D
     theta[7] * theta[7], // gamma
     theta[6] * theta[6] // q
-  };
+  };*/
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandel(paramhandel, &mu, kparam, gparam, fparam);
 
   double sumpart = 0;
   if (flag[j] == 1)
