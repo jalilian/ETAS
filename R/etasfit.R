@@ -8,7 +8,7 @@ etasfit <- function(theta, revents, rpoly, tperiod, integ0, ihess,
   {
     cfit <- cxxfit(tht, revents, rpoly, tperiod, integ0, ihess,
                    as.integer(ndiv),  eps, as.logical(verbose),
-                   as.integer(nthreads))
+                   as.integer(nthreads), as.integer(ffun))
   } else
   {
     rdata <- list(revents, rpoly, as.double(tperiod), as.double(integ0))

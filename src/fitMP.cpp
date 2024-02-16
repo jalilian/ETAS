@@ -1219,7 +1219,8 @@ List cxxfit(NumericVector tht,
             int ndiv,
             double eps,
             bool verbose,
-            int nthreads)
+            int nthreads,
+            int ffun)
 {
   etas data;
   data.set(revents, rpoly, tperiod, rinteg0, ndiv);
