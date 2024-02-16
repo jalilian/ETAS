@@ -760,7 +760,8 @@ double etas::mloglikMP(NumericVector theta,
     #pragma omp for
     for (int j = 0; j < N; ++j)
     {
-      fv_thread += mloglikj(j, theta);
+      double a = mloglikj(j, theta);
+      fv_thread += a;
     }
 
     #pragma omp critical
