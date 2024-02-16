@@ -164,6 +164,7 @@ double etas::ffun(double r2, double m, double fparam[])
       break;
     case 2:
       break;
+  }
 }
 
 // ******************************************************************
