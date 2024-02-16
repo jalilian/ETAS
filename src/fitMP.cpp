@@ -157,14 +157,16 @@ void etas::paramhandler(NumericVector theta,
 
 double etas::ffun(double r2, double m, double fparam[])
 {
-    switch (mver)
+  double f;
+  switch (mver)
   {
     case 1:
-      return ffun1(r2, m, fparam);
+      f = ffun1(r2, m, fparam);
       break;
     case 2:
       break;
   }
+  return f;
 }
 
 // ******************************************************************
@@ -185,7 +187,7 @@ double etas::mloglikj1(int j,
     {
       sumj += kappafun(m[i], kparam) *
         gfun(t[j] - t[i], gparam) *
-        ffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
     }
 
     sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
