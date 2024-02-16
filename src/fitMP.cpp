@@ -593,8 +593,8 @@ void etas::mloglikGr(NumericVector theta,
       df2[i] += g2temp[i];
     }
     */
-    double fvj, dfvj[8];
-    mloglikjGr(j, theta, &fvj, dfvj);
+    double *fvj, dfvj[8];
+    mloglikjGr(j, theta, fvj, dfvj);
 
     fv += fvj;
 
