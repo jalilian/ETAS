@@ -372,18 +372,18 @@ void etas::mloglikGr(NumericVector theta,
 {
   const int dimparam = theta.length();
 
-  double mu, kparam[2], gparam[2], fparam[3];
-  switch (mver)
+  void mloglikjGr(int j, double *fvj, double *dfvj)
   {
-    case 1:
-      paramhandler1(theta, &mu, kparam, gparam, fparam);
-      void mloglikjGr(int j, double *fvj, double *dfvj)
-      {
+    double mu, kparam[2], gparam[2], fparam[3];
+    switch (mver)
+    {
+      case 1:
+        paramhandler1(theta, &mu, kparam, gparam, fparam);
         return mloglikj1Gr(j, mu, kparam, gparam, fparam, fvj, dfvj);
-      }
-      break;
-    case 2:
-      break;
+        break;
+      case 2:
+        break;
+    }
   }
 
   double fvtemp = 0, dfvtemp[dimparam] = {0};
@@ -391,7 +391,7 @@ void etas::mloglikGr(NumericVector theta,
   for (int j = 0; j < N; ++j)
   {
     double fvj, dfvj[dimparam];
-    mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
+    mloglikjGr(j, &fvj, dfvj);
 
     fvtemp += fvj;
 
