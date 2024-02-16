@@ -120,6 +120,7 @@ double etas::mloglikj(int j, NumericVector theta)
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
+  double sumpart;
   if (flag[j] == 1)
   {
     double sumj = mu * bk[j];
@@ -130,10 +131,10 @@ double etas::mloglikj(int j, NumericVector theta)
         ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
     }
 
-    double sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
+    sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
   }
   else
-    double sumpart = 0;
+    sumpart = 0;
 
   double gi;
   if (t[j] > tstart2)
