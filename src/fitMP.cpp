@@ -460,8 +460,7 @@ void etas::mloglikGr(NumericVector theta,
 
   double fv1 = 0, fv2 = 0, df1[8] = {0}, df2[8] = {0};
   */
-  *fv = 0;
-  dfv[8] = {0};
+  double fvtemp = 0, dfvtemp[8] = {0};
 
   for (int j = 0; j < N; ++j)
   {
@@ -593,14 +592,18 @@ void etas::mloglikGr(NumericVector theta,
       df2[i] += g2temp[i];
     }
     */
-    double *fvj, dfvj[8];
-    mloglikjGr(j, theta, fvj, dfvj);
+    double fvj, dfvj[8];
+    mloglikjGr(j, theta, &fvj, dfvj);
 
-    *fv += *fvj;
+    fvtemp += fvj;
 
     for (int i = 0; i < 8; ++i)
-      dfv[i] += dfvj[i];
+      dfvtemp[i] += dfvj[i];
   }
+
+  *fv = fvtemp;
+  for (int i = 0; i < 8; ++i)
+    dfv[i] = dfvtemp[i];
   
   return;
 }
