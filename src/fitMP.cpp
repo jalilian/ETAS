@@ -197,7 +197,7 @@ double etas::mloglikj(int j,
 
         si += sgn(det) * (ffunrint1(r1, m[j], fparam) / 6 +
             ffunrint1(r0, m[j], fparam) * 2 / 3 +
-            ffunrint(r2, m[j], fparam) / 6) * phi;
+            ffunrint1(r2, m[j], fparam) / 6) * phi;
       }
     }
   }
