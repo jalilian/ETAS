@@ -187,7 +187,7 @@ double etas::mloglikj(int j, NumericVector theta)
   }
 
   double intpart = kappafun(m[j], kparam) * gi * si +
-      mu * integ0 / t.length();
+      mu * integ0 / N;
   return -sumpart + intpart;
 }
 
@@ -304,11 +304,11 @@ void etas::mloglikjGr(int j, NumericVector theta,
   }
 
   double intpart  = int_part1[0] * int_part2[0] * int_part3[0] +
-      mu * integ0 / t.length();
+      mu * integ0 / N;
   double intpartGr[8] = {0};
 
   //d mu
-  intpartGr[ 0 ] = integ0  / t.length();
+  intpartGr[ 0 ] = integ0  / N;
 
   // d A
   intpartGr[ 1 ] = int_part1[1] * int_part2[0]  * int_part3[0];
