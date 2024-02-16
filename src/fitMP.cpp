@@ -10,66 +10,6 @@
 using namespace Rcpp;
 
 // ******************************************************************
-// approximating the integral of a function on a polygon region
-// ******************************************************************
-
-double polyintegXX(double (*func)(double, double, double []),
-                   double m,
-                   double funcpara[],
-                                  NumericVector px,
-                                  NumericVector py,
-                                  double cx,
-                                  double cy,
-                                  int ndiv)
-{
-  int id;
-  double sum = 0, dxx, dyy, x1, x2, y1, y2;
-  double det, r0, r1, r2, theta;
-  
-  for (int k = 0; k < (px.length() - 1); ++k)
-  {
-    dxx = (px[k + 1] - px[k]) / ndiv;
-    dyy = (py[k + 1] - py[k]) / ndiv;
-    for (int l = 0; l < ndiv; ++l)
-    {
-      x1 = px[k] + dxx * l;
-      y1 = py[k] + dyy * l;
-      x2 = px[k] + dxx * (l + 1);
-      y2 = py[k] + dyy * (l + 1);
-      det = (x1 * y2 + y1 * cx + x2 * cy) - (x2 * y1 + y2 * cx + x1 * cy);
-      
-      if (fabs(det) < 1.0e-10)
-        continue;
-      
-      id = 1;
-      if (det < 0)
-        id = -1;
-      
-      r1 = dist(x1, y1, cx, cy);
-      r2 = dist(x2, y2, cx, cy);
-      theta = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
-      if (fabs(theta) > 1)
-        theta = 1 - 1.0e-10;
-      
-      theta = acos(theta);
-      
-      if (r1 + r2 > 1.0e-20)
-      {
-        r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
-                  y1 + r1/(r1 + r2) * (y2 - y1), cx, cy);
-        
-        sum += id * (func(r1, m, funcpara) / 6 +
-          func(r0, m, funcpara) * 2 / 3 +
-          func(r2, m, funcpara) / 6) * theta;
-      }
-    }
-  }
-  
-  return sum;
-}
-
-
-// ******************************************************************
 // the etas class
 // ******************************************************************
 
@@ -1498,6 +1438,7 @@ NumericVector lambda(NumericVector tv,
   const double q=  theta[6];
   const double gamma = theta[7];
 
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
@@ -1509,7 +1450,7 @@ NumericVector lambda(NumericVector tv,
     int i = 0;
     while (t[i] < tv[j])
     {
-      s += A * exp(alpha * m[i]) *
+      s += kappafun(m[i], kparam) *
         gfun(tv[j] - t[i], gparam) *
         ffun(dist2(xv[j], yv[j], x[i], y[i]), m[i], fparam);
       i++;
@@ -1580,6 +1521,7 @@ List cxxdeclust(NumericVector param,
   const double q= param[6];
   const double gamma = param[7];
   
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
@@ -1636,7 +1578,7 @@ List cxxdeclust(NumericVector param,
     double s_thread = mu * bk[i];
     for (int j = 0; j < i; ++j)
     {
-      s_thread += A * exp(alpha * m[j]) *
+      s_thread += kappafun(m[j], kparam) *
         gfun(t[i] - t[j], gparam) *
         ffun(dist2(x[i], y[i], x[j], y[j]), m[j], fparam);
     }
@@ -1678,6 +1620,7 @@ List cxxrates(NumericVector param,
   const double q= param[6];
   const double gamma = param[7];
   
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
@@ -1705,7 +1648,7 @@ List cxxrates(NumericVector param,
       
       for (int l = 0; l < N; l++)
       {
-        lamb(i, j) += A * exp(alpha * m[l]) *
+        lamb(i, j) += kappafun(m[l], kparam) *
           gfun(tlength - t[l], gparam) *
           ffun(dist2(x[l], y[l], gx[i], gy[j]), m[l], fparam);
       }
@@ -1737,6 +1680,7 @@ NumericVector cxxtimetrans(NumericVector theta,
   const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
 
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
@@ -1745,8 +1689,44 @@ NumericVector cxxtimetrans(NumericVector theta,
   
   for (int i=0; i < N; i++)
   {
-    sinteg[i] =  A * exp(alpha * m[i]) *
-      polyintegXX(frfunint, m[i], fparam, px, py, x[i], y[i], ndiv);
+    double si = 0;
+    for (int k = 0; k < (px.length() - 1); ++k)
+    {
+      double dxx = (px[k + 1] - px[k]) / ndiv;
+      double dyy = (py[k + 1] - py[k]) / ndiv;
+      for (int l = 0; l < ndiv; ++l)
+      {
+        double x1 = px[k] + dxx * l;
+        double y1 = py[k] + dyy * l;
+        double x2 = px[k] + dxx * (l + 1);
+        double y2 = py[k] + dyy * (l + 1);
+        double det = (x1 * y2 + y1 * x[i] + x2 * y[i]) -
+        (x2 * y1 + y2 * x[i] + x1 * y[i]);
+
+        if (fabs(det) < 1.0e-10)
+          continue;
+
+        double r1 = dist(x1, y1, x[i], y[i]);
+        double r2 = dist(x2, y2, x[i], y[i]);
+        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+        if (fabs(phi) > 1)
+          phi = 1 - 1.0e-10;
+
+        phi = acos(phi);
+
+        if (r1 + r2 > 1.0e-20)
+        {
+          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+                           y1 + r1/(r1 + r2) * (y2 - y1), x[i], y[i]);
+
+          si += sgn(det) * (frfunint(r1, m[i], fparam) / 6 +
+            frfunint(r0, m[i], fparam) * 2 / 3 +
+            frfunint(r2, m[i], fparam) / 6) * phi;
+        }
+      }
+    }
+
+    sinteg[i] = kappafun(m[i], kparam) * si;
   }
   
   for (int j=0; j < N; ++j)
@@ -1786,6 +1766,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
   const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
   
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
@@ -1796,8 +1777,43 @@ NumericVector cxxlambdtemp(NumericVector tg,
   
   for (int i=0; i < N; i++)
   {
-    sinteg[i] =  A * exp(alpha * m[i]) *
-      polyintegXX(frfunint, m[i], fparam, px, py, x[i], y[i], ndiv);
+    double si = 0;
+    for (int k = 0; k < (px.length() - 1); ++k)
+    {
+      double dxx = (px[k + 1] - px[k]) / ndiv;
+      double dyy = (py[k + 1] - py[k]) / ndiv;
+      for (int l = 0; l < ndiv; ++l)
+      {
+        double x1 = px[k] + dxx * l;
+        double y1 = py[k] + dyy * l;
+        double x2 = px[k] + dxx * (l + 1);
+        double y2 = py[k] + dyy * (l + 1);
+        double det = (x1 * y2 + y1 * x[i] + x2 * y[i]) -
+        (x2 * y1 + y2 * x[i] + x1 * y[i]);
+
+        if (fabs(det) < 1.0e-10)
+          continue;
+
+        double r1 = dist(x1, y1, x[i], y[i]);
+        double r2 = dist(x2, y2, x[i], y[i]);
+        double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+        if (fabs(phi) > 1)
+          phi = 1 - 1.0e-10;
+
+        phi = acos(phi);
+
+        if (r1 + r2 > 1.0e-20)
+        {
+          double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+                           y1 + r1/(r1 + r2) * (y2 - y1), x[i], y[i]);
+
+          si += sgn(det) * (frfunint(r1, m[i], fparam) / 6 +
+            frfunint(r0, m[i], fparam) * 2 / 3 +
+            frfunint(r2, m[i], fparam) / 6) * phi;
+        }
+      }
+    }
+    sinteg[i] = kappafun(m[i], kparam) * si;
   }
   
   for (int j=0; j < ng; ++j)
@@ -1836,6 +1852,7 @@ NumericVector cxxlambspat(NumericVector xg,
   const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
   const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
   
+  double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
 
@@ -1859,7 +1876,7 @@ NumericVector cxxlambspat(NumericVector xg,
           gfunint(tstart2 - t[i], gparam);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
-      sum += A * exp(alpha * m[i]) * gint * ffun(r2, m[i], fparam);
+      sum += kappafun(m[i], kparam) * gint * ffun(r2, m[i], fparam);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
