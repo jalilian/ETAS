@@ -39,12 +39,15 @@ public:
            NumericVector tperiod,
            double rinteg0,
            int rndiv,
-           int ffun);
+           int mver);
   void paramhandler(NumericVector theta,
                     double *mu,
                     double *kparam,
                     double *gparam,
                     double *fparam);
+  double ffun(double r2,
+              double m,
+              double fparam[]);
   double mloglikj1(int j,
                    double mu,
                    double kparam[],
@@ -97,7 +100,7 @@ void etas::set(NumericMatrix revents,
                NumericVector tperiod,
                double rinteg0,
                int rndiv,
-               int ffun)
+               int mver)
 {
   N = revents.nrow();
   t = revents( _, 0);
@@ -119,7 +122,7 @@ void etas::set(NumericMatrix revents,
   integ0 = rinteg0;
   ndiv = rndiv;
 
-  mver = ffun;
+  mver = mver;
 }
 
 // ******************************************************************
@@ -150,7 +153,17 @@ void etas::paramhandler(NumericVector theta,
     case 2:
       break;
   }
+}
 
+double etas::ffun(double r2, double m, double fparam[])
+{
+    switch (mver)
+  {
+    case 1:
+      return ffun1(r2, m, fparam);
+      break;
+    case 2:
+      break;
 }
 
 // ******************************************************************
@@ -1238,10 +1251,10 @@ List cxxfit(NumericVector tht,
             double eps,
             bool verbose,
             int nthreads,
-            int ffun)
+            int mver)
 {
   etas data;
-  data.set(revents, rpoly, tperiod, rinteg0, ndiv, ffun);
+  data.set(revents, rpoly, tperiod, rinteg0, ndiv, mver);
   
   #ifdef _OPENMP
   if (nthreads > 1)
