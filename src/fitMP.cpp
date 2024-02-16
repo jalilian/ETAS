@@ -39,7 +39,7 @@ public:
            NumericVector tperiod,
            double rinteg0,
            int rndiv,
-           int mver);
+           int rmver);
   void paramhandler(NumericVector theta,
                     double *mu,
                     double *kparam,
@@ -100,7 +100,7 @@ void etas::set(NumericMatrix revents,
                NumericVector tperiod,
                double rinteg0,
                int rndiv,
-               int mver)
+               int rmver)
 {
   N = revents.nrow();
   t = revents( _, 0);
@@ -122,7 +122,7 @@ void etas::set(NumericMatrix revents,
   integ0 = rinteg0;
   ndiv = rndiv;
 
-  mver = mver;
+  mver = rmver;
 }
 
 // ******************************************************************
@@ -143,8 +143,7 @@ void etas::paramhandler(NumericVector theta,
   gparam[0] = theta[2] * theta[2]; // c
   gparam[1] = theta[4] * theta[4]; // p
 
-   Rprintf("mver = %d", mver);
-
+  Rprintf("mver = %d", mver);
   switch (mver)
   {
     case 1:
