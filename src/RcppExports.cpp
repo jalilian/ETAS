@@ -5,9 +5,14 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // cxxfit
-List cxxfit(NumericVector tht, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double rinteg0, NumericMatrix ihess, int ndiv, double eps, bool verbose, int nthreads);
-RcppExport SEXP _ETAS_cxxfit(SEXP thtSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP rinteg0SEXP, SEXP ihessSEXP, SEXP ndivSEXP, SEXP epsSEXP, SEXP verboseSEXP, SEXP nthreadsSEXP) {
+List cxxfit(NumericVector tht, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double rinteg0, NumericMatrix ihess, int ndiv, double eps, bool verbose, int nthreads, int ffun);
+RcppExport SEXP _ETAS_cxxfit(SEXP thtSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP rinteg0SEXP, SEXP ihessSEXP, SEXP ndivSEXP, SEXP epsSEXP, SEXP verboseSEXP, SEXP nthreadsSEXP, SEXP ffunSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +26,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads));
+    Rcpp::traits::input_parameter< int >::type ffun(ffunSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, ffun));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -151,12 +157,12 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP cdeclust(SEXP, SEXP, SEXP, SEXP, SEXP);
-RcppExport SEXP cfit(SEXP, SEXP, SEXP, SEXP);
-RcppExport SEXP clambdax(SEXP, SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP cdeclust(void *, void *, void *, void *, void *);
+RcppExport SEXP cfit(void *, void *, void *, void *);
+RcppExport SEXP clambdax(void *, void *, void *, void *, void *);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_ETAS_cxxfit", (DL_FUNC) &_ETAS_cxxfit, 10},
+    {"_ETAS_cxxfit", (DL_FUNC) &_ETAS_cxxfit, 11},
     {"_ETAS_cxxdeclust", (DL_FUNC) &_ETAS_cxxdeclust, 6},
     {"_ETAS_cxxrates", (DL_FUNC) &_ETAS_cxxrates, 6},
     {"_ETAS_cxxtimetrans", (DL_FUNC) &_ETAS_cxxtimetrans, 6},
@@ -165,9 +171,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ETAS_cxxSmooth", (DL_FUNC) &_ETAS_cxxSmooth, 6},
     {"_ETAS_cxxstpoisstest", (DL_FUNC) &_ETAS_cxxstpoisstest, 3},
     {"_ETAS_cxxstpoisstestMP", (DL_FUNC) &_ETAS_cxxstpoisstestMP, 4},
-    {"cdeclust",               (DL_FUNC) &cdeclust,                5},
-    {"cfit",                   (DL_FUNC) &cfit,                    4},
-    {"clambdax",               (DL_FUNC) &clambdax,                5},
+    {"cdeclust", (DL_FUNC) &cdeclust, 5},
+    {"cfit",     (DL_FUNC) &cfit,     4},
+    {"clambdax", (DL_FUNC) &clambdax, 5},
     {NULL, NULL, 0}
 };
 
