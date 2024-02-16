@@ -767,7 +767,7 @@ double etas::mloglikMP(NumericVector theta,
                        int nthreads)
 {
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(theta, &mu, kparam, gparam, fparam);
+  paramhandler1(theta, &mu, kparam, gparam, fparam);
 
   double fv = 0;
   
@@ -778,7 +778,7 @@ double etas::mloglikMP(NumericVector theta,
     #pragma omp for
     for (int j = 0; j < N; ++j)
     {
-      fv_thread += mloglikj(j, mu, kparam, gparam, fparam);
+      fv_thread += mloglikj1(j, mu, kparam, gparam, fparam);
     }
 
     #pragma omp critical
@@ -802,7 +802,7 @@ void etas::mloglikGrMP(NumericVector theta,
   const int dimparam = theta.length();
 
   double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(theta, &mu, kparam, gparam, fparam);
+  paramhandler1(theta, &mu, kparam, gparam, fparam);
 
   double fvtemp = 0, dfvtemp[dimparam] = {0};
   
@@ -814,7 +814,7 @@ void etas::mloglikGrMP(NumericVector theta,
     for (int j = 0; j < N; ++j)
     {
       double fvj, dfvj[dimparam];
-      mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
+      mloglikj1Gr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
       fvtemp_thread += fvj;
       for (int i = 0; i < dimparam; ++i)
