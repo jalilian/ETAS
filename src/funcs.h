@@ -39,7 +39,7 @@ double norm(double *x, int dim)
 // expected number of triggered events
 // ******************************************************************
 
-double kappafun(double m, double kparam[])
+double kappafun1(double m, double kparam[])
 {
   double A = kparam[0], alpha = kparam[1];
   return A * exp(alpha * m);
@@ -84,7 +84,7 @@ std::array<double, 3> dkappafun(double m, double kparam[])
 // temporal density function and its derivatives
 // ******************************************************************
 
-double gfun(double t, double gparam[])
+double gfun1(double t, double gparam[])
 {
   double c = gparam[0], p = gparam[1];
   if (t <= 0)
@@ -175,7 +175,7 @@ std::array<double, 3> dgfunint(double t, double gparam[])
 // spatial density function and its derivatives
 // ******************************************************************
 
-double ffun(double r2, double m, double fparam[])
+double ffun1(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
   double sig = D * exp(gamma * m);

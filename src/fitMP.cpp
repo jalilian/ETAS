@@ -40,6 +40,13 @@ public:
            double rinteg0,
            int rndiv,
            int rspdensity);
+  double kappafun(double m,
+                  double kparam[]);
+  double gfun(double t,
+              double gparam[]);
+  double ffun(double r2,
+              double m,
+              double fparam[]);
   double mloglikj(int j,
                   double mu,
                   double kparam[],
@@ -139,6 +146,24 @@ void paramhandler(NumericVector theta,
   fparam[2] = theta[6] * theta[6]; // q
 }
 
+double etas::kappafun(double m,
+                  double kparam[])
+{
+  return kappafun1(m, kparam);
+}
+
+double etas::gfun(double t,
+                  double gparam[])
+{
+  return gfun1(t, gparam);
+}
+
+double etas::ffun(double r2,
+                  double m,
+                  double fparam[])
+{
+  return (spdensity == 1) ? ffun1(r2, m, fparam) : ffun1(r2, m + 0.1, fparam);
+}
 // ******************************************************************
 // minus log likelihood function
 // ******************************************************************
