@@ -1312,9 +1312,9 @@ NumericVector lambda(NumericVector tv,
     int i = 0;
     while (t[i] < tv[j])
     {
-      s += kappafun(m[i], kparam) *
-        gfun(tv[j] - t[i], gparam) *
-        ffun(dist2(xv[j], yv[j], x[i], y[i]), m[i], fparam);
+      s += kappafun1(m[i], kparam) *
+        gfun1(tv[j] - t[i], gparam) *
+        ffun1(dist2(xv[j], yv[j], x[i], y[i]), m[i], fparam);
       i++;
     }
     out[j] = s;
@@ -1440,9 +1440,9 @@ List cxxdeclust(NumericVector param,
     double s_thread = mu * bk[i];
     for (int j = 0; j < i; ++j)
     {
-      s_thread += kappafun(m[j], kparam) *
-        gfun(t[i] - t[j], gparam) *
-        ffun(dist2(x[i], y[i], x[j], y[j]), m[j], fparam);
+      s_thread += kappafun1(m[j], kparam) *
+        gfun1(t[i] - t[j], gparam) *
+        ffun1(dist2(x[i], y[i], x[j], y[j]), m[j], fparam);
     }
     
     lam[i] = s_thread;
@@ -1510,9 +1510,9 @@ List cxxrates(NumericVector param,
       
       for (int l = 0; l < N; l++)
       {
-        lamb(i, j) += kappafun(m[l], kparam) *
-          gfun(tlength - t[l], gparam) *
-          ffun(dist2(x[l], y[l], gx[i], gy[j]), m[l], fparam);
+        lamb(i, j) += kappafun1(m[l], kparam) *
+          gfun1(tlength - t[l], gparam) *
+          ffun1(dist2(x[l], y[l], gx[i], gy[j]), m[l], fparam);
       }
     }
   
@@ -1588,7 +1588,7 @@ NumericVector cxxtimetrans(NumericVector theta,
       }
     }
 
-    sinteg[i] = kappafun(m[i], kparam) * si;
+    sinteg[i] = kappafun1(m[i], kparam) * si;
   }
   
   for (int j=0; j < N; ++j)
@@ -1675,7 +1675,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
         }
       }
     }
-    sinteg[i] = kappafun(m[i], kparam) * si;
+    sinteg[i] = kappafun1(m[i], kparam) * si;
   }
   
   for (int j=0; j < ng; ++j)
@@ -1685,7 +1685,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
     {
       if (t[i] < tg[j])
       {
-        sum += gfun(tg[j] - t[i], gparam) * sinteg[i];
+        sum += gfun1(tg[j] - t[i], gparam) * sinteg[i];
       }
     }
     out[j] = mu * integ0 /(tlength - tstart2) + sum;
@@ -1738,7 +1738,7 @@ NumericVector cxxlambspat(NumericVector xg,
           gfunint(tstart2 - t[i], gparam);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
-      sum += kappafun(m[i], kparam) * gint * ffun(r2, m[i], fparam);
+      sum += kappafun1(m[i], kparam) * gint * ffun(r2, m[i], fparam);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
