@@ -39,7 +39,7 @@ public:
            NumericVector tperiod,
            double rinteg0,
            int rndiv,
-           int spdensity);
+           int rspdensity);
   double mloglikj(int j,
                   double mu,
                   double kparam[],
