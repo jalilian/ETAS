@@ -105,7 +105,7 @@ void etas::set(NumericMatrix revents,
 // minus log likelihood function
 // ******************************************************************
 
-double etas::mloglikj(int j, , NumericVector theta)
+double etas::mloglikj(int j, NumericVector theta)
 {
   const double mu = theta[0] * theta[0];
   const double A = theta[1] * theta[1];
