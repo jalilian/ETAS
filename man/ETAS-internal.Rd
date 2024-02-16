@@ -40,9 +40,9 @@ rates.inter(theta, object, bwd, lat.range=NULL, long.range=NULL,
             dimyx=NULL, plot.it=TRUE)
 lambdax(rt, rx, ry, theta, revents)
 etasfit(theta, revents, rpoly, tperiod, integ0, ihess, verbose,
-    ndiv, eps, cxxcode, nthreads)
+    ndiv, eps, cxxcode, nthreads, spdensity)
 decluster(theta, rbwd, revents, rpoly, tperiod, ndiv, cxxcode)
-cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads)
+cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, spdensity)
 cxxdeclust(param, revents, rpoly, bwd, tperiod, ndiv)
 cxxrates(param, revents, bwd, tperiod, gx, gy)
 cxxtimetrans(theta, revents, rpoly, tperiod, integ0, ndiv)
