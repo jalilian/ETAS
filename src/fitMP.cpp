@@ -38,6 +38,7 @@ public:
            NumericVector tperiod,
            double rinteg0,
            int rndiv);
+  double mloglikj(int j, NumericVector theta);
   double mloglik(NumericVector theta);
   void mloglikGr(NumericVector theta,
                  double *fv,
@@ -104,7 +105,7 @@ void etas::set(NumericMatrix revents,
 // minus log likelihood function
 // ******************************************************************
 
-double etas::mloglik(NumericVector theta)
+double etas::mloglikj(int j, , NumericVector theta)
 {
   const double mu = theta[0] * theta[0];
   const double A = theta[1] * theta[1];
@@ -118,11 +119,97 @@ double etas::mloglik(NumericVector theta)
   double kparam[] = {A, alpha};
   double gparam[] = {c, p};
   double fparam[] = {D, gamma, q};
-  
+
+  if (flag[j] == 1)
+  {
+    double sumj = mu * bk[j];
+    for (int i = 0; i < j; i++)
+    {
+      sumj += kappafun(m[i], kparam) *
+        gfun(t[j] - t[i], gparam) *
+        ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+    }
+
+    double sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
+  }
+  else
+    double sumpart = 0;
+
+  double gi;
+  if (t[j] > tstart2)
+  {
+    gi = gfunint(tlength - t[j], gparam);
+  }
+  else
+  {
+    gi = gfunint(tlength - t[j], gparam) - gfunint(tstart2 - t[j], gparam);
+  }
+
+  double si = 0;
+  for (int k = 0; k < (px.length() - 1); ++k)
+  {
+    double dpx = (px[k + 1] - px[k]) / ndiv;
+    double dpy = (py[k + 1] - py[k]) / ndiv;
+    for (int l = 0; l < ndiv; ++l)
+    {
+      double x1 = px[k] + dpx * l;
+      double y1 = py[k] + dpy * l;
+      double x2 = px[k] + dpx * (l + 1);
+      double y2 = py[k] + dpy * (l + 1);
+
+      double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
+          (x2 * y1 + y2 * x[j] + x1 * y[j]);
+      if (fabs(det) < 1.0e-10)
+        continue;
+
+      double r1 = dist(x1, y1, x[j], y[j]);
+      double r2 = dist(x2, y2, x[j], y[j]);
+      double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+      if (fabs(phi) > 1)
+        phi = 1 - 1.0e-10;
+
+      phi = acos(phi);
+
+      if (r1 + r2 > 1.0e-20)
+      {
+        double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+                    y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
+
+        si += sgn(det) * (frfunint(r1, m[j], fparam) / 6 +
+            frfunint(r0, m[j], fparam) * 2 / 3 +
+            frfunint(r2, m[j], fparam) / 6) * phi;
+      }
+    }
+  }
+
+  double intpart = kappafun(m[j], kparam) * gi * si +
+      mu * integ0 / t.length();
+  return -sumpart + intpart;
+}
+
+double etas::mloglik(NumericVector theta)
+{
+  /*
+  const double mu = theta[0] * theta[0];
+  const double A = theta[1] * theta[1];
+  const double c = theta[2] * theta[2];
+  const double alpha = theta[3] * theta[3];
+  const double p = theta[4] * theta[4];
+  const double D = theta[5] * theta[5];
+  const double q= theta[6] * theta[6];
+  const double gamma = theta[7] * theta[7];
+
+  double kparam[] = {A, alpha};
+  double gparam[] = {c, p};
+  double fparam[] = {D, gamma, q};
+
   double fv1 = 0, fv2 = 0;
-  
+  */
+  double fv = 0;
+
   for (int j = 0; j < t.length(); ++j)
   {
+    /*
     if (flag[j] == 1)
     {
       double sumpart = mu * bk[j];
@@ -187,11 +274,16 @@ double etas::mloglik(NumericVector theta)
     }
     
     fv2 += kappafun(m[j], kparam) * gi * si;
+    */
+    fv += mloglikj(j, theta);
   }
   
+  /*
   fv2 += mu * integ0;
   
   return -fv1 + fv2;
+  */
+  return fv;
 }
 
 // ******************************************************************
