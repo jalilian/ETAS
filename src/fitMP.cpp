@@ -31,22 +31,13 @@ private:
   double tlength;
   double integ0;
   int ndiv;
-  int spdensity;
   
 public:
   void set(NumericMatrix revents,
            NumericMatrix rpoly,
            NumericVector tperiod,
            double rinteg0,
-           int rndiv,
-           int rspdensity);
-  double kappafun(double m,
-                  double kparam[]);
-  double gfun(double t,
-              double gparam[]);
-  double ffun(double r2,
-              double m,
-              double fparam[]);
+           int rndiv);
   double mloglikj(int j,
                   double mu,
                   double kparam[],
@@ -98,8 +89,7 @@ void etas::set(NumericMatrix revents,
                NumericMatrix rpoly,
                NumericVector tperiod,
                double rinteg0,
-               int rndiv,
-               int rspdensity)
+               int rndiv)
 {
   N = revents.nrow();
   t = revents( _, 0);
@@ -120,7 +110,6 @@ void etas::set(NumericMatrix revents,
   
   integ0 = rinteg0;
   ndiv = rndiv;
-  spdensity = rspdensity;
 }
 
 // ******************************************************************
@@ -146,24 +135,6 @@ void paramhandler(NumericVector theta,
   fparam[2] = theta[6] * theta[6]; // q
 }
 
-double etas::kappafun(double m,
-                  double kparam[])
-{
-  return kappafun1(m, kparam);
-}
-
-double etas::gfun(double t,
-                  double gparam[])
-{
-  return gfun1(t, gparam);
-}
-
-double etas::ffun(double r2,
-                  double m,
-                  double fparam[])
-{
-  return (spdensity == 1) ? ffun1(r2, m, fparam) : ffun1(r2, m + 0.1, fparam);
-}
 // ******************************************************************
 // minus log likelihood function
 // ******************************************************************
@@ -182,7 +153,7 @@ double etas::mloglikj(int j,
     {
       sumj += kappafun(m[i], kparam) *
         gfun(t[j] - t[i], gparam) *
-        ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        ffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
     }
 
     sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
@@ -224,9 +195,9 @@ double etas::mloglikj(int j,
         double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
 
-        si += sgn(det) * (frfunint(r1, m[j], fparam) / 6 +
-            frfunint(r0, m[j], fparam) * 2 / 3 +
-            frfunint(r2, m[j], fparam) / 6) * phi;
+        si += sgn(det) * (ffunrint1(r1, m[j], fparam) / 6 +
+            ffunrint1(r0, m[j], fparam) * 2 / 3 +
+            ffunrint(r2, m[j], fparam) / 6) * phi;
       }
     }
   }
@@ -256,7 +227,7 @@ void etas::mloglikjGr(int j,
     {
       std::array<double, 3> part1 = dkappafun(m[i], kparam);
       std::array<double, 3> part2 = dgfun(t[j] - t[i], gparam);
-      std::array<double, 4> part3 = dffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+      std::array<double, 4> part3 = dffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
       sumj    += part1[0] * part2[0] * part3[0];
 
@@ -330,9 +301,9 @@ void etas::mloglikjGr(int j,
         double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
 
-        std::array<double, 4> a1 = dfrfunint(r1, m[j], fparam);
-        std::array<double, 4> a2 = dfrfunint(r0, m[j], fparam);
-        std::array<double, 4> a3 = dfrfunint(r2, m[j], fparam);
+        std::array<double, 4> a1 = dffunrint1(r1, m[j], fparam);
+        std::array<double, 4> a2 = dffunrint1(r0, m[j], fparam);
+        std::array<double, 4> a3 = dffunrint1(r2, m[j], fparam);
         for (int i = 0; i < 4; i++)
           int_part3[i] += id * (a1[i] / 6 + a2[i]* 2.0 / 3 + a3[i] / 6) * phi;
       }
@@ -1249,10 +1220,10 @@ List cxxfit(NumericVector tht,
             double eps,
             bool verbose,
             int nthreads,
-            int spdensity)
+            int ffun)
 {
   etas data;
-  data.set(revents, rpoly, tperiod, rinteg0, ndiv, spdensity);
+  data.set(revents, rpoly, tperiod, rinteg0, ndiv);
   
   #ifdef _OPENMP
   if (nthreads > 1)
@@ -1312,8 +1283,8 @@ NumericVector lambda(NumericVector tv,
     int i = 0;
     while (t[i] < tv[j])
     {
-      s += kappafun1(m[i], kparam) *
-        gfun1(tv[j] - t[i], gparam) *
+      s += kappafun(m[i], kparam) *
+        gfun(tv[j] - t[i], gparam) *
         ffun1(dist2(xv[j], yv[j], x[i], y[i]), m[i], fparam);
       i++;
     }
@@ -1440,8 +1411,8 @@ List cxxdeclust(NumericVector param,
     double s_thread = mu * bk[i];
     for (int j = 0; j < i; ++j)
     {
-      s_thread += kappafun1(m[j], kparam) *
-        gfun1(t[i] - t[j], gparam) *
+      s_thread += kappafun(m[j], kparam) *
+        gfun(t[i] - t[j], gparam) *
         ffun1(dist2(x[i], y[i], x[j], y[j]), m[j], fparam);
     }
     
@@ -1510,8 +1481,8 @@ List cxxrates(NumericVector param,
       
       for (int l = 0; l < N; l++)
       {
-        lamb(i, j) += kappafun1(m[l], kparam) *
-          gfun1(tlength - t[l], gparam) *
+        lamb(i, j) += kappafun(m[l], kparam) *
+          gfun(tlength - t[l], gparam) *
           ffun1(dist2(x[l], y[l], gx[i], gy[j]), m[l], fparam);
       }
     }
@@ -1581,14 +1552,14 @@ NumericVector cxxtimetrans(NumericVector theta,
           double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                            y1 + r1/(r1 + r2) * (y2 - y1), x[i], y[i]);
 
-          si += sgn(det) * (frfunint(r1, m[i], fparam) / 6 +
-            frfunint(r0, m[i], fparam) * 2 / 3 +
-            frfunint(r2, m[i], fparam) / 6) * phi;
+          si += sgn(det) * (ffunrint1(r1, m[i], fparam) / 6 +
+            ffunrint1(r0, m[i], fparam) * 2 / 3 +
+            ffunrint1(r2, m[i], fparam) / 6) * phi;
         }
       }
     }
 
-    sinteg[i] = kappafun1(m[i], kparam) * si;
+    sinteg[i] = kappafun(m[i], kparam) * si;
   }
   
   for (int j=0; j < N; ++j)
@@ -1669,13 +1640,13 @@ NumericVector cxxlambdtemp(NumericVector tg,
           double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                            y1 + r1/(r1 + r2) * (y2 - y1), x[i], y[i]);
 
-          si += sgn(det) * (frfunint(r1, m[i], fparam) / 6 +
-            frfunint(r0, m[i], fparam) * 2 / 3 +
-            frfunint(r2, m[i], fparam) / 6) * phi;
+          si += sgn(det) * (ffunrint1(r1, m[i], fparam) / 6 +
+            ffunrint1(r0, m[i], fparam) * 2 / 3 +
+            ffunrint1(r2, m[i], fparam) / 6) * phi;
         }
       }
     }
-    sinteg[i] = kappafun1(m[i], kparam) * si;
+    sinteg[i] = kappafun(m[i], kparam) * si;
   }
   
   for (int j=0; j < ng; ++j)
@@ -1685,7 +1656,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
     {
       if (t[i] < tg[j])
       {
-        sum += gfun1(tg[j] - t[i], gparam) * sinteg[i];
+        sum += gfun(tg[j] - t[i], gparam) * sinteg[i];
       }
     }
     out[j] = mu * integ0 /(tlength - tstart2) + sum;
@@ -1738,7 +1709,7 @@ NumericVector cxxlambspat(NumericVector xg,
           gfunint(tstart2 - t[i], gparam);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
-      sum += kappafun1(m[i], kparam) * gint * ffun1(r2, m[i], fparam);
+      sum += kappafun(m[i], kparam) * gint * ffun1(r2, m[i], fparam);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
