@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // cxxfit
-List cxxfit(NumericVector tht, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double rinteg0, NumericMatrix ihess, int ndiv, double eps, bool verbose, int nthreads, int ffun);
-RcppExport SEXP _ETAS_cxxfit(SEXP thtSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP rinteg0SEXP, SEXP ihessSEXP, SEXP ndivSEXP, SEXP epsSEXP, SEXP verboseSEXP, SEXP nthreadsSEXP, SEXP ffunSEXP) {
+List cxxfit(NumericVector tht, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double rinteg0, NumericMatrix ihess, int ndiv, double eps, bool verbose, int nthreads, int mver);
+RcppExport SEXP _ETAS_cxxfit(SEXP thtSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP rinteg0SEXP, SEXP ihessSEXP, SEXP ndivSEXP, SEXP epsSEXP, SEXP verboseSEXP, SEXP nthreadsSEXP, SEXP mverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -26,8 +26,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    Rcpp::traits::input_parameter< int >::type ffun(ffunSEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, ffun));
+    Rcpp::traits::input_parameter< int >::type mver(mverSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, mver));
     return rcpp_result_gen;
 END_RCPP
 }

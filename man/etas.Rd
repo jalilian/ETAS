@@ -41,10 +41,10 @@
   The C++ code is slightly faster and allows parallel computing.}
   \item{nthreads}{An integer indicating number of threads in
   the parallel region of the C++ code}
-  \item{ffun}{An integer indicating which spatial probability density 
+  \item{mver}{An integer indicating which spatial probability density 
                    function for locations of triggered events should be use. 
-                   The default \code{ffun=1} corresponds to the inverse 
-                   power density and \code{ffun=2} corresponds to the 
+                   The default \code{mver=1} corresponds to the inverse 
+                   power density and \code{mver=2} corresponds to the 
                    Gaussian density.}
 }
 \value{
@@ -93,11 +93,11 @@
            }
       \item{\eqn{f(x,y|m)}{f(x, y|m)}: }{is the p.d.f of
             the locations of the triggered events, considered to be
-            either the long tail inverse power density (\code{ffun = 1})
+            either the long tail inverse power density (\code{mver = 1})
            \deqn{ f(x, y|m) = \frac{q-1}{\pi \sigma(m))}
              (1 + \frac{x^2 + y^2}{\sigma(m)})^{-q} }{ f(x, y|m) = (q - 1)/(pi sigma(m))
                  (1 + (x^2 + y^2)/(sigma(m)))^(-q)}
-           or the light tail Gaussian density (\code{ffun = 2}, only can be used if \code{cxxcode = TRUE})
+           or the light tail Gaussian density (\code{mver = 2}, only can be used if \code{cxxcode = TRUE})
            \deqn{ f(x,y|m)= \frac{1}{2\pi \sigma(m)}\exp(-\frac{x^2 + y^2}{2\sigma(m)}) }{f(x,y|m)= exp(-(x^2 + y^2)/(2 sigma(m)))/(2 pi sigma(m))}
            with
            \deqn{ \sigma(m) = D\exp(\gamma(m - m_0)) }{ sigma(m) = D exp( gamma (m - m0) )}
