@@ -134,8 +134,8 @@ double etas::mloglikj(int j, NumericVector theta)
     theta[4] * theta[4] // p
   };
   double fparam[] = {
-    theta[5] * theta[5] // D
-    theta[7] * theta[7] // gamma
+    theta[5] * theta[5], // D
+    theta[7] * theta[7], // gamma
     theta[6] * theta[6] // q
   };
 
