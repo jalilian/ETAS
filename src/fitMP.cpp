@@ -1273,7 +1273,7 @@ void etas::mloglikGrMP(NumericVector theta,
   */
   fvtemp += fvtemp_thread;
   for (int i = 0; i < 8; ++i)
-    dfvtemp += dfvtemp_thread[i];
+    dfvtemp[i] += dfvtemp_thread[i];
 }
 }
 /*
