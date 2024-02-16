@@ -50,8 +50,14 @@ public:
                   double fparam[],
                   double *fv,
                   double *df);
-  double mloglik(NumericVector theta);
-  void mloglikGr(NumericVector theta,
+  double mloglik(double mu,
+                 double kparam[],
+                 double gparam[],
+                 double fparam[]);
+  void mloglikGr(double mu,
+                 double kparam[],
+                 double gparam[],
+                 double fparam[],
                  double *fv,
                  double *df);
   void linesearch(NumericVector xOld,
@@ -113,10 +119,10 @@ void etas::set(NumericMatrix revents,
 }
 
 // ******************************************************************
-// minus log likelihood function
+// parameters of the model
 // ******************************************************************
 
-void paramhandel(NumericVector theta,
+void paramhandler(NumericVector theta,
                  double *mu,
                  double *kparam,
                  double *gparam,
@@ -134,6 +140,10 @@ void paramhandel(NumericVector theta,
   fparam[1] = theta[7] * theta[7]; // gamma
   fparam[2] = theta[6] * theta[6]; // q
 }
+
+// ******************************************************************
+// minus log likelihood function
+// ******************************************************************
 
 double etas::mloglikj(int j,
                       double mu,
@@ -357,13 +367,13 @@ double etas::mloglik(NumericVector theta)
 // gradient of minus log likelihood function
 // ******************************************************************
 
-void etas::mloglikGr(NumericVector theta,
+void etas::mloglikGr(double mu,
+                     double kparam[],
+                     double gparam[],
+                     double fparam[],
                      double *fv,
                      double *dfv)
 {
-  double mu, kparam[2], gparam[2], fparam[3];
-  paramhandel(theta, &mu, kparam, gparam, fparam);
-
   double fvtemp = 0, dfvtemp[8] = {0};
 
   for (int j = 0; j < N; ++j)
@@ -415,8 +425,11 @@ void etas::linesearch(NumericVector xOld,
   
   for (int i = 0; i < dimparam; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
-  fv2 = mloglik(xNew);
-  
+
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandler(xNew, &mu, kparam, gparam, fparam);
+  fv2 = mloglik(mu, kparam, gparam, fparam);
+
   if (fv2 > fv1)
     goto stat50;
   
@@ -424,7 +437,8 @@ void etas::linesearch(NumericVector xOld,
     ram3 = ram2*2.0;
   for (int i = 0; i < dimparam ; i++)
     xNew[i] = xOld[i] + ram3 * h[i];
-  fv3 = mloglik(xNew);
+  paramhandler(xNew, &mu, kparam, gparam, fparam);
+  fv3 = mloglik(mu, kparam, gparam, fparam);
   if (fv3 > fv2)
     goto stat70;
   ram1 = ram2;
@@ -444,7 +458,8 @@ void etas::linesearch(NumericVector xOld,
   }
   for (int i = 0; i < dimparam; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
-  fv2 = mloglik(xNew);
+  paramhandler(xNew, &mu, kparam, gparam, fparam);
+  fv2 = mloglik(mu, kparam, gparam, fparam);
   if (fv2 > fv1)
     goto stat50;
   
@@ -464,7 +479,8 @@ void etas::linesearch(NumericVector xOld,
     *ram = b1 / b2;
     for (int i = 0; i < dimparam; i++)
       xNew[i] = xOld[i] + *ram*h[i];
-    *fv = mloglik(xNew);
+    paramhandler(xNew, &mu, kparam, gparam, fparam);
+    *fv = mloglik(mu, kparam, gparam, fparam);
     if (*ram > ram2)
     {
       if (*fv <= fv2)
@@ -518,7 +534,8 @@ void etas::linesearch(NumericVector xOld,
     *ram = b1 /b2;
     for (int i = 0; i < dimparam; i++)
       xNew[i] = xOld[i] + *ram * h[i];
-    *fv = mloglik(xNew);
+    paramhandler(xNew, &mu, kparam, gparam, fparam);
+    *fv = mloglik(mu, kparam, gparam, fparam);
     if (fv2 < *fv)
       *ram = ram2;
     return;
@@ -553,8 +570,10 @@ List etas::fitfun(NumericVector tht,
   for (int i = 0; i < dimparam; i++)
     for (int j = 0; j < dimparam; j++)
       h[i][j] = ihess(i, j);
-  
-  mloglikGr(tht, &fv, g);
+
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandler(tht, &mu, kparam, gparam, fparam);
+  mloglikGr(mu, kparam, gparam, fparam, &fv, g);
   
   if (verbose)
   {
@@ -710,7 +729,8 @@ List etas::fitfun(NumericVector tht,
       }
       
       double fv0 = fv;
-      mloglikGr(tht, &fv, g);
+      paramhandler(tht, &mu, kparam, gparam, fparam);
+      mloglikGr(mu, kparam, gparam, fparam, &fv, g);
       
       if (verbose)
       {
