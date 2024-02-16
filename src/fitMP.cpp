@@ -405,7 +405,7 @@ void etas::linesearch(NumericVector xOld,
   if (*ram <= 1.0e-30)
     *ram = 0.1;
   
-  double hnorm = norm(h, 8);
+  double hnorm = norm(h, dimparam);
   if (hnorm > 1)
     *ram = *ram/hnorm;
   
@@ -413,7 +413,7 @@ void etas::linesearch(NumericVector xOld,
   ram2 = *ram;
   fv1  = *fv;
   
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < dimparam; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
   fv2 = mloglik(xNew);
   
@@ -422,7 +422,7 @@ void etas::linesearch(NumericVector xOld,
   
   stat30:
     ram3 = ram2*2.0;
-  for (int i = 0; i < 8 ; i++)
+  for (int i = 0; i < dimparam ; i++)
     xNew[i] = xOld[i] + ram3 * h[i];
   fv3 = mloglik(xNew);
   if (fv3 > fv2)
@@ -442,7 +442,7 @@ void etas::linesearch(NumericVector xOld,
     *ram = 0;
     return;
   }
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < dimparam; i++)
     xNew[i] = xOld[i] + ram2 * h[i];
   fv2 = mloglik(xNew);
   if (fv2 > fv1)
@@ -462,7 +462,7 @@ void etas::linesearch(NumericVector xOld,
   else
   {
     *ram = b1 / b2;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < dimparam; i++)
       xNew[i] = xOld[i] + *ram*h[i];
     *fv = mloglik(xNew);
     if (*ram > ram2)
@@ -516,7 +516,7 @@ void etas::linesearch(NumericVector xOld,
   else
   {
     *ram = b1 /b2;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < dimparam; i++)
       xNew[i] = xOld[i] + *ram*h[i];
     *fv = mloglik(xNew);
     if (fv2 < *fv)
