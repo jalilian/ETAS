@@ -293,8 +293,7 @@ void etas::mloglikj1Gr(int j,
     {
       std::array<double, 3> part1 = dkappafun(m[i], kparam);
       std::array<double, 3> part2 = dgfun(t[j] - t[i], gparam);
-      //std::array<double, 4> part3 = dffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
-      NumericVector part3 = dffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+      std::array<double, 4> part3 = dffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
       sumj    += part1[0] * part2[0] * part3[0];
 

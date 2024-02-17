@@ -110,22 +110,6 @@ double ffun1(double r2, double m, double fparam[])
   return (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 }
 
-NumericVector dffun1(double r2, double m, double fparam[])
-{
-  double D = fparam[0], gamma = fparam[1], q = fparam[2];
-  double sig = D * exp(gamma * m);
-  NumericVector out(4);
-  out[0] = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
-  // d D
-  out[1] = out[0] * (-1 + q * r2  / (r2 + sig)) / D;
-  // d q
-  out[2] = out[0] * (1 / (q - 1) - log(1 + r2 / sig));
-  // d gamma
-  out[3] = out[0] * (-1 + q * r2  / (r2 + sig)) * m;
-  return out;
-}
-
-/*
 std::array<double, 4> dffun1(double r2, double m, double fparam[])
 {
   double D = fparam[0], gamma = fparam[1], q = fparam[2];
@@ -140,7 +124,6 @@ std::array<double, 4> dffun1(double r2, double m, double fparam[])
   out[3] = out[0] * (-1 + q * r2  / (r2 + sig)) * m;
   return out;
 }
-*/
 
 double ffunrint1(double r, double m, double fparam[])
 {
