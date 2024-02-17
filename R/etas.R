@@ -52,12 +52,17 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
     stop("param0 must be a numeric vector of length 8 with positive components")
 
   param1 <- param0
-  thetar <- asd <- matrix(NA, nrow=no.itr, ncol=8)
   par.names <- c("mu", "A", "c", "alpha", "p", "D", "q", "gamma")
+  if (mver == 2)
+  {
+    param1 <- param1[-7]
+    par.names <- par.names[-7]
+  }
+  thetar <- asd <- matrix(NA, nrow=no.itr, ncol=length(param1))
   names(param1) <- colnames(thetar) <- colnames(asd) <- par.names
   loglikfv <- numeric(no.itr)
   rownames(thetar) <- rownames(asd) <- names(loglikfv) <- paste("iteration", 1:no.itr)
-  ihess <- diag(8)
+  ihess <- diag(length(param1))
   bk <- numeric(nrow(revents))
 
   for (itr in 1:no.itr)
@@ -134,7 +139,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
     print(proc.time() - ptm)
   }
 
-  names(param1) <- c("mu", "A", "c", "alpha", "p", "D", "q", "gamma")
+  names(param1) <- par.names
   object$revents <- revents
   out <- list(param = param1, bk=bk, pb=pb, opt=opt, object=object,
               bwd=rbwd, thetar=thetar, loglikfv=loglikfv, asd=asd,
