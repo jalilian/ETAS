@@ -29,14 +29,13 @@ void modelhandler::set(int rmver, NumericVector param)
   mver = rmver;
 
   mu = param[0];
-  Rprintf("mu = 8.2%f\n", mu);
 
   kparam[0] = param[1]; // A
   kparam[1] = param[3]; // alpha
 
   gparam[0] = param[2]; // c
   gparam[1] = param[4]; // p
-  Rprintf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
   switch (mver)
   {
     case 1:
@@ -1686,10 +1685,8 @@ List cxxdeclust(NumericVector param,
   // extract time period information
   const double tstart2 = tperiod[0], tlength = tperiod[1];
 
-  Rprintf("passed here11111 !!!!!!!!!!!!!! \n");
   modelhandler model;
   model.set(mver, param);
-  Rprintf("passed here2222 !!!!!!!!!!!!!! \n");
 
   double integ0 = 0;
   for (int i = 0; i < N; i++)
