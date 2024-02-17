@@ -16,7 +16,7 @@ class modelhandler{
     double mu;
     double *kparam;
     double *gparam;
-    double fparam[];
+    double *fparam;
   public:
     void set(int rmver, NumericVector param);
     double mufun(void);
@@ -42,12 +42,10 @@ void modelhandler::set(int rmver, NumericVector param)
       fparam[0] = param[5]; // D
       fparam[1] = param[7]; // gamma
       fparam[2] = param[6]; // q
-      //auto ffun = ffun1;
       break;
     case 2:
       fparam[0] = param[5]; // D
       fparam[1] = param[6]; // gamma
-      //auto ffun = ffun2;
       break;
   }
 }
@@ -1686,9 +1684,11 @@ List cxxdeclust(NumericVector param,
   
   // extract time period information
   const double tstart2 = tperiod[0], tlength = tperiod[1];
-  
+
+  Rprintf("passed here11111 !!!!!!!!!!!!!! \n");
   modelhandler model;
   model.set(mver, param);
+  Rprintf("passed here2222 !!!!!!!!!!!!!! \n");
 
   double integ0 = 0;
   for (int i = 0; i < N; i++)
