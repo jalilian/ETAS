@@ -149,6 +149,49 @@ std::array<double, 4> dffunrint1(double r, double m, double fparam[])
   return out;
 }
 
+// Gaussian density
+
+double ffun2(double r2, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1];
+  double sig = D * exp(gamma * m);
+  return exp(-r2 / (2 * sig * sig)) / (2 * M_PI * sig * sig);
+}
+
+std::array<double, 3> dffun2(double r2, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1];
+  double sig = D * exp(gamma * m);
+  std::array<double, 4> out;
+  out[0] = exp(-r2 / (2 * sig * sig)) / (2 * M_PI * sig * sig);
+  // d D
+  out[1] = out[0] * (r2 / (sig * sig) - 2) / D;
+  // d gamma
+  out[2] = out[0] * (r2 / (sig * sig) - 2) * m;
+  return out;
+}
+
+double ffunrint2(double r, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1];
+  double sig = D * exp(gamma * m);
+  return (1 - exp(-(r * r) / (2 * sig * sig))) / (2 * M_PI);
+}
+
+std::array<double, 3> dffunrint2(double r, double m, double fparam[])
+{
+  double D = fparam[0], gamma = fparam[1];
+  double sig = D * exp(gamma * m);
+  double r2 = r * r / (sig * sig);
+  double v = exp(-r2 / 2) / (2 * M_PI);
+  std::array<double, 4> out;
+  out[0] = 1 / (2 * M_PI) - v;
+  // d D
+  out[1] = -v * r2 / D;
+  // d gamma
+  out[2] = -v * r2 * m;
+  return out;
+}
 
 // ******************************************************************
 #endif

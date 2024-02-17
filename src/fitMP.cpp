@@ -47,12 +47,6 @@ public:
                     double *kparam,
                     double *gparam,
                     double *fparam);
-  double ffun(double r2,
-              double m,
-              double fparam[]);
-  double ffunrint(double r,
-                  double m,
-                  double fparam[]);
   double mloglikj1(int j,
                    double mu,
                    double kparam[],
@@ -172,35 +166,6 @@ void etas::paramhandler(NumericVector theta,
   }
 }
 
-double etas::ffun(double r2, double m, double fparam[])
-{
-  double f = 0;
-  switch (mver)
-  {
-    case 1:
-      f = ffun1(r2, m, fparam);
-      break;
-    case 2:
-      break;
-  }
-  return f;
-}
-
-double etas::ffunrint(double r, double m, double fparam[])
-{
-  double fr = 0;
-  switch (mver)
-  {
-    case 1:
-      fr = ffunrint1(r, m, fparam);
-      break;
-    case 2:
-      break;
-  }
-  return fr;
-}
-
-
 // ******************************************************************
 // minus log likelihood function
 // ******************************************************************
@@ -219,7 +184,7 @@ double etas::mloglikj1(int j,
     {
       sumj += kappafun(m[i], kparam) *
         gfun(t[j] - t[i], gparam) *
-        ffun(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+        ffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
     }
 
     sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
@@ -317,7 +282,6 @@ void etas::mloglikj1Gr(int j,
 
     for (int ip = 0; ip < 8; ip++)
     {
-      //sumjGr[ip] *= 2 * theta[ip];
       sumpartGr[ip] += sumjGr[ip] / sumj;
     }
   }
@@ -397,11 +361,6 @@ void etas::mloglikj1Gr(int j,
   intpartGr[ 6 ] = int_part1[0] * int_part2[0]  * int_part3[2];
   // d gamma
   intpartGr[ 7 ] = int_part1[0] * int_part2[0]  * int_part3[3];
-
-/*  for (int i = 0; i < 8; i++)
-  {
-    intpartGr[i] *= 2 * theta[i];
-  }*/
 
   *fvj = -sumpart + intpart;
 
