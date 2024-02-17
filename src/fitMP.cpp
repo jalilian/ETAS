@@ -19,7 +19,7 @@ class modelhandler{
     double fparam[];
   public:
     void set(int rmver, NumericVector param);
-    double ffun(double r2, double m, double fparam[]);
+    double ffun(double r2, double m);
 };
 void modelhandler::set(int rmver, NumericVector param)
 {
@@ -48,7 +48,7 @@ void modelhandler::set(int rmver, NumericVector param)
       break;
   }
 }
-double modelhandler::ffun(double r2, double m, double fparam[])
+double modelhandler::ffun(double r2, double m)
 {
   double f = 0;
   switch (mver)
@@ -1672,32 +1672,6 @@ List cxxdeclust(NumericVector param,
   // extract time period information
   const double tstart2 = tperiod[0], tlength = tperiod[1];
   
-  double mu = param[0];
-  double kparam[2] ={
-    param[1], // A
-    param[3] // alpha
-  };
-  double gparam[2] = {
-    param[2], // c
-    param[4] // p
-  };
-
-  double *fparam;
-  switch (mver)
-  {
-    case 1:
-      fparam[0] = param[5]; // D
-      fparam[1] = param[7]; // gamma
-      fparam[2] = param[6]; // q
-      //auto ffun = ffun1;
-      break;
-    case 2:
-      fparam[0] = param[5]; // D
-      fparam[1] = param[6]; // gamma
-      //auto ffun = ffun2;
-      break;
-  }
-
   modelhandler model;
   model.set(mver, param);
 
@@ -1756,7 +1730,7 @@ List cxxdeclust(NumericVector param,
     {
       s_thread += kappafun(m[j], kparam) *
         gfun(t[i] - t[j], gparam) *
-        ffun1(dist2(x[i], y[i], x[j], y[j]), m[j], fparam);
+        model.ffun1(dist2(x[i], y[i], x[j], y[j]), m[j]);
     }
     
     lam[i] = s_thread;
