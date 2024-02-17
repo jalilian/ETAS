@@ -1632,7 +1632,7 @@ List cxxdeclust(NumericVector param,
   switch (mver)
   {
     case 1:
-      const double fparam[3] = {
+      double fparam[3] = {
         param[5], // D
         param[7], // gamma
         param[6] // q
@@ -1640,7 +1640,7 @@ List cxxdeclust(NumericVector param,
       auto ffun = ffun1;
       break;
     case 2:
-      const double fparam[3] = {
+      double fparam[2] = {
         param[5], // D
         param[6], // gamma
       };
