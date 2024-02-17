@@ -281,7 +281,6 @@ void etas::mloglikj1Gr(int j,
                        double *fvj,
                        double *dfvj)
 {
-  const int kdim = pdims[1] + 1;
   double sumpart = 0;
   double sumpartGr[8] = {0};
   if (flag[j] == 1)
@@ -292,7 +291,8 @@ void etas::mloglikj1Gr(int j,
 
     for (int i = 0; i < j; i++)
     {
-      std::array<double, kdim> part1 = dkappafun(m[i], kparam);
+      //std::array<double, 3> part1 = dkappafun(m[i], kparam);
+      double part1[] = dkappafun(m[i], kparam);
       std::array<double, 3> part2 = dgfun(t[j] - t[i], gparam);
       std::array<double, 4> part3 = dffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
