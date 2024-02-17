@@ -1,10 +1,11 @@
 
-decluster <- function(theta, rbwd, revents, rpoly, tperiod, ndiv, cxxcode)
+decluster <- function(theta, rbwd, revents, rpoly, tperiod, ndiv, cxxcode, mver)
 {
   storage.mode(revents) <- storage.mode(rpoly) <- "double"
   if (cxxcode)
   {
-    cbkg <- cxxdeclust(theta, revents, rpoly, rbwd, tperiod, as.integer(ndiv))
+    cbkg <- cxxdeclust(theta, revents, rpoly, rbwd, tperiod, 
+                       as.integer(ndiv), as.integer(mver))
   } else
   {
     tht <- sqrt(theta)

@@ -1606,7 +1606,8 @@ List cxxdeclust(NumericVector param,
                 NumericMatrix rpoly,
                 NumericVector bwd,
                 NumericVector tperiod,
-                int ndiv)
+                int ndiv,
+                int mver)
 {
   NumericVector t = revents( _, 0), x = revents( _, 1), y = revents( _, 2),
     m = revents( _, 3), flag = revents( _, 4), bk = revents( _, 5),
@@ -1619,17 +1620,33 @@ List cxxdeclust(NumericVector param,
   const double tstart2 = tperiod[0], tlength = tperiod[1];
   
   const double mu = param[0];
-  const double A = param[1];
-  const double c = param[2];
-  const double alpha = param[3];
-  const double p = param[4];
-  const double D = param[5];
-  const double q= param[6];
-  const double gamma = param[7];
-  
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
+  const double kparam[2] ={
+    param[1], // A
+    param[3] // alpha
+  };
+  const double gparam[2] = {
+    param[2], // c
+    param[4] // p
+  };
+
+  switch (mver)
+  {
+    case 1:
+      const double fparam[3] = {
+        param[5], // D
+        param[7], // gamma
+        param[6] // q
+      };
+      auto ffun = ffun1;
+      break;
+    case 2:
+      const double fparam[3] = {
+        param[5], // D
+        param[6], // gamma
+      };
+      auto ffun = ffun2;
+      break;
+  }
 
   double integ0 = 0;
   for (int i = 0; i < N; i++)

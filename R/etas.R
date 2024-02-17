@@ -66,7 +66,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
     bkgpbar <- utils::txtProgressBar(min=0, max=no.itr + 1 - itr, style=3)
     for (l in 1:(no.itr + 1 - itr))
     {
-      bkg <- decluster(param1, rbwd, revents, rpoly, rtperiod, ndiv, cxxcode)
+      bkg <- decluster(param1, rbwd, revents, rpoly, rtperiod, ndiv, cxxcode, mver)
       revents <- bkg$revents
       utils::setTxtProgressBar(bkgpbar, l)
     }
