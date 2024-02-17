@@ -19,6 +19,9 @@ class modelhandler{
     double fparam[];
   public:
     void set(int rmver, NumericVector param);
+    double mufun(void);
+    double kappafun(double m);
+    double gfun(double t);
     double ffun(double r2, double m);
 };
 void modelhandler::set(int rmver, NumericVector param)
@@ -47,6 +50,18 @@ void modelhandler::set(int rmver, NumericVector param)
       //auto ffun = ffun2;
       break;
   }
+}
+double modelhandler::mufun(void)
+{
+  return mu;
+}
+double modelhandler::kappafun(double m)
+{
+  return kappafun(m, kparam);
+}
+double modelhandler::gfun(double t)
+{
+  return gfun(t, gparam);
 }
 double modelhandler::ffun(double r2, double m)
 {
@@ -1725,18 +1740,18 @@ List cxxdeclust(NumericVector param,
     
     integ0 += pb[i] * sum;
     
-    double s_thread = mu * bk[i];
+    double s_thread = model.mufun() * bk[i];
     for (int j = 0; j < i; ++j)
     {
-      s_thread += kappafun(m[j], kparam) *
-        gfun(t[i] - t[j], gparam) *
-        model.ffun1(dist2(x[i], y[i], x[j], y[j]), m[j]);
+      s_thread += model.kappafun(m[j]) *
+        model.gfun(t[i] - t[j]) *
+        model.ffun(dist2(x[i], y[i], x[j], y[j]), m[j]);
     }
     
     lam[i] = s_thread;
     
     revents(i, 5) = bk[i];
-    revents(i, 6) = mu * bk[i] / lam[i]; // probability of event i being a background event
+    revents(i, 6) = model.mufun() * bk[i] / lam[i]; // probability of event i being a background event
     revents(i, 7) = lam[i];
   }
   
