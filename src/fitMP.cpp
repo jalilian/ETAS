@@ -13,11 +13,15 @@ using namespace Rcpp;
 class modelhandler{
   private:
     int mver;
+    double mu;
+    double *kparam;
+    double *gparam;
+    double fparam[];
   public:
-    void set(int rmver);
+    void set(int rmver, double param[]);
     double ffun(double r2, double m, double fparam[]);
 };
-void modelhandler::set(int rmver)
+void modelhandler::set(int rmver, double param[])
 {
   mver = rmver;
 }
