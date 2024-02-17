@@ -76,13 +76,13 @@ public:
                   double kparam[],
                   double gparam[],
                   double fparam[]);
-  void mloglikGr(int j,
-                 double mu,
-                 double kparam[],
-                 double gparam[],
-                 double fparam[],
-                 double *fv,
-                 double *df);
+  void mloglikjGr(int j,
+                  double mu,
+                  double kparam[],
+                  double gparam[],
+                  double fparam[],
+                  double *fv,
+                  double *df);
   double mloglik(NumericVector theta);
   void mloglikGr(NumericVector theta,
                  double *fv,
