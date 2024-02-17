@@ -48,6 +48,9 @@ public:
   double ffun(double r2,
               double m,
               double fparam[]);
+  double ffunrint(double r,
+                  double m,
+                  double fparam[]);
   double mloglikj1(int j,
                    double mu,
                    double kparam[],
@@ -157,18 +160,32 @@ void etas::paramhandler(NumericVector theta,
 
 double etas::ffun(double r2, double m, double fparam[])
 {
-  double f;
+  double f = 0;
   switch (mver)
   {
     case 1:
       f = ffun1(r2, m, fparam);
       break;
     case 2:
-      f = 0;
       break;
   }
   return f;
 }
+
+double ffunrint(double r, double m, double fparam[])
+{
+  double fr = 0;
+  switch (mver)
+  {
+    case 1:
+      fr = ffunrint1(r2, m, fparam);
+      break;
+    case 2:
+      break;
+  }
+  return fr;
+}
+
 
 // ******************************************************************
 // minus log likelihood function
@@ -230,9 +247,9 @@ double etas::mloglikj1(int j,
         double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                     y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
 
-        si += sgn(det) * (ffunrint1(r1, m[j], fparam) / 6 +
-            ffunrint1(r0, m[j], fparam) * 2 / 3 +
-            ffunrint1(r2, m[j], fparam) / 6) * phi;
+        si += sgn(det) * (ffunrint(r1, m[j], fparam) / 6 +
+            ffunrint(r0, m[j], fparam) * 2 / 3 +
+            ffunrint(r2, m[j], fparam) / 6) * phi;
       }
     }
   }
