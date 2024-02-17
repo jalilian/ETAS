@@ -33,7 +33,6 @@ private:
   double integ0;
   int ndiv;
   int mver;
-  int pdims[4];
   
 public:
   void set(NumericMatrix revents,
@@ -146,18 +145,6 @@ void etas::set(NumericMatrix revents,
   ndiv = rndiv;
 
   mver = rmver;
-  switch (mver)
-  {
-    case 1:
-      pdims[0] = 1; // dim of mu
-      pdims[1] = 2; // dim of kparam
-      pdims[2] = 2; // dim of gparam
-      pdims[3] = 3; // dim of fparam
-      break;
-    case 2:
-      //pdims[4] = {1, 2, 2, 2};
-      break;
-  }
 }
 
 // ******************************************************************
