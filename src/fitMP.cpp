@@ -131,10 +131,10 @@ void etas::set(NumericMatrix revents,
   switch (mver)
   {
     case 1:
-      pdims[0] = 1;
-      pdims[1] = 2;
-      pdims[2] = 2;
-      pdims[3] = 3;
+      pdims[0] = 1; // dim of mu
+      pdims[1] = 2; // dim of kparam
+      pdims[2] = 2; // dim of gparam
+      pdims[3] = 3; // dim of fparam
       break;
     case 2:
       //pdims[4] = {1, 2, 2, 2};
@@ -291,7 +291,7 @@ void etas::mloglikj1Gr(int j,
 
     for (int i = 0; i < j; i++)
     {
-      std::array<double, 3> part1 = dkappafun(m[i], kparam);
+      std::array<double, pdims[1] + 1> part1 = dkappafun(m[i], kparam);
       std::array<double, 3> part2 = dgfun(t[j] - t[i], gparam);
       std::array<double, 4> part3 = dffun1(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
 
