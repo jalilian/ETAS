@@ -18,12 +18,35 @@ class modelhandler{
     double *gparam;
     double fparam[];
   public:
-    void set(int rmver, double param[]);
+    void set(int rmver, NumericVector param);
     double ffun(double r2, double m, double fparam[]);
 };
-void modelhandler::set(int rmver, double param[])
+void modelhandler::set(int rmver, NumericVector param)
 {
   mver = rmver;
+
+  mu = param[0];
+
+  kparam[0] = param[1]; // A
+  kparam[1] = param[3]; // alpha
+
+  gparam[0] = param[2]; // c
+  gparam[1] = param[4]; // p
+
+  switch (mver)
+  {
+    case 1:
+      fparam[0] = param[5]; // D
+      fparam[1] = param[7]; // gamma
+      fparam[2] = param[6]; // q
+      //auto ffun = ffun1;
+      break;
+    case 2:
+      fparam[0] = param[5]; // D
+      fparam[1] = param[6]; // gamma
+      //auto ffun = ffun2;
+      break;
+  }
 }
 double modelhandler::ffun(double r2, double m, double fparam[])
 {
@@ -1676,7 +1699,7 @@ List cxxdeclust(NumericVector param,
   }
 
   modelhandler model;
-  model.set(mver);
+  model.set(mver, param);
 
   double integ0 = 0;
   for (int i = 0; i < N; i++)
