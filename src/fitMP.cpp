@@ -24,7 +24,7 @@ void modelhandler::set(int rmver)
 double modelhandler::ffun(double r2, double m, double fparam[])
 {
   double f = 0;
-  switch ()
+  switch (mver)
   {
     case 1:
       f = ffun1(r2, m, fparam);
