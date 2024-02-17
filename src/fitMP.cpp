@@ -20,9 +20,9 @@ class modelhandler{
   public:
     void set(int rmver, NumericVector param);
     double mufun(void);
-    double kappafun(double m);
-    double gfun(double t);
-    double ffun(double r2, double m);
+    double kappafun0(double m);
+    double gfun0(double t);
+    double ffun0(double r2, double m);
 };
 void modelhandler::set(int rmver, NumericVector param)
 {
@@ -55,15 +55,15 @@ double modelhandler::mufun(void)
 {
   return mu;
 }
-double modelhandler::kappafun(double m)
+double modelhandler::kappafun0(double m)
 {
   return kappafun(m, kparam);
 }
-double modelhandler::gfun(double t)
+double modelhandler::gfun0(double t)
 {
   return gfun(t, gparam);
 }
-double modelhandler::ffun(double r2, double m)
+double modelhandler::ffun0(double r2, double m)
 {
   double f = 0;
   switch (mver)
@@ -1743,9 +1743,9 @@ List cxxdeclust(NumericVector param,
     double s_thread = model.mufun() * bk[i];
     for (int j = 0; j < i; ++j)
     {
-      s_thread += model.kappafun(m[j]) *
-        model.gfun(t[i] - t[j]) *
-        model.ffun(dist2(x[i], y[i], x[j], y[j]), m[j]);
+      s_thread += model.kappafun0(m[j]) *
+        model.gfun0(t[i] - t[j]) *
+        model.ffun0(dist2(x[i], y[i], x[j], y[j]), m[j]);
     }
     
     lam[i] = s_thread;
