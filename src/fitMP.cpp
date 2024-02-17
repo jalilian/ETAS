@@ -1,3 +1,4 @@
+#include <climits>
 #include <cmath>
 #include <Rcpp.h>
 
@@ -32,6 +33,7 @@ private:
   double integ0;
   int ndiv;
   int mver;
+  int pdims[4];
   
 public:
   void set(NumericMatrix revents,
@@ -126,6 +128,15 @@ void etas::set(NumericMatrix revents,
   ndiv = rndiv;
 
   mver = rmver;
+  switch (mver)
+  {
+    case 1:
+      pdims[] = {1, 2, 2, 3};
+      break;
+    case 2:
+      pdims[] = {1, 2, 2, 2};
+      break;
+  }
 }
 
 // ******************************************************************
