@@ -1636,12 +1636,12 @@ List cxxdeclust(NumericVector param,
       fparam[0] = param[5]; // D
       fparam[1] = param[7]; // gamma
       fparam[2] = param[6]; // q
-      auto ffun = ffun1;
+      //auto ffun = ffun1;
       break;
     case 2:
       fparam[0] = param[5]; // D
       fparam[1] = param[6]; // gamma
-      auto ffun = ffun2;
+      //auto ffun = ffun2;
       break;
   }
 
