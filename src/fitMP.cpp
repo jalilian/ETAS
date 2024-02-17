@@ -10,6 +10,32 @@
 
 using namespace Rcpp;
 
+class modelhandler{
+  private:
+    int mver;
+  public:
+    void set(int rmver);
+    double ffun(double r2, double m, double fparam[]);
+}
+void modelhandler set(int rmver)
+{
+  mver = rmver;
+}
+double ffun(double r2, double m, double fparam[])
+{
+  double f = 0;
+  switch ()
+  {
+    case 1:
+      f = ffun1(r2, m, fparam);
+      break;
+    case 2:
+      f = ffun2(r2, m, fparam);
+      break;
+  }
+  return f;
+}
+
 // ******************************************************************
 // the etas class
 // ******************************************************************
@@ -1644,6 +1670,9 @@ List cxxdeclust(NumericVector param,
       //auto ffun = ffun2;
       break;
   }
+
+  modelhandler model;
+  model.set(mver);
 
   double integ0 = 0;
   for (int i = 0; i < N; i++)
