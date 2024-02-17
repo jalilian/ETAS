@@ -1619,12 +1619,12 @@ List cxxdeclust(NumericVector param,
   // extract time period information
   const double tstart2 = tperiod[0], tlength = tperiod[1];
   
-  const double mu = param[0];
-  const double kparam[2] ={
+  double mu = param[0];
+  double kparam[2] ={
     param[1], // A
     param[3] // alpha
   };
-  const double gparam[2] = {
+  double gparam[2] = {
     param[2], // c
     param[4] // p
   };
