@@ -14,8 +14,8 @@ class modelhandler{
   private:
     int mver;
     double mu;
-    double *kparam;
-    double *gparam;
+    double kparam[];
+    double gparam[];
     double *fparam;
   public:
     void set(int rmver, NumericVector param);
