@@ -623,9 +623,29 @@ double etas::mloglik(NumericVector theta)
   return fv;
 }
 
+
 // ******************************************************************
 // gradient of minus log likelihood function
 // ******************************************************************
+
+void etas::mloglikjGr(int j,
+                      double mu,
+                      double kparam[],
+                      double gparam[],
+                      double fparam[],
+                      double *fvj,
+                      double *dfvj)
+{
+  switch (mver)
+  {
+    case 1:
+      mloglikj1Gr(j, mu, kparam, gparam, fparam, fvj, dfvj);
+      break;
+    case 2:
+      mloglikj2Gr(j, mu, kparam, gparam, fparam, fvj, dfvj);
+      break;
+  }
+}
 
 void etas::mloglikGr(NumericVector theta,
                      double *fv,
@@ -641,7 +661,7 @@ void etas::mloglikGr(NumericVector theta,
   for (int j = 0; j < N; ++j)
   {
     double fvj, dfvj[dimparam];
-    mloglikj1Gr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
+    mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
     fvtemp += fvj;
 
