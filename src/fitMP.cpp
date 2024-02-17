@@ -16,12 +16,12 @@ class modelhandler{
   public:
     void set(int rmver);
     double ffun(double r2, double m, double fparam[]);
-}
-void modelhandler set(int rmver)
+};
+void modelhandler::set(int rmver)
 {
   mver = rmver;
 }
-double ffun(double r2, double m, double fparam[])
+double modelhandler::ffun(double r2, double m, double fparam[])
 {
   double f = 0;
   switch ()
