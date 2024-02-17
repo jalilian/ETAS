@@ -172,13 +172,13 @@ double etas::ffun(double r2, double m, double fparam[])
   return f;
 }
 
-double ffunrint(double r, double m, double fparam[])
+double etas::ffunrint(double r, double m, double fparam[])
 {
   double fr = 0;
   switch (mver)
   {
     case 1:
-      fr = ffunrint1(r2, m, fparam);
+      fr = ffunrint1(r, m, fparam);
       break;
     case 2:
       break;
