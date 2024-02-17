@@ -59,6 +59,30 @@ public:
                    double fparam[],
                    double *fv,
                    double *df);
+  double mloglikj2(int j,
+                   double mu,
+                   double kparam[],
+                   double gparam[],
+                   double fparam[]);
+  void mloglikj2Gr(int j,
+                   double mu,
+                   double kparam[],
+                   double gparam[],
+                   double fparam[],
+                   double *fv,
+                   double *df);
+  double mloglikj(int j,
+                  double mu,
+                  double kparam[],
+                  double gparam[],
+                  double fparam[]);
+  void mloglikGr(int j,
+                 double mu,
+                 double kparam[],
+                 double gparam[],
+                 double fparam[],
+                 double *fv,
+                 double *df);
   double mloglik(NumericVector theta);
   void mloglikGr(NumericVector theta,
                  double *fv,
@@ -162,6 +186,8 @@ void etas::paramhandler(NumericVector theta,
       fparam[2] = theta[6] * theta[6]; // q
       break;
     case 2:
+      fparam[0] = theta[5] * theta[5]; // D
+      fparam[1] = theta[6] * theta[6]; // gamma
       break;
   }
 }
@@ -369,6 +395,221 @@ void etas::mloglikj1Gr(int j,
   return;
 }
 
+
+double etas::mloglikj2(int j,
+                       double mu,
+                       double kparam[],
+                       double gparam[],
+                       double fparam[])
+{
+  double sumpart = 0;
+  if (flag[j] == 1)
+  {
+    double sumj = mu * bk[j];
+    for (int i = 0; i < j; i++)
+    {
+      sumj += kappafun(m[i], kparam) *
+        gfun(t[j] - t[i], gparam) *
+        ffun2(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+    }
+
+    sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
+  }
+
+  double gi = gfunint(tlength - t[j], gparam);
+  if (t[j] <= tstart2)
+  {
+    gi -= gfunint(tstart2 - t[j], gparam);
+  }
+
+  double si = 0;
+  for (int k = 0; k < (np - 1); ++k)
+  {
+    double dpx = (px[k + 1] - px[k]) / ndiv;
+    double dpy = (py[k + 1] - py[k]) / ndiv;
+    for (int l = 0; l < ndiv; ++l)
+    {
+      double x1 = px[k] + dpx * l;
+      double y1 = py[k] + dpy * l;
+      double x2 = px[k] + dpx * (l + 1);
+      double y2 = py[k] + dpy * (l + 1);
+
+      double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
+          (x2 * y1 + y2 * x[j] + x1 * y[j]);
+      if (fabs(det) < 1.0e-10)
+        continue;
+
+      double r1 = dist(x1, y1, x[j], y[j]);
+      double r2 = dist(x2, y2, x[j], y[j]);
+      double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+      if (fabs(phi) > 1)
+        phi = 1 - 1.0e-10;
+
+      phi = acos(phi);
+
+      if (r1 + r2 > 1.0e-20)
+      {
+        double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+                    y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
+
+        si += sgn(det) * (ffunrint2(r1, m[j], fparam) / 6 +
+            ffunrint2(r0, m[j], fparam) * 2 / 3 +
+            ffunrint2(r2, m[j], fparam) / 6) * phi;
+      }
+    }
+  }
+
+  double intpart = kappafun(m[j], kparam) * gi * si +
+      mu * integ0 / N;
+  return -sumpart + intpart;
+}
+
+void etas::mloglikj2Gr(int j,
+                       double mu,
+                       double kparam[],
+                       double gparam[],
+                       double fparam[],
+                       double *fvj,
+                       double *dfvj)
+{
+  double sumpart = 0;
+  double sumpartGr[7] = {0};
+  if (flag[j] == 1)
+  {
+    double sumj = mu * bk[j];
+    double sumjGr[7] = {0};
+    sumjGr[0] = bk[j];
+
+    for (int i = 0; i < j; i++)
+    {
+      std::array<double, 3> part1 = dkappafun(m[i], kparam);
+      std::array<double, 3> part2 = dgfun(t[j] - t[i], gparam);
+      std::array<double, 3> part3 = dffun2(dist2(x[j], y[j], x[i], y[i]), m[i], fparam);
+
+      sumj    += part1[0] * part2[0] * part3[0];
+
+      // part1_A
+      sumjGr[1]  += part1[1] * part2[0] * part3[0];
+      // part2_c
+      sumjGr[2] += part1[0] * part2[1] * part3[0];
+      //part1_alpha
+      sumjGr[3]  += part1[2] * part2[0] * part3[0];
+      // part2_p
+      sumjGr[4] += part1[0] * part2[2] * part3[0];
+      // part3_d
+      sumjGr[5] += part1[0] * part2[0] * part3[1];
+      // part3_gamma
+      sumjGr[6]  += part1[0] * part2[0] * part3[2];
+    }
+
+    sumpart = (sumj > 1.0e-25) ? log(sumj) : -100.0;
+
+    for (int ip = 0; ip < 7; ip++)
+    {
+      sumpartGr[ip] += sumjGr[ip] / sumj;
+    }
+  }
+
+  std::array<double, 3> int_part1 = dkappafun(m[j], kparam);
+
+  std::array<double, 3> int_part2 = dgfunint(tlength - t[j], gparam);
+  if (t[j] <= tstart2)
+  {
+    std::array<double, 3> gtmp = dgfunint(tstart2 - t[j], gparam);
+    for (int i = 0; i < 3; i++)
+    {
+      int_part2[i] -= gtmp[i];
+    }
+  }
+
+  double int_part3[3] = {0};
+  for (int k = 0; k < (np - 1); ++k)
+  {
+    double dpx = (px[k + 1] - px[k]) / ndiv;
+    double dpy = (py[k + 1] - py[k]) / ndiv;
+    for (int l = 0; l < ndiv; ++l)
+    {
+      double x1 = px[k] + dpx * l;
+      double y1 = py[k] + dpy * l;
+      double x2 = px[k] + dpx * (l + 1);
+      double y2 = py[k] + dpy * (l + 1);
+
+      double det = (x1 * y2 + y1 * x[j] + x2 * y[j]) -
+          (x2 * y1 + y2 * x[j] + x1 * y[j]);
+
+      if (fabs(det) < 1.0e-10)
+        continue;
+
+      int id = (det < 0) ? -1 : 1;
+
+      double r1 = dist(x1, y1, x[j], y[j]);
+      double r2 = dist(x2, y2, x[j], y[j]);
+      double phi = (r1 * r1 + r2 * r2 - dist2(x1, y1, x2, y2))/(2 * r1 * r2);
+      if (fabs(phi) > 1)
+        phi = 1 - 1.0e-10;
+
+      phi = acos(phi);
+
+      if (r1 + r2 > 1.0e-20)
+      {
+        double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
+                    y1 + r1/(r1 + r2) * (y2 - y1), x[j], y[j]);
+
+        std::array<double, 3> a1 = dffunrint2(r1, m[j], fparam);
+        std::array<double, 3> a2 = dffunrint2(r0, m[j], fparam);
+        std::array<double, 3> a3 = dffunrint2(r2, m[j], fparam);
+        for (int i = 0; i < 3; i++)
+          int_part3[i] += id * (a1[i] / 6 + a2[i]* 2.0 / 3 + a3[i] / 6) * phi;
+      }
+    }
+  }
+
+  double intpart  = int_part1[0] * int_part2[0] * int_part3[0] +
+      mu * integ0 / N;
+  double intpartGr[7] = {0};
+
+  //d mu
+  intpartGr[ 0 ] = integ0  / N;
+
+  // d A
+  intpartGr[ 1 ] = int_part1[1] * int_part2[0]  * int_part3[0];
+  // d c
+  intpartGr[ 2 ] = int_part1[0] * int_part2[1] * int_part3[0];
+  // d alpha
+  intpartGr[ 3 ] = int_part1[2] * int_part2[0]  * int_part3[0];
+  // d p
+  intpartGr[ 4 ] = int_part1[0] * int_part2[2] * int_part3[0];
+  // d D
+  intpartGr[ 5 ] = int_part1[0] * int_part2[0]  * int_part3[1];
+  // d gamma
+  intpartGr[ 7 ] = int_part1[0] * int_part2[0]  * int_part3[2];
+
+  *fvj = -sumpart + intpart;
+
+  for (int i = 0; i < 7; ++i)
+    dfvj[i] = -sumpartGr[i] + intpartGr[i];
+  return;
+}
+
+double etas::mloglikj(int j,
+                      double mu,
+                      double kparam[],
+                      double gparam[],
+                      double fparam[])
+{
+  double mllj = 0;
+  switch (mver)
+  {
+    case 1:
+      mllj = mloglikj1(j, mu, kparam, gparam, fparam);
+      break;
+    case 2:
+      mllj = mloglikj2(j, mu, kparam, gparam, fparam);
+      break;
+  }
+  return mllj;
+}
+
 double etas::mloglik(NumericVector theta)
 {
   double mu, kparam[2], gparam[2], fparam[3];
@@ -377,7 +618,7 @@ double etas::mloglik(NumericVector theta)
   double fv = 0;
 
   for (int j = 0; j < N; ++j)
-    fv += mloglikj1(j, mu, kparam, gparam, fparam);
+    fv += mloglikj(j, mu, kparam, gparam, fparam);
 
   return fv;
 }
