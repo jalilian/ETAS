@@ -131,10 +131,10 @@ void etas::set(NumericMatrix revents,
   switch (mver)
   {
     case 1:
-      pdims[] = {1, 2, 2, 3};
+      pdims[4] = {1, 2, 2, 3};
       break;
     case 2:
-      pdims[] = {1, 2, 2, 2};
+      pdims[4] = {1, 2, 2, 2};
       break;
   }
 }
