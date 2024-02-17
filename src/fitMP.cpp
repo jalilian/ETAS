@@ -1629,21 +1629,18 @@ List cxxdeclust(NumericVector param,
     param[4] // p
   };
 
+  double *fparam;
   switch (mver)
   {
     case 1:
-      double fparam[3] = {
-        param[5], // D
-        param[7], // gamma
-        param[6] // q
-      };
+      fparam[0] = param[5]; // D
+      fparam[1] = param[7]; // gamma
+      fparam[2] = param[6]; // q
       auto ffun = ffun1;
       break;
     case 2:
-      double fparam[2] = {
-        param[5], // D
-        param[6], // gamma
-      };
+      fparam[0] = param[5]; // D
+      fparam[1] = param[6]; // gamma
       auto ffun = ffun2;
       break;
   }
