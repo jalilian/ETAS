@@ -29,13 +29,14 @@ void modelhandler::set(int rmver, NumericVector param)
   mver = rmver;
 
   mu = param[0];
+  Rprintf("mu = 8.2%f\n", mu);
 
   kparam[0] = param[1]; // A
   kparam[1] = param[3]; // alpha
 
   gparam[0] = param[2]; // c
   gparam[1] = param[4]; // p
-
+  Rprintf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
   switch (mver)
   {
     case 1:
