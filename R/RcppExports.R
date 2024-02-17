@@ -5,8 +5,8 @@ cxxfit <- function(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verb
     .Call(`_ETAS_cxxfit`, tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, mver)
 }
 
-cxxdeclust <- function(param, revents, rpoly, bwd, tperiod, ndiv) {
-    .Call(`_ETAS_cxxdeclust`, param, revents, rpoly, bwd, tperiod, ndiv)
+cxxdeclust <- function(param, revents, rpoly, bwd, tperiod, ndiv, mver) {
+    .Call(`_ETAS_cxxdeclust`, param, revents, rpoly, bwd, tperiod, ndiv, mver)
 }
 
 cxxrates <- function(param, revents, bwd, tperiod, gx, gy) {

@@ -32,8 +32,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cxxdeclust
-List cxxdeclust(NumericVector param, NumericMatrix revents, NumericMatrix rpoly, NumericVector bwd, NumericVector tperiod, int ndiv);
-RcppExport SEXP _ETAS_cxxdeclust(SEXP paramSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP bwdSEXP, SEXP tperiodSEXP, SEXP ndivSEXP) {
+List cxxdeclust(NumericVector param, NumericMatrix revents, NumericMatrix rpoly, NumericVector bwd, NumericVector tperiod, int ndiv, int mver);
+RcppExport SEXP _ETAS_cxxdeclust(SEXP paramSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP bwdSEXP, SEXP tperiodSEXP, SEXP ndivSEXP, SEXP mverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,7 +43,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type bwd(bwdSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
     Rcpp::traits::input_parameter< int >::type ndiv(ndivSEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxdeclust(param, revents, rpoly, bwd, tperiod, ndiv));
+    Rcpp::traits::input_parameter< int >::type mver(mverSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxdeclust(param, revents, rpoly, bwd, tperiod, ndiv, mver));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -163,7 +164,7 @@ RcppExport SEXP clambdax(void *, void *, void *, void *, void *);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ETAS_cxxfit", (DL_FUNC) &_ETAS_cxxfit, 11},
-    {"_ETAS_cxxdeclust", (DL_FUNC) &_ETAS_cxxdeclust, 6},
+    {"_ETAS_cxxdeclust", (DL_FUNC) &_ETAS_cxxdeclust, 7},
     {"_ETAS_cxxrates", (DL_FUNC) &_ETAS_cxxrates, 6},
     {"_ETAS_cxxtimetrans", (DL_FUNC) &_ETAS_cxxtimetrans, 6},
     {"_ETAS_cxxlambdtemp", (DL_FUNC) &_ETAS_cxxlambdtemp, 7},
