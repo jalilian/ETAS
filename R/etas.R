@@ -53,6 +53,10 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
 
   param1 <- param0
   par.names <- c("mu", "A", "c", "alpha", "p", "D", "q", "gamma")
+  
+  if (!(mver %in% c(1, 2)))
+    stop("mver must be an integer, currently only 1 and 2 are accebtable")
+  
   if (mver == 2)
   {
     param1 <- param1[-7]

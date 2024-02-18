@@ -11,7 +11,7 @@
  etas(object, param0 = NULL, bwd = NULL, nnp = 5, bwm = 0.05,
       verbose = TRUE, plot.it = FALSE, ndiv = 1000, no.itr = 11,
       rel.tol=1e-03, eps = 1e-06, cxxcode = TRUE, nthreads = 1,
-      ffun = 1)
+      mver = 1)
 }
 \arguments{
   \item{object}{An object of class \code{"catalog"} containing an
