@@ -53,7 +53,7 @@
 \references{
   Baddeley A, Rubak E, Turner R (2015).
   \emph{ Spatial Point Patterns: Methodology and Applications with R}.
-  Chapman and Hall/CRC Press, London. \url{http://www.crcpress.com/Spatial-Point-Patterns-Methodology-and-Applications-with-R/Baddeley-Rubak-Turner/9781482210200/}.
+  Chapman and Hall/CRC Press, London. \url{https://www.routledge.com/Spatial-Point-Patterns-Methodology-and-Applications-with-R/Baddeley-Rubak-Turner/p/book/9781482210200}.
 
   Baddeley A, Turner R (2000).
   Practical Maximum Pseudolikelihood for Spatial Point Patterns.
