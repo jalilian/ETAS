@@ -40,7 +40,7 @@ rates.inter(theta, object, bwd, lat.range=NULL, long.range=NULL,
             mver=1, dimyx=NULL, plot.it=TRUE)
 lambdax(rt, rx, ry, theta, revents)
 etasfit(theta, revents, rpoly, tperiod, integ0, ihess, verbose,
-    ndiv, eps, cxxcode, nthreads, spdensity)
+    ndiv, eps, cxxcode, nthreads, mver)
 decluster(theta, rbwd, revents, rpoly, tperiod, ndiv, cxxcode, mver)
 cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, mver)
 cxxdeclust(param, revents, rpoly, bwd, tperiod, ndiv, mver)
@@ -61,13 +61,13 @@ longlat2xy(long, lat, region.poly, dist.unit="degree")
 xy2longlat(x, y, region.poly, dist.unit="degree")
 poiss.test(object, which="joint", r=NULL, lambda=NULL, bwd=NULL, dimyx=NULL, 
   nsim=299, n.perm=1000, verbose=TRUE, nthreads=1)
-Smooth.catalog(object, type="spatial", bwd=NULL, bwm=NULL, nnp=NULL, 
-  dimyx=NULL, convert=FALSE)
 allanfactor(object, K=100, nsim=500, cat.name=NULL)
 morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 decimalplaces(x) 
 roundoffErr(x)
 ttrend(obj, tmax=NULL, tmin=NULL)
+\method{Smooth}{catalog}(object, type="spatial", bwd=NULL, bwm=NULL, nnp=NULL, 
+  dimyx=NULL, convert=FALSE)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)
