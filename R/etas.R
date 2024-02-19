@@ -147,7 +147,7 @@ etas <- function(object, param0=NULL, bwd = NULL, nnp = 5, bwm = 0.05,
   object$revents <- revents
   out <- list(param = param1, bk=bk, pb=pb, opt=opt, object=object,
               bwd=rbwd, thetar=thetar, loglikfv=loglikfv, asd=asd,
-              integ0=integ0, ndiv=ndiv, itr=itr,
+              integ0=integ0, ndiv=ndiv, mver=mver, itr=itr,
               exectime=proc.time() - ptm)
   class(out) <- "etas"
   return(out)

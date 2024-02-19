@@ -22,7 +22,9 @@ class modelhandler{
     double mufun(void);
     double kappafun0(double m);
     double gfun0(double t);
+    double gfunint0(double t);
     double ffun0(double r2, double m);
+    double ffunrint0(double r, double m)
 };
 void modelhandler::set(int rmver, NumericVector param)
 {
@@ -61,6 +63,10 @@ double modelhandler::gfun0(double t)
 {
   return gfun(t, gparam);
 }
+double modelhandler::gfunint0(double t)
+{
+  return gfunint(t, gparam);
+}
 double modelhandler::ffun0(double r2, double m)
 {
   double f = 0;
@@ -71,6 +77,20 @@ double modelhandler::ffun0(double r2, double m)
       break;
     case 2:
       f = ffun2(r2, m, fparam);
+      break;
+  }
+  return f;
+}
+double modelhandler::ffunrint0(double r, double m)
+{
+  double f = 0;
+  switch (mver)
+  {
+    case 1:
+      f = ffunrint1(r2, m, fparam);
+      break;
+    case 2:
+      f = ffunrint2(r2, m, fparam);
       break;
   }
   return f;
@@ -1919,19 +1939,16 @@ NumericVector cxxlambdtemp(NumericVector tg,
                            NumericMatrix rpoly,
                            NumericVector tperiod,
                            double integ0,
-                           int ndiv)
+                           int ndiv,
+                           int mver)
 {
   NumericVector t = revents( _, 0), x = revents( _, 1), y = revents( _, 2),
     m = revents( _, 3);
   NumericVector px = rpoly( _, 0), py = rpoly( _, 1);
   const double tstart2 = tperiod[0], tlength = tperiod[1];
   
-  const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
-  const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
-  
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
+  modelhandler model;
+  model.set(mver, param);
 
   const int N = revents.nrow();
   NumericVector sinteg(N);
@@ -1970,13 +1987,13 @@ NumericVector cxxlambdtemp(NumericVector tg,
           double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                            y1 + r1/(r1 + r2) * (y2 - y1), x[i], y[i]);
 
-          si += sgn(det) * (ffunrint1(r1, m[i], fparam) / 6 +
-            ffunrint1(r0, m[i], fparam) * 2 / 3 +
-            ffunrint1(r2, m[i], fparam) / 6) * phi;
+          si += sgn(det) * (model.ffunrint0(r1, m[i]) / 6 +
+            model.ffunrint0(r0, m[i]) * 2 / 3 +
+            model.ffunrint0(r2, m[i]) / 6) * phi;
         }
       }
     }
-    sinteg[i] = kappafun(m[i], kparam) * si;
+    sinteg[i] = model.kappafun0(m[i]) * si;
   }
   
   for (int j=0; j < ng; ++j)
@@ -1986,10 +2003,10 @@ NumericVector cxxlambdtemp(NumericVector tg,
     {
       if (t[i] < tg[j])
       {
-        sum += gfun(tg[j] - t[i], gparam) * sinteg[i];
+        sum += model.gfun0(tg[j] - t[i]) * sinteg[i];
       }
     }
-    out[j] = mu * integ0 /(tlength - tstart2) + sum;
+    out[j] = model.mufun() * integ0 /(tlength - tstart2) + sum;
   }
   return out;
 }
