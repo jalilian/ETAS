@@ -18,11 +18,12 @@ rates <- function(fit, lat.range=NULL, long.range=NULL,
 {
   spatstat.geom::verifyclass(fit, "etas")
   rates.inter(fit$param, fit$object, fit$bwd, lat.range=lat.range,
-               long.range=long.range, dimyx=dimyx, plot.it=plot.it)
+              long.range=long.range, mver=fit$mver, dimyx=dimyx, 
+              plot.it=plot.it)
 }
 
 rates.inter <- function(theta, object, bwd, lat.range=NULL, long.range=NULL,
-                        dimyx=NULL, plot.it=TRUE)
+                        mver=1, dimyx=NULL, plot.it=TRUE)
 {
   if (is.null(lat.range))
   {
@@ -49,7 +50,7 @@ rates.inter <- function(theta, object, bwd, lat.range=NULL, long.range=NULL,
 
   gx <- seq(min(xy.bnd$x), max(xy.bnd$x), length.out=dimyx[2])
   gy <- seq(min(xy.bnd$y), max(xy.bnd$y), length.out=dimyx[1])
-  out <- cxxrates(theta, object$revents, bwd, object$rtperiod, gx, gy)
+  out <- cxxrates(theta, object$revents, bwd, object$rtperiod, gx, gy, mver)
 
   out <- list(x=seq(long.range[1], long.range[2], length.out=dimyx[2]),
               y=seq(lat.range[1], lat.range[2], length.out=dimyx[1]),

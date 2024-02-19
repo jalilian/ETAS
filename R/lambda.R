@@ -30,19 +30,19 @@ lambdatemporal <- function(t, fit)
 {
   obj <- fit$object
   cxxlambdtemp(t, fit$param, obj$revents, obj$rpoly,
-                 obj$rtperiod, fit$integ0, fit$ndiv)
+                 obj$rtperiod, fit$integ0, fit$ndiv, fit$mver)
 }
 
 lambdaspatial <- function(x, y, fit)
 {
   obj <- fit$object
   cxxlambspat(x, y, fit$param, obj$revents, obj$rpoly,
-              obj$rtperiod, fit$bwd)
+              obj$rtperiod, fit$bwd, fit$mver)
 }
 
 timetransform <- function(fit)
 {
   obj <- fit$object
   cxxtimetrans(fit$param, obj$revents, obj$rpoly, obj$rtperiod,
-              fit$integ, fit$ndiv)
+              fit$integ, fit$ndiv, fit$mver)
 }

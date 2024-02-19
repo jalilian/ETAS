@@ -37,17 +37,17 @@
 }
 \usage{
 rates.inter(theta, object, bwd, lat.range=NULL, long.range=NULL,
-            dimyx=NULL, plot.it=TRUE)
+            mver=1, dimyx=NULL, plot.it=TRUE)
 lambdax(rt, rx, ry, theta, revents)
 etasfit(theta, revents, rpoly, tperiod, integ0, ihess, verbose,
     ndiv, eps, cxxcode, nthreads, spdensity)
 decluster(theta, rbwd, revents, rpoly, tperiod, ndiv, cxxcode, mver)
 cxxfit(tht, revents, rpoly, tperiod, rinteg0, ihess, ndiv, eps, verbose, nthreads, mver)
-cxxdeclust(param, revents, rpoly, bwd, tperiod, ndiv)
-cxxrates(param, revents, bwd, tperiod, gx, gy)
-cxxtimetrans(theta, revents, rpoly, tperiod, integ0, ndiv)
-cxxlambdtemp(tg, theta, revents, rpoly, tperiod, integ0, ndiv)
-cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd)
+cxxdeclust(param, revents, rpoly, bwd, tperiod, ndiv, mver)
+cxxrates(param, revents, bwd, tperiod, gx, gy, mver)
+cxxtimetrans(theta, revents, rpoly, tperiod, integ0, ndiv, mver)
+cxxlambdtemp(tg, theta, revents, rpoly, tperiod, integ0, ndiv, mver)
+cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd, mver)
 cxxSmooth(x, y, bwd, gx, gy, expand)
 cxxstpoisstest(xrank, yrank, M)
 cxxstpoisstestMP(xrank, yrank, M, nthreads)

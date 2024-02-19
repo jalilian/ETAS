@@ -1786,27 +1786,17 @@ List cxxrates(NumericVector param,
               NumericVector bwd,
               NumericVector tperiod,
               NumericVector gx,
-              NumericVector gy)
+              NumericVector gy,
+              int mver)
 {
   NumericVector t = revents( _, 0), x = revents( _, 1), y = revents( _, 2),
     m = revents( _, 3), pb = revents( _, 6);
   
   // extract time period information
   const double tstart2 = tperiod[0], tlength = tperiod[1];
-  
-  const double mu = param[0];
-  const double A = param[1];
-  const double c = param[2];
-  const double alpha = param[3];
-  const double p = param[4];
-  const double D = param[5];
-  const double q= param[6];
-  const double gamma = param[7];
-  
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
 
+  modelhandler model;
+  model.set(mver, param);
 
   int N = t.length(), ngx = gx.length(), ngy = gy.length();
   
@@ -1827,13 +1817,13 @@ List cxxrates(NumericVector param,
       bkgd(i, j) = sum1 / (tlength - tstart2);
       total(i, j) = sum2 / (tlength - tstart2);
       clust(i, j) = 1 - sum1 / sum2;
-      lamb(i, j) = mu * bkgd(i, j);
+      lamb(i, j) = model.mufun() * bkgd(i, j);
       
       for (int l = 0; l < N; l++)
       {
-        lamb(i, j) += kappafun(m[l], kparam) *
-          gfun(tlength - t[l], gparam) *
-          ffun1(dist2(x[l], y[l], gx[i], gy[j]), m[l], fparam);
+        lamb(i, j) += model.kappafun0(m[l]) *
+          model.gfun0(tlength - t[l]) *
+          model.ffun0(dist2(x[l], y[l], gx[i], gy[j]), m[l]);
       }
     }
   
@@ -1853,19 +1843,16 @@ NumericVector cxxtimetrans(NumericVector theta,
                            NumericMatrix rpoly,
                            NumericVector tperiod,
                            double integ0,
-                           int ndiv)
+                           int ndiv,
+                           int mver)
 {
   NumericVector t = revents( _, 0), x = revents( _, 1), y = revents( _, 2),
     m = revents( _, 3);
   NumericVector px = rpoly( _, 0), py = rpoly( _, 1);
   const double tstart2 = tperiod[0], tlength = tperiod[1];
-  
-  const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
-  const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
 
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
+  modelhandler model;
+  model.set(mver, theta);
 
   const int N = revents.nrow();
   NumericVector sinteg(N), out(N);
@@ -1902,14 +1889,14 @@ NumericVector cxxtimetrans(NumericVector theta,
           double r0 = dist(x1 + r1/(r1 + r2) * (x2 - x1),
                            y1 + r1/(r1 + r2) * (y2 - y1), x[i], y[i]);
 
-          si += sgn(det) * (ffunrint1(r1, m[i], fparam) / 6 +
-            ffunrint1(r0, m[i], fparam) * 2 / 3 +
-            ffunrint1(r2, m[i], fparam) / 6) * phi;
+          si += sgn(det) * (model.ffunrint0(r1, m[i]) / 6 +
+            model.ffunrint0(r0, m[i]) * 2 / 3 +
+            model.ffunrint0(r2, m[i]) / 6) * phi;
         }
       }
     }
 
-    sinteg[i] = kappafun(m[i], kparam) * si;
+    sinteg[i] = model.kappafun0(m[i]) * si;
   }
   
   for (int j=0; j < N; ++j)
@@ -1918,12 +1905,12 @@ NumericVector cxxtimetrans(NumericVector theta,
     for (int i=0; i < j; i++)
     {
       if (t[i] > tstart2)
-        sum += gfunint(t[j] - t[i], gparam) * sinteg[i];
+        sum += model.gfunint0(t[j] - t[i]) * sinteg[i];
       else
-        sum += (gfunint(t[j] - t[i], gparam) -
-          gfunint(tstart2 - t[i], gparam)) * sinteg[i];
+        sum += (model.gfunint0(t[j] - t[i]) -
+          model.gfunint0(tstart2 - t[i])) * sinteg[i];
     }
-    out[j] = mu * integ0 * (t[j] - tstart2) / (tlength - tstart2) + sum;
+    out[j] = model.mufun() * integ0 * (t[j] - tstart2) / (tlength - tstart2) + sum;
   }
   return out;
 }
@@ -1948,7 +1935,7 @@ NumericVector cxxlambdtemp(NumericVector tg,
   const double tstart2 = tperiod[0], tlength = tperiod[1];
   
   modelhandler model;
-  model.set(mver, param);
+  model.set(mver, theta);
 
   const int N = revents.nrow();
   NumericVector sinteg(N);
@@ -2022,19 +2009,16 @@ NumericVector cxxlambspat(NumericVector xg,
                           NumericMatrix revents,
                           NumericMatrix rpoly,
                           NumericVector tperiod,
-                          NumericVector bwd)
+                          NumericVector bwd,
+                          int mver)
 {
   NumericVector t = revents( _, 0), x = revents( _, 1), y = revents( _, 2),
     m = revents( _, 3), bk = revents( _, 5), pb = revents( _, 6);
   NumericVector px = rpoly( _, 0), py = rpoly( _, 1);
   const double tstart2 = tperiod[0], tlength = tperiod[1];
-  
-  const double mu = theta[0], A = theta[1], c = theta[2], alpha = theta[3];
-  const double p = theta[4], D = theta[5], q = theta[6], gamma = theta[7];
-  
-  double kparam[] = {A, alpha};
-  double gparam[] = {c, p};
-  double fparam[] = {D, gamma, q};
+
+  modelhandler model;
+  model.set(mver, theta);
 
   const int N = revents.nrow();
   
@@ -2048,20 +2032,20 @@ NumericVector cxxlambspat(NumericVector xg,
     {
       if (t[i] > tstart2)
       {
-        gint = gfunint(tlength - t[i], gparam);
+        gint = model.gfunint0(tlength - t[i]);
       }
       else
       {
-        gint = gfunint(tlength - t[i], gparam) -
-          gfunint(tstart2 - t[i], gparam);
+        gint = model.gfunint0(tlength - t[i]) -
+          model.gfunint0(tstart2 - t[i]);
       }
       double r2 = dist2(xg[j], yg[j], x[i], y[i]);
-      sum += kappafun(m[i], kparam) * gint * ffun1(r2, m[i], fparam);
+      sum += model.kappafun0(m[i]) * gint * model.ffun0(r2, m[i]);
       s1 += exp(-r2/(2 * bwd[i] * bwd[i])) / (2 * M_PI * bwd[i] * bwd[i]);
       s2 += pb[i] *  s1;
     }
     
-    out[j] =  sum + mu * s2/(tlength - tstart2);
+    out[j] =  sum + model,mufun() * s2/(tlength - tstart2);
   }
   
   return out;

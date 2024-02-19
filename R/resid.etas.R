@@ -6,7 +6,8 @@ resid.etas <- function(fit, type="raw", n.temp=1000, dimyx=NULL)
   xx <- fit$object$revents[flg == 1, "xx"]
   yy <- fit$object$revents[flg == 1, "yy"]
 
-  tau <- timetransform(fit)[flg == 1] - lambdatemporal(fit$object$rtperiod[1], fit)
+  tau <- timetransform(fit)[flg == 1] - 
+    lambdatemporal(fit$object$rtperiod[1], fit)
   tg <- seq(min(tt), max(tt), length.out=n.temp)
   tlam <- lambdatemporal(tg, fit)
   dfun <- function(i){ sum((tt <= tg[i]) & (tt > tg[i - 1])) }
