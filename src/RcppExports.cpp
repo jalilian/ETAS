@@ -49,8 +49,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cxxrates
-List cxxrates(NumericVector param, NumericMatrix revents, NumericVector bwd, NumericVector tperiod, NumericVector gx, NumericVector gy);
-RcppExport SEXP _ETAS_cxxrates(SEXP paramSEXP, SEXP reventsSEXP, SEXP bwdSEXP, SEXP tperiodSEXP, SEXP gxSEXP, SEXP gySEXP) {
+List cxxrates(NumericVector param, NumericMatrix revents, NumericVector bwd, NumericVector tperiod, NumericVector gx, NumericVector gy, int mver);
+RcppExport SEXP _ETAS_cxxrates(SEXP paramSEXP, SEXP reventsSEXP, SEXP bwdSEXP, SEXP tperiodSEXP, SEXP gxSEXP, SEXP gySEXP, SEXP mverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -60,13 +60,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type gx(gxSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type gy(gySEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxrates(param, revents, bwd, tperiod, gx, gy));
+    Rcpp::traits::input_parameter< int >::type mver(mverSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxrates(param, revents, bwd, tperiod, gx, gy, mver));
     return rcpp_result_gen;
 END_RCPP
 }
 // cxxtimetrans
-NumericVector cxxtimetrans(NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double integ0, int ndiv);
-RcppExport SEXP _ETAS_cxxtimetrans(SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP integ0SEXP, SEXP ndivSEXP) {
+NumericVector cxxtimetrans(NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double integ0, int ndiv, int mver);
+RcppExport SEXP _ETAS_cxxtimetrans(SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP integ0SEXP, SEXP ndivSEXP, SEXP mverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -76,13 +77,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
     Rcpp::traits::input_parameter< double >::type integ0(integ0SEXP);
     Rcpp::traits::input_parameter< int >::type ndiv(ndivSEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxtimetrans(theta, revents, rpoly, tperiod, integ0, ndiv));
+    Rcpp::traits::input_parameter< int >::type mver(mverSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxtimetrans(theta, revents, rpoly, tperiod, integ0, ndiv, mver));
     return rcpp_result_gen;
 END_RCPP
 }
 // cxxlambdtemp
-NumericVector cxxlambdtemp(NumericVector tg, NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double integ0, int ndiv);
-RcppExport SEXP _ETAS_cxxlambdtemp(SEXP tgSEXP, SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP integ0SEXP, SEXP ndivSEXP) {
+NumericVector cxxlambdtemp(NumericVector tg, NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, double integ0, int ndiv, int mver);
+RcppExport SEXP _ETAS_cxxlambdtemp(SEXP tgSEXP, SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP integ0SEXP, SEXP ndivSEXP, SEXP mverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -93,13 +95,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
     Rcpp::traits::input_parameter< double >::type integ0(integ0SEXP);
     Rcpp::traits::input_parameter< int >::type ndiv(ndivSEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxlambdtemp(tg, theta, revents, rpoly, tperiod, integ0, ndiv));
+    Rcpp::traits::input_parameter< int >::type mver(mverSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxlambdtemp(tg, theta, revents, rpoly, tperiod, integ0, ndiv, mver));
     return rcpp_result_gen;
 END_RCPP
 }
 // cxxlambspat
-NumericVector cxxlambspat(NumericVector xg, NumericVector yg, NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, NumericVector bwd);
-RcppExport SEXP _ETAS_cxxlambspat(SEXP xgSEXP, SEXP ygSEXP, SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP bwdSEXP) {
+NumericVector cxxlambspat(NumericVector xg, NumericVector yg, NumericVector theta, NumericMatrix revents, NumericMatrix rpoly, NumericVector tperiod, NumericVector bwd, int mver);
+RcppExport SEXP _ETAS_cxxlambspat(SEXP xgSEXP, SEXP ygSEXP, SEXP thetaSEXP, SEXP reventsSEXP, SEXP rpolySEXP, SEXP tperiodSEXP, SEXP bwdSEXP, SEXP mverSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -110,7 +113,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type rpoly(rpolySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type tperiod(tperiodSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type bwd(bwdSEXP);
-    rcpp_result_gen = Rcpp::wrap(cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd));
+    Rcpp::traits::input_parameter< int >::type mver(mverSEXP);
+    rcpp_result_gen = Rcpp::wrap(cxxlambspat(xg, yg, theta, revents, rpoly, tperiod, bwd, mver));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -165,10 +169,10 @@ RcppExport SEXP clambdax(void *, void *, void *, void *, void *);
 static const R_CallMethodDef CallEntries[] = {
     {"_ETAS_cxxfit", (DL_FUNC) &_ETAS_cxxfit, 11},
     {"_ETAS_cxxdeclust", (DL_FUNC) &_ETAS_cxxdeclust, 7},
-    {"_ETAS_cxxrates", (DL_FUNC) &_ETAS_cxxrates, 6},
-    {"_ETAS_cxxtimetrans", (DL_FUNC) &_ETAS_cxxtimetrans, 6},
-    {"_ETAS_cxxlambdtemp", (DL_FUNC) &_ETAS_cxxlambdtemp, 7},
-    {"_ETAS_cxxlambspat", (DL_FUNC) &_ETAS_cxxlambspat, 7},
+    {"_ETAS_cxxrates", (DL_FUNC) &_ETAS_cxxrates, 7},
+    {"_ETAS_cxxtimetrans", (DL_FUNC) &_ETAS_cxxtimetrans, 7},
+    {"_ETAS_cxxlambdtemp", (DL_FUNC) &_ETAS_cxxlambdtemp, 8},
+    {"_ETAS_cxxlambspat", (DL_FUNC) &_ETAS_cxxlambspat, 8},
     {"_ETAS_cxxSmooth", (DL_FUNC) &_ETAS_cxxSmooth, 6},
     {"_ETAS_cxxstpoisstest", (DL_FUNC) &_ETAS_cxxstpoisstest, 3},
     {"_ETAS_cxxstpoisstestMP", (DL_FUNC) &_ETAS_cxxstpoisstestMP, 4},

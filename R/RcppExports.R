@@ -9,20 +9,20 @@ cxxdeclust <- function(param, revents, rpoly, bwd, tperiod, ndiv, mver) {
     .Call(`_ETAS_cxxdeclust`, param, revents, rpoly, bwd, tperiod, ndiv, mver)
 }
 
-cxxrates <- function(param, revents, bwd, tperiod, gx, gy) {
-    .Call(`_ETAS_cxxrates`, param, revents, bwd, tperiod, gx, gy)
+cxxrates <- function(param, revents, bwd, tperiod, gx, gy, mver) {
+    .Call(`_ETAS_cxxrates`, param, revents, bwd, tperiod, gx, gy, mver)
 }
 
-cxxtimetrans <- function(theta, revents, rpoly, tperiod, integ0, ndiv) {
-    .Call(`_ETAS_cxxtimetrans`, theta, revents, rpoly, tperiod, integ0, ndiv)
+cxxtimetrans <- function(theta, revents, rpoly, tperiod, integ0, ndiv, mver) {
+    .Call(`_ETAS_cxxtimetrans`, theta, revents, rpoly, tperiod, integ0, ndiv, mver)
 }
 
-cxxlambdtemp <- function(tg, theta, revents, rpoly, tperiod, integ0, ndiv) {
-    .Call(`_ETAS_cxxlambdtemp`, tg, theta, revents, rpoly, tperiod, integ0, ndiv)
+cxxlambdtemp <- function(tg, theta, revents, rpoly, tperiod, integ0, ndiv, mver) {
+    .Call(`_ETAS_cxxlambdtemp`, tg, theta, revents, rpoly, tperiod, integ0, ndiv, mver)
 }
 
-cxxlambspat <- function(xg, yg, theta, revents, rpoly, tperiod, bwd) {
-    .Call(`_ETAS_cxxlambspat`, xg, yg, theta, revents, rpoly, tperiod, bwd)
+cxxlambspat <- function(xg, yg, theta, revents, rpoly, tperiod, bwd, mver) {
+    .Call(`_ETAS_cxxlambspat`, xg, yg, theta, revents, rpoly, tperiod, bwd, mver)
 }
 
 cxxSmooth <- function(x, y, bwd, gx, gy, expand) {
