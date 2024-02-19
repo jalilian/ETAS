@@ -24,7 +24,7 @@ class modelhandler{
     double gfun0(double t);
     double gfunint0(double t);
     double ffun0(double r2, double m);
-    double ffunrint0(double r, double m)
+    double ffunrint0(double r, double m);
 };
 void modelhandler::set(int rmver, NumericVector param)
 {
@@ -87,10 +87,10 @@ double modelhandler::ffunrint0(double r, double m)
   switch (mver)
   {
     case 1:
-      f = ffunrint1(r2, m, fparam);
+      f = ffunrint1(r, m, fparam);
       break;
     case 2:
-      f = ffunrint2(r2, m, fparam);
+      f = ffunrint2(r, m, fparam);
       break;
   }
   return f;
@@ -2045,7 +2045,7 @@ NumericVector cxxlambspat(NumericVector xg,
       s2 += pb[i] *  s1;
     }
     
-    out[j] =  sum + model,mufun() * s2/(tlength - tstart2);
+    out[j] =  sum + model.mufun() * s2/(tlength - tstart2);
   }
   
   return out;
