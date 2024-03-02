@@ -5,6 +5,7 @@ S3method(print, catalog)
 S3method(plot, catalog)
 S3method(print, etas)
 S3method(plot, etas)
+S3method(Smooth, catalog)
 
 useDynLib(ETAS, .registration=TRUE)
 
