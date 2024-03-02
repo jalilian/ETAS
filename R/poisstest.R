@@ -27,7 +27,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
     unitname <- paste(object$dist.unit, c("", "s"), sep="")
     X <- spatstat.geom::ppp(xx, yy, window=win, unitname=unitname)
     if (is.null(lambda))
-      lambda <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
+      lambda <- Smoothcatalog(object, bwd=bwd, dimyx=dimyx)
     X.sim <- spatstat.random::rpoint(X$n, lambda, win=win, nsim=nsim)
     X.sim <- lapply(X.sim, function(x) { x$window <- win; x })
 
@@ -38,7 +38,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
     }
     stat <- function(Y, r)
     {
-      lamY <- Smooth.catalog(object, bwd=bwd, dimyx=dimyx)
+      lamY <- Smoothcatalog(object, bwd=bwd, dimyx=dimyx)
       spatstat.explore::Linhom(Y, lambda=lamY, r=r, correction="translate")
     }
     env <- spatstat.explore::envelope(X, stat, r=r, savefuns=TRUE, use.theory=TRUE, 
@@ -95,8 +95,8 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
   }, stop("wrong which choice."))
 }
 
-Smooth.catalog <- function(object, type="spatial", bwd=NULL, bwm=NULL, 
-                           nnp=NULL, dimyx=NULL, convert=FALSE, ...)
+Smoothcatalog <- function(object, type="spatial", bwd=NULL, bwm=NULL, 
+                           nnp=NULL, dimyx=NULL, convert=FALSE)
 {
   ok <- object$revents[, "flag"] == 1
   switch(type, temporal={
