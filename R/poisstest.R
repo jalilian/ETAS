@@ -96,7 +96,7 @@ poiss.test <- function(object, which="joint", r=NULL, lambda=NULL, bwd=NULL,
 }
 
 Smooth.catalog <- function(object, type="spatial", bwd=NULL, bwm=NULL, 
-                           nnp=NULL, dimyx=NULL, convert=FALSE)
+                           nnp=NULL, dimyx=NULL, convert=FALSE, ...)
 {
   ok <- object$revents[, "flag"] == 1
   switch(type, temporal={

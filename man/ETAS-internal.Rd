@@ -66,8 +66,8 @@ morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 decimalplaces(x) 
 roundoffErr(x)
 ttrend(obj, tmax=NULL, tmin=NULL)
-\method{Smooth}{catalog}(object, type="spatial", bwd=NULL, bwm=NULL, nnp=NULL, 
-  dimyx=NULL, convert=FALSE)
+\method{Smooth}{catalog}(object, type="spatial", bwd=NULL, bwm=NULL, 
+  nnp=NULL, dimyx=NULL, convert=FALSE, \dots)
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)
