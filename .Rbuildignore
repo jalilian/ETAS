@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^\.gitignore$
+^\.gitattributes$
 ^\.github
 
 # Binary files
