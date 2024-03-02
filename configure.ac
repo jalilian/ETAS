@@ -13,13 +13,11 @@ if test -z "${R_HOME}"; then
 fi
 
 ## Use R to set CXX and CXXFLAGS
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+CXX=$(${R_HOME}/bin/R CMD config CXX)
+CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXXFLAGS)
 
 ## We are using C++
 AC_LANG(C++)
-AC_PROG_CPP
 AC_REQUIRE_CPP
 
 dnl this the meat of R's m4/openmp.m4
@@ -56,13 +54,3 @@ dnl this the meat of R's m4/openmp.m4
 AC_SUBST(OPENMP_CXXFLAGS)
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
-
-echo "
-  --------------------------------------------------
-  Configuration for ${PACKAGE_NAME} ${PACKAGE_VERSION}
-
-    cppflags: ${CPPFLAGS} ${PKG_CPPFLAGS}
-    libs:     ${PKG_LIBS}
-
-  --------------------------------------------------
-"
