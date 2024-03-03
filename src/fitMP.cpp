@@ -655,7 +655,7 @@ void etas::mloglikj2Gr(int j,
   // d D
   intpartGr[ 5 ] = int_part1[0] * int_part2[0]  * int_part3[1];
   // d gamma
-  intpartGr[ 7 ] = int_part1[0] * int_part2[0]  * int_part3[2];
+  intpartGr[ 6 ] = int_part1[0] * int_part2[0]  * int_part3[2];
 
   *fvj = -sumpart + intpart;
 
