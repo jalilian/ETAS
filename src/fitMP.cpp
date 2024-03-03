@@ -1174,7 +1174,7 @@ void etas::mloglikGrMP(NumericVector theta,
     #pragma omp for //schedule(static)
     for (int j = 0; j < N; ++j)
     {
-      double fvj, dfvj[dimparam];
+      double fvj, dfvj[8];
       mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
 
       fvtemp_thread += fvj;
