@@ -44,14 +44,13 @@ jobs:
           CXX: g++
         run: |
           gcc --version
-          cmake -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++
+
       - name: Build with Clang
         env:
           CC: clang
           CXX: clang++
         run: |
           clang --version
-          cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
 
       - uses: r-lib/actions/setup-pandoc@v2
 
