@@ -119,7 +119,6 @@ private:
   double integ0;
   int ndiv;
   int mver;
-  int dimparam;
 
 public:
   void set(NumericMatrix revents,
@@ -255,13 +254,11 @@ void etas::paramhandler(NumericVector theta,
   switch (mver)
   {
     case 1:
-      dimparam = 8;
       fparam[0] = theta[5] * theta[5]; // D
       fparam[1] = theta[7] * theta[7]; // gamma
       fparam[2] = theta[6] * theta[6]; // q
       break;
     case 2:
-      dimparam = 7;
       fparam[0] = theta[5] * theta[5]; // D
       fparam[1] = theta[6] * theta[6]; // gamma
       break;
@@ -727,7 +724,7 @@ void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
 {
-  //const int dimparam = theta.length();
+  const int dimparam = theta.length();
 
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
@@ -767,7 +764,7 @@ void etas::linesearch(NumericVector xOld,
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     a1, a2, a3, b1, b2;
 
-//  const int dimparam = xOld.length();
+  const int dimparam = xOld.length();
   
   NumericVector xNew(dimparam);
   
@@ -903,7 +900,7 @@ List etas::fitfun(NumericVector tht,
                   double eps,
                   bool verbose)
 {
-//  const int dimparam = tht.length();
+  const int dimparam = tht.length();
 
   NumericVector estimate(dimparam), dfvout(dimparam);
   double fvout, aic;
@@ -1162,7 +1159,7 @@ void etas::mloglikGrMP(NumericVector theta,
                        double *dfv,
                        int nthreads)
 {
-//  const int dimparam = theta.length();
+  const int dimparam = theta.length();
 
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
@@ -1214,7 +1211,7 @@ void etas::linesearchMP(NumericVector xOld,
   double const2 = 1.0e-16, ram1, ram2, ram3, fv1, fv2, fv3,
     a1, a2, a3, b1, b2;
 
-//  const int dimparam = xOld.length();
+  const int dimparam = xOld.length();
 
   NumericVector xNew(dimparam);
   
@@ -1351,7 +1348,7 @@ List etas::fitfunMP(NumericVector tht,
                     bool verbose,
                     int nthreads)
 {
-//  const int dimparam = tht.length();
+  const int dimparam = tht.length();
 
   NumericVector estimate(dimparam), dfvout(dimparam);
   double fvout, aic;
