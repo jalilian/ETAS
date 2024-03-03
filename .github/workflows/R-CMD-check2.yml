@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc, clang]
+        compiler: [g++, clang++]
         config:
           - {os: macos-latest,   r: 'release'}
 
@@ -41,7 +41,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build with ${{ matrix.compiler }}
         env:
-          CC: ${{ matrix.compiler }}
           CXX: ${{ matrix.compiler }}
         run: |
           ${{ matrix.compiler }} --version  # Verify compiler
