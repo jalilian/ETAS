@@ -187,7 +187,7 @@ public:
                    double *df,
                    int nthreads);
   void linesearchMP(NumericVector xOld,
-                    double *h,
+                    NumericVector h,
                     double *fv,
                     double *ram,
                     int nthreads);
@@ -1205,7 +1205,7 @@ void etas::mloglikGrMP(NumericVector theta,
 // ******************************************************************
 
 void etas::linesearchMP(NumericVector xOld,
-                        double *h,
+                        NumericVector h,
                         double *fv,
                         double *ram,
                         int nthreads)
@@ -1221,9 +1221,13 @@ void etas::linesearchMP(NumericVector xOld,
   if (*ram <= 1.0e-30)
     *ram = 0.1;
   
-  double hnorm = norm(h, dimparam);
+  double hnorm = 0;
+  for (int i = 0; i < dimparam; i++)
+    hnorm += h[i] * h[i];
+  hnorm = sqrt(hnorm);
+
   if (hnorm > 1)
-    *ram = *ram/hnorm;
+    *ram = *ram / hnorm;
   
   ram1 = 0;
   ram2 = *ram;
@@ -1362,9 +1366,9 @@ List etas::fitfunMP(NumericVector tht,
   double tau1 = eps, tau2 = eps, eps1 = eps, eps2 = eps, const1 = 1.0e-17;
   
   double ramda = 0.05, fv, s1, s2;
-  double h[dimparam][dimparam], s[dimparam] = {0}, dx[dimparam] = {0}, g0[dimparam] = {0},
-    g[dimparam] = {0}, dg[dimparam], wrk[dimparam];
-  
+  double h[dimparam][dimparam], g[dimparam], dg[dimparam], wrk[dimparam];
+  NumericVector s(dimparam), dx(dimparam), g0(dimparam),
+
   // Initial estimate of inverse of hessian matrix
   for (int i = 0; i < dimparam; i++)
     for (int j = 0; j < dimparam; j++)
