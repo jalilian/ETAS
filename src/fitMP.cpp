@@ -733,7 +733,7 @@ void etas::mloglikGr(NumericVector theta,
   paramhandler(theta, &mu, kparam, gparam, fparam);
 
   double fvtemp = 0;//, dfvtemp[dimparam] = {0};
-  double* dfvtemp = new double[dimparam] = {0};
+  NumericVector dfvtemp(dimparam);
 
   for (int j = 0; j < N; ++j)
   {
