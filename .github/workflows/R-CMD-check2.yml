@@ -38,19 +38,6 @@ jobs:
         run: git config --global core.autocrlf false
 
       - uses: actions/checkout@v3
-      - name: Build with GCC
-        env:
-          CC: gcc
-          CXX: g++
-        run: |
-          gcc --version
-
-      - name: Build with Clang
-        env:
-          CC: clang
-          CXX: clang++
-        run: |
-          clang --version
 
       - uses: r-lib/actions/setup-pandoc@v2
 

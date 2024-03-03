@@ -169,9 +169,10 @@ public:
                   double *fv,
                   double *df);
   double mloglik(NumericVector theta);
-  void mloglikGr(NumericVector theta,
+ /* void mloglikGr(NumericVector theta,
                  double *fv,
-                 double *df);
+                 double *df);*/
+  NumericVector mloglikGr(NumericVector theta);
   void linesearch(NumericVector xOld,
                   NumericVector h,
                   double *fv,
@@ -719,7 +720,7 @@ void etas::mloglikjGr(int j,
       break;
   }
 }
-
+/*
 void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
@@ -748,7 +749,34 @@ void etas::mloglikGr(NumericVector theta,
   
   return;
 }
+*/
+NumericVector etas::mloglikGr(NumericVector theta)
+{
+  const int dimparam = theta.length();
 
+  NumericVector out(dimparam + 1);
+  double mu, kparam[2], gparam[2], fparam[3];
+  paramhandler(theta, &mu, kparam, gparam, fparam);
+
+  double fvtemp = 0, dfvtemp[8] = {};
+
+  for (int j = 0; j < N; ++j)
+  {
+    double fvj, dfvj[8];
+    mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
+
+    fvtemp += fvj;
+
+    for (int i = 0; i < dimparam; ++i)
+      dfvtemp[i] += dfvj[i];
+  }
+
+  out[0] = fvtemp;
+  for (int i = 0; i < dimparam; ++i)
+    out[i + 1] = dfvtemp[i] * 2 * theta[i];
+
+  return out;
+}
 
 // ******************************************************************
 // line search for the optimization algorithm
@@ -915,13 +943,15 @@ List etas::fitfun(NumericVector tht,
     const1 = 1.0e-17;
   
   double ramda = 0.05, fv, s1, s2;
-  double g[dimparam];
   NumericVector s(dimparam), dx(dimparam), g0(dimparam), dg(dimparam), wrk(dimparam);
   
   // Initial estimate of inverse of hessian matrix
   NumericMatrix h = ihess;
   
-  mloglikGr(tht, &fv, g);
+  NumericVector mlkgfv = mloglikGr(tht), g(dimparam);
+  fv = mlkgfv[0];
+  for (int i = 0; i < dimparam; i++)
+    g[i] = mlkgfv[i + 1];
   
   if (verbose)
   {
@@ -1077,7 +1107,10 @@ List etas::fitfun(NumericVector tht,
       }
       
       double fv0 = fv;
-      mloglikGr(tht, &fv, g);
+      mlkgfv = mloglikGr(tht);
+      fv = mlkgfv[0];
+      for (int i = 0; i < dimparam; i++)
+        g[i] = mlkgfv[i + 1];
       
       if (verbose)
       {
