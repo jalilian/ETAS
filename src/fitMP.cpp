@@ -724,7 +724,7 @@ void etas::mloglikGr(NumericVector theta,
                      double *fv,
                      double *dfv)
 {
-  int nparam = theta.length();
+  const int nparam = theta.length();
   constexpr int dimparam = nparam;
 
   double mu, kparam[2], gparam[2], fparam[3];
