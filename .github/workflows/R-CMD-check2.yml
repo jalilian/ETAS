@@ -42,7 +42,7 @@ jobs:
       - name: Build with ${{ matrix.compiler }}
         run: |
           ${{ matrix.compiler }} --version  # Verify compiler
-          make all
+          cmake
 
       - uses: r-lib/actions/setup-pandoc@v2
 
