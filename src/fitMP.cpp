@@ -912,8 +912,8 @@ List etas::fitfun(NumericVector tht,
     const1 = 1.0e-17;
   
   double ramda = 0.05, fv, s1, s2;
-  double h[dimparam][dimparam], dg[dimparam], wrk[dimparam];
-  NumericVector s(dimparam), dx(dimparam), g0(dimparam), g(dimparam);
+  double h[dimparam][dimparam], s[dimparam] = {0}, dx[dimparam] = {0}, g0[dimparam] = {0},
+    g[dimparam] = {0}, dg[dimparam], wrk[dimparam];
   
   // Initial estimate of inverse of hessian matrix
   for (int i = 0; i < dimparam; i++)
@@ -1164,13 +1164,11 @@ void etas::mloglikGrMP(NumericVector theta,
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
 
-  double fvtemp = 0;
-  NumericVector dfvtemp(dimparam);
+  double fvtemp = 0, dfvtemp[dimparam] = {0};
   
   #pragma omp parallel num_threads(nthreads)
   {
-    double fvtemp_thread = 0;
-    NumericVector dfvtemp_thread(dimparam);
+    double fvtemp_thread = 0, dfvtemp_thread[dimparam] = {0};
   
     #pragma omp for //schedule(static)
     for (int j = 0; j < N; ++j)
@@ -1361,8 +1359,8 @@ List etas::fitfunMP(NumericVector tht,
   double tau1 = eps, tau2 = eps, eps1 = eps, eps2 = eps, const1 = 1.0e-17;
   
   double ramda = 0.05, fv, s1, s2;
-  double h[dimparam][dimparam], dg[dimparam], wrk[dimparam];
-  NumericVector s(dimparam), dx(dimparam), g0(dimparam), g(dimparam);
+  double h[dimparam][dimparam], s[dimparam] = {0}, dx[dimparam] = {0}, g0[dimparam] = {0},
+    g[dimparam] = {0}, dg[dimparam], wrk[dimparam];
   
   // Initial estimate of inverse of hessian matrix
   for (int i = 0; i < dimparam; i++)
