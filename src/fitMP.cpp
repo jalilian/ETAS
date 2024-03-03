@@ -173,7 +173,7 @@ public:
                  double *fv,
                  double *df);
   void linesearch(NumericVector xOld,
-                  double *h,
+                  NumericVector h,
                   double *fv,
                   double *ram);
   List fitfun(NumericVector tht,
@@ -755,7 +755,7 @@ void etas::mloglikGr(NumericVector theta,
 // ******************************************************************
 
 void etas::linesearch(NumericVector xOld,
-                      double *h,
+                      NumericVector h,
                       double *fv,
                       double *ram)
 {
@@ -770,9 +770,13 @@ void etas::linesearch(NumericVector xOld,
   if (*ram <= 1.0e-30)
     *ram = 0.1;
   
-  double hnorm = norm(h, dimparam);
+  double hnorm = 0;
+  for (int i = 0; i < dimparam; i++)
+    hnorm += h[i] * h[i];
+  hnorm = sqrt(hnorm);
+
   if (hnorm > 1)
-    *ram = *ram/hnorm;
+    *ram = *ram / hnorm;
   
   ram1 = 0;
   ram2 = *ram;
