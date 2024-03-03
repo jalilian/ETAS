@@ -169,9 +169,6 @@ public:
                   double *fv,
                   double *df);
   double mloglik(NumericVector theta);
- /* void mloglikGr(NumericVector theta,
-                 double *fv,
-                 double *df);*/
   NumericVector mloglikGr(NumericVector theta);
   void linesearch(NumericVector xOld,
                   NumericVector h,
@@ -183,10 +180,7 @@ public:
               bool verbose);
   double mloglikMP(NumericVector theta,
                    int nthreads);
-  void mloglikGrMP(NumericVector theta,
-                   double *fv,
-                   double *df,
-                   int nthreads);
+  NumericVector mloglikGrMP(NumericVector theta, int nthreads);
   void linesearchMP(NumericVector xOld,
                     NumericVector h,
                     double *fv,
@@ -720,36 +714,7 @@ void etas::mloglikjGr(int j,
       break;
   }
 }
-/*
-void etas::mloglikGr(NumericVector theta,
-                     double *fv,
-                     double *dfv)
-{
-  const int dimparam = theta.length();
 
-  double mu, kparam[2], gparam[2], fparam[3];
-  paramhandler(theta, &mu, kparam, gparam, fparam);
-
-  double fvtemp = 0, dfvtemp[8] = {};
-
-  for (int j = 0; j < N; ++j)
-  {
-    double fvj, dfvj[8];
-    mloglikjGr(j, mu, kparam, gparam, fparam, &fvj, dfvj);
-
-    fvtemp += fvj;
-
-    for (int i = 0; i < dimparam; ++i)
-      dfvtemp[i] += dfvj[i];
-  }
-
-  *fv = fvtemp;
-  for (int i = 0; i < dimparam; ++i)
-    dfv[i] = dfvtemp[i] * 2 * theta[i];
-  
-  return;
-}
-*/
 NumericVector etas::mloglikGr(NumericVector theta)
 {
   const int dimparam = theta.length();
@@ -1188,12 +1153,11 @@ double etas::mloglikMP(NumericVector theta,
 // gradient of minus log likelihood function: parallel computing
 // ******************************************************************
 
-void etas::mloglikGrMP(NumericVector theta,
-                       double *fv,
-                       double *dfv,
-                       int nthreads)
+NumericVector etas::mloglikGrMP(NumericVector theta, int nthreads)
 {
   const int dimparam = theta.length();
+
+  NumericVector out(dimparam + 1);
 
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
@@ -1223,11 +1187,11 @@ void etas::mloglikGrMP(NumericVector theta,
     }
   }
 
-  *fv = fvtemp;
+  out[0] = fvtemp;
   for (int i = 0; i < dimparam; ++i)
-    dfv[i] = dfvtemp[i]  * 2 * theta[i];
+    out[i + 1] = dfvtemp[i]  * 2 * theta[i];
 
-  return;
+  return out;
 }
 
 
@@ -1403,7 +1367,10 @@ List etas::fitfunMP(NumericVector tht,
   // Initial estimate of inverse of hessian matrix
   NumericMatrix h = ihess;
   
-  mloglikGrMP(tht, &fv, g, nthreads);
+  NumericVector mlkgfv = mloglikGrMP(tht, nthreads), g(dimparam);
+  fv = mlkgfv[0];
+  for (int i = 0; i < dimparam; i++)
+    g[i] = mlkgfv[i + 1];
   
   if (verbose)
   {
@@ -1557,7 +1524,10 @@ List etas::fitfunMP(NumericVector tht,
       }
       
       double fv0 = fv;
-      mloglikGrMP(tht, &fv, g, nthreads);
+      mlkgfv = mloglikGrMP(tht, nthreads);
+      fv = mlkgfv[0];
+      for (int i = 0; i < dimparam; i++)
+        g[i] = mlkgfv[i + 1];
       
       if (verbose)
       {
