@@ -21,7 +21,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [g++, clang++]
         config:
           - {os: macos-latest,   r: 'release'}
 
@@ -39,12 +38,20 @@ jobs:
         run: git config --global core.autocrlf false
 
       - uses: actions/checkout@v3
-      - name: Build with ${{ matrix.compiler }}
+      - name: Build with GCC
         env:
-          CXX: ${{ matrix.compiler }}
+          CC: gcc
+          CXX: g++
         run: |
-          ${{ matrix.compiler }} --version  # Verify compiler
-          cmake -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          gcc --version
+          cmake -DCMAKE_CXX_COMPILER=g++
+      - name: Build with Clang
+        env:
+          CC: clang
+          CXX: clang++
+        run: |
+          clang --version
+          cmake -DCMAKE_CXX_COMPILER=clang++
 
       - uses: r-lib/actions/setup-pandoc@v2
 
