@@ -1367,7 +1367,7 @@ List etas::fitfunMP(NumericVector tht,
   
   double ramda = 0.05, fv, s1, s2;
   double h[dimparam][dimparam], g[dimparam], dg[dimparam], wrk[dimparam];
-  NumericVector s(dimparam), dx(dimparam), g0(dimparam),
+  NumericVector s(dimparam), dx(dimparam), g0(dimparam);
 
   // Initial estimate of inverse of hessian matrix
   for (int i = 0; i < dimparam; i++)
