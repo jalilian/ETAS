@@ -1364,13 +1364,11 @@ List etas::fitfunMP(NumericVector tht,
   double tau1 = eps, tau2 = eps, eps1 = eps, eps2 = eps, const1 = 1.0e-17;
   
   double ramda = 0.05, fv, s1, s2;
-  double h[dimparam][dimparam], g[dimparam], dg[dimparam], wrk[dimparam];
-  NumericVector s(dimparam), dx(dimparam), g0(dimparam);
+  double g[dimparam];
+  NumericVector s(dimparam), dx(dimparam), g0(dimparam), dg(dimparam), wrk(dimparam);
 
   // Initial estimate of inverse of hessian matrix
-  for (int i = 0; i < dimparam; i++)
-    for (int j = 0; j < dimparam; j++)
-      h[i][j] = ihess(i, j);
+  NumericMatrix h = ihess;
   
   mloglikGrMP(tht, &fv, g, nthreads);
   
@@ -1396,7 +1394,7 @@ List etas::fitfunMP(NumericVector tht,
         {
           double sum = 0;
           for (int j = 0; j < dimparam; j++)
-            sum += dg[j] * h[i][j];
+            sum += dg[j] * h(i, j);
           wrk[i] = sum;
         }
         
@@ -1419,7 +1417,7 @@ List etas::fitfunMP(NumericVector tht,
             dfvout[i] = g[i];
             estimate[i] = tht[i];
             for (int j = 0; j < dimparam; j++)
-              ihess(i, j) = h[i][j];
+              ihess(i, j) = h(i, j);
             if (verbose)
               Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n",
                       i + 1, pow(tht[i], 2), i + 1, g[i]);
@@ -1438,9 +1436,9 @@ List etas::fitfunMP(NumericVector tht,
           for (int i = 0; i < dimparam; i++)
             for (int j = i; j < dimparam; j++)
             {
-              h[i][j] -= (dx[i] * wrk[j] + wrk[i] * dx[j] -
+              h(i, j) -= (dx[i] * wrk[j] + wrk[i] * dx[j] -
                 dx[i] * dx[j] * (1 + s1 / s2)) / s2;
-              h[j][i] = h[i][j];
+              h(j, i) = h(i, j);
             }
         }
         else
@@ -1449,8 +1447,8 @@ List etas::fitfunMP(NumericVector tht,
           for (int i = 0; i < dimparam; i++)
             for (int j = i; j < dimparam; j++)
             {	// davidon-fletcher-powell type correction
-              h[i][j] += dx[i] * dx[j]/s2 - wrk[i] * wrk[j] / s1;
-              h[j][i] = h[i][j];
+              h(i, j) += dx[i] * dx[j]/s2 - wrk[i] * wrk[j] / s1;
+              h(j, i) = h(i, j);
             }
         }
       }
@@ -1459,7 +1457,7 @@ List etas::fitfunMP(NumericVector tht,
       {
         double sum = 0;
         for (int j = 0; j < dimparam; j++)
-          sum += h[i][j] * g[j];
+          sum += h(i, j) * g[j];
         ss += sum * sum;
         s[i] = -sum;
       }
@@ -1483,7 +1481,7 @@ List etas::fitfunMP(NumericVector tht,
           dfvout[i] = g[i];
           estimate[i] = tht[i];
           for (int j = 0; j < dimparam; j++)
-            ihess(i, j) = h[i][j];
+            ihess(i, j) = h(i, j);
           if (verbose)
             Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n",
                     i + 1, pow(tht[i], 2), i + 1, g[i]);
@@ -1500,8 +1498,8 @@ List etas::fitfunMP(NumericVector tht,
         for (int i = 0; i < dimparam; i++)
         {
           for (int j = 0; j < dimparam; j++)
-            h[i][j] = 0.0;
-          h[i][i] = 1.0;
+            h(i, j) = 0.0;
+          h(i, i) = 1.0;
           s[i] = -s[i];
         }
         
@@ -1552,7 +1550,7 @@ List etas::fitfunMP(NumericVector tht,
           dfvout[i] = g[i];
           estimate[i] = tht[i];
           for (int j = 0; j < dimparam; j++)
-            ihess(i, j) = h[i][j];
+            ihess(i, j) = h(i, j);
           if (verbose)
             Rprintf("theta[%d] = %2.8f\t gradient[%d] = %8.4f\n", i + 1, pow(tht[i], 2), i + 1, g[i]);
         }
