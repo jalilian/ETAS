@@ -119,7 +119,7 @@ private:
   double integ0;
   int ndiv;
   int mver;
-  int dimparam;
+  const int dimparam;
 
 public:
   void set(NumericMatrix revents,
