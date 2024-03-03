@@ -21,10 +21,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        compiler: [gcc, clang]
         config:
           - {os: macos-latest,   r: 'release'}
 
-          - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
 
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
