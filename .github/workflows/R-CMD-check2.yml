@@ -45,7 +45,7 @@ jobs:
           CXX: ${{ matrix.compiler }}
         run: |
           ${{ matrix.compiler }} --version  # Verify compiler
-          cmake
+          cmake -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
