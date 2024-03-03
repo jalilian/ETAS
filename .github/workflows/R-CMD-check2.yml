@@ -39,6 +39,10 @@ jobs:
         run: git config --global core.autocrlf false
 
       - uses: actions/checkout@v3
+      - name: Build with ${{ matrix.compiler }}
+        run: |
+          ${{ matrix.compiler }} -v  # Verify compiler
+          make all
 
       - uses: r-lib/actions/setup-pandoc@v2
 
