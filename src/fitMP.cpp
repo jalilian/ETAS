@@ -729,8 +729,7 @@ void etas::mloglikGr(NumericVector theta,
   double mu, kparam[2], gparam[2], fparam[3];
   paramhandler(theta, &mu, kparam, gparam, fparam);
 
-  double fvtemp = 0;//, dfvtemp[dimparam] = {0};
-  NumericVector dfvtemp(dimparam);
+  double fvtemp = 0, dfvtemp[dimparam] = {};
 
   for (int j = 0; j < N; ++j)
   {
@@ -1168,7 +1167,7 @@ void etas::mloglikGrMP(NumericVector theta,
   
   #pragma omp parallel num_threads(nthreads)
   {
-    double fvtemp_thread = 0, dfvtemp_thread[dimparam] = {0};
+    double fvtemp_thread = 0, dfvtemp_thread[dimparam] = {};
   
     #pragma omp for //schedule(static)
     for (int j = 0; j < N; ++j)
