@@ -25,7 +25,7 @@ jobs:
           - {os: macos-latest,   r: 'release'}
 
           - {os: windows-latest, r: 'release'}
-          - {os: windows-latest, r: 'release', compiler:'clang'}
+          - {os: windows-latest, r: 'release'}
 
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
