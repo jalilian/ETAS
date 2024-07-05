@@ -11,7 +11,7 @@ useDynLib(ETAS, .registration=TRUE)
 importFrom("graphics", "abline", "axis", "dotchart", "layout", "par",
            "plot", "points", "polygon", "mtext", "title", "lines", "rug")
 importFrom("stats", "density", "lm", "plot.ts", "runif", "punif",
-           "ks.test", "quantile", "rpois")
+           "ks.test", "quantile", "rpois", "rexp")
 importFrom("utils", "installed.packages", "download.file", "read.table")
 importFrom("lattice", "xyplot")
 importFrom("maps", "map")
