@@ -32,6 +32,7 @@
 \alias{decimalplaces}
 \alias{roundoffErr}
 \alias{ttrend}
+\alias{simetas}
 \description{
   Internal ETAS functions.
 }
@@ -68,6 +69,10 @@ morisitaindex(object, K=11, bwd=NULL, dimyx=NULL, cat.name=NULL)
 decimalplaces(x) 
 roundoffErr(x)
 ttrend(obj, tmax=NULL, tmin=NULL)
+simetas(param, bkgd, sim.start, sim.end=NULL, sim.length=NULL, 
+        lat.range=NULL, long.range=NULL, region.poly=NULL, 
+        mag.threshold=NULL, flatmap=TRUE, dist.unit="degree", 
+        cat0=NULL, roundoff=FALSE, tz="GMT")
 \method{print}{etas}(x,\dots)
 \method{plot}{etas}(x, which="est", dimyx=NULL, \dots)
 \method{print}{catalog}(x,\dots)
