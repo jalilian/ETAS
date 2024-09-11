@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ETAS)](https://CRAN.R-project.org/package=ETAS)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ETAS)](https://CRAN.R-project.org/package=ETAS)
 [![CRAN_Download_Count](https://cranlogs.r-pkg.org/badges/last-month/ETAS)](https://CRAN.R-project.org/package=ETAS)
 [![R Build Status](https://github.com/jalilian/ETAS/workflows/R-CMD-check/badge.svg)](https://github.com/jalilian/ETAS/actions)
 [![Dependencies](https://tinyverse.netlify.com/badge/ETAS)](https://cran.r-project.org/package=ETAS)
