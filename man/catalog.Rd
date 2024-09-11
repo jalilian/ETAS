@@ -91,7 +91,7 @@
     (i.e. do not repeat the first vertex).
   }
 
-  The function \code{\link{inside.owin}} in the \code{spatstat}
+  The function \code{\link[spatstat.geom]{inside.owin}} in the \code{spatstat}
   is used to indicate whether events lie inside the study region.
   Only events inside the study region and the study period
   (\code{study.start}, \code{study.end}) are considered as
