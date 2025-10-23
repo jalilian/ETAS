@@ -45,3 +45,4 @@ LazyLoad: true
 NeedsCompilation: yes
 URL: https://github.com/jalilian/ETAS
 BugReports: https://github.com/jalilian/ETAS/issues
+RoxygenNote: 7.3.3

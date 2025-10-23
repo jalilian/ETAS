@@ -162,9 +162,9 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP cdeclust(void *, void *, void *, void *, void *);
-RcppExport SEXP cfit(void *, void *, void *, void *);
-RcppExport SEXP clambdax(void *, void *, void *, void *, void *);
+RcppExport SEXP cdeclust(SEXP, SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP cfit(SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP clambdax(SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ETAS_cxxfit", (DL_FUNC) &_ETAS_cxxfit, 11},
