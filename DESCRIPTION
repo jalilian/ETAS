@@ -6,12 +6,12 @@ Description: Fits the space-time Epidemic Type Aftershock Sequence
     approach. The 'ETAS' model is a 'spatio-temporal' marked point process
     model and a special case of the 'Hawkes' process. The package is based 
     on a Fortran program by 'Jiancang Zhuang'
-    (available at <http://bemlar.ism.ac.jp/zhuang/software.html>),
+    (available at <https://bemlar.ism.ac.jp/zhuang/software.html>),
     which is modified and translated into C++ and C such that it 
     can be called from R. Parallel computing with 'OpenMP' is possible 
     on supported platforms.
-Version: 0.7.1
-Date: 2024-09-11
+Version: 0.7.2
+Date: 2025-10-23
 Authors@R: c(
   person(given = "Abdollah", family = "Jalilian", 
          email = "stat4aj@gmail.com", 

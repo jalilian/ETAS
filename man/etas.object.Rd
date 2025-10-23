@@ -4,25 +4,25 @@
 \title{Class of Fitted ETAS Models}
 \description{
   A class \code{etas} to represent a fitted ETAS model.
-  The output of \code{\link{etas}}.
+  The output of \code{\link[ETAS]{etas}}.
 }
 \details{
   An object of class \code{etas} represents an ETAS model
    that has been fitted to a spatio-temporal point pattern (catalog)
-  of earthquakes. It is the output of the model fitter, \code{\link{etas}}.
+  of earthquakes. It is the output of the model fitter, \code{\link[ETAS]{etas}}.
 
   The class \code{etas} has methods for the following
   standard generic functions:
 
   \tabular{lll}{
     generic \tab method \tab description \cr
-    \code{print} \tab \code{\link{print.etas}}
+    \code{print} \tab \code{\link[ETAS]{print.etas}}
     \tab print details \cr
   }
 }
 
 \seealso{
-  \code{\link{etas}},
+  \code{\link[ETAS]{etas}},
 }
 \examples{
   # fitting the ETAS model to an Iranian catalog

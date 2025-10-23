@@ -28,8 +28,8 @@
 \usage{data(italy.quakes)}
 \source{
   Data are retrieved from the Italian Seismological Instrumental and
-  Parametric Data Base (ISIDE) available at \url{http://iside.rm.ingv.it}
-  by Marcello Chiodi and Giada Adelfio in the \pkg{etasFLP} package.
+  Parametric Data Base (ISIDE) by Marcello Chiodi and Giada Adelfio in 
+  the \pkg{etasFLP} package.
 }
 
 \references{

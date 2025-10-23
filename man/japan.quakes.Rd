@@ -32,7 +32,7 @@
 \source{
   Data are retrieved from the Japan Meteorological Agency (JMA) by
   Jiancang Zhuang and acoppany the \bold{Fortran} code at
-  \url{http://bemlar.ism.ac.jp/zhuang/software.html}.
+  \url{https://bemlar.ism.ac.jp/zhuang/software.html}.
 }
 
 \references{

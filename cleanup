@@ -1,6 +1,7 @@
 #!/bin/sh
 
-rm -f config.*
-rm -f src/Makevars
-rm -rf autom4te.cache
-rm -rf *~ */*~ src/*.o src/*.so src/*.dll src/*.dylib
+# Remove config and Makevars
+rm -fv config.* src/Makevars *Zone.Identifier
+
+# Remove Autoconf cache, backup, and compiled files
+rm -rfv autom4te.cache *~ */*~ src/*.o src/*.so src/*.dll src/*.dylib src/*.a

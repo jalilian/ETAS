@@ -43,8 +43,8 @@
 }
 
 \seealso{
-  \code{\link{etas}}
-  \code{\link{catalog}}
+  \code{\link[ETAS]{etas}}
+  \code{\link[ETAS]{catalog}}
 }
 \examples{
 

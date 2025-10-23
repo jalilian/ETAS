@@ -1,3 +1,0 @@
-
-PKG_LIBS = -fopenmp
-PKG_CXXFLAGS = -fopenmp -DARMA_64BIT_WORD

@@ -10,25 +10,25 @@
 double fr(double r, double w[])
 {
   double gamma = w[0], D = w[1], q = w[2], mag = w[3], sig = D * exp(gamma * mag);
-  return (1 - pow(1 + r * r / sig, 1 - q)) / (2 * PI);
+  return (1 - pow(1 + r * r / sig, 1 - q)) / (2 * M_PI);
 }
 
 double dgamma_fr(double r, double w[])
 {
   double gamma = w[0], D = w[1], q = w[2], mag = w[3], sig = D * exp(gamma * mag);
-  return (1 -q) * pow(1 + r * r / sig, -q) * mag * r * r / sig / (2 * PI);
+  return (1 -q) * pow(1 + r * r / sig, -q) * mag * r * r / sig / (2 * M_PI);
 }
 
 double dD_fr(double r, double w[])
 {
   double gamma = w[0], D = w[1], q = w[2], mag = w[3], sig = D * exp(gamma * mag);
-  return (1 - q) * pow(1 + r * r / sig, -q) / D * r * r / sig / (2 * PI);
+  return (1 - q) * pow(1 + r * r / sig, -q) / D * r * r / sig / (2 * M_PI);
 }
 
 double dq_fr(double r, double w[])
 {
   double gamma = w[0], D = w[1], q = w[2], mag = w[3], sig = D*exp( gamma*mag );
-  return pow(1 + r * r / sig, 1 - q) * log(1 + r * r / sig) / (2 * PI);
+  return pow(1 + r * r / sig, 1 - q) * log(1 + r * r / sig) / (2 * M_PI);
 }
 
 // *******************************************************************************
@@ -63,7 +63,7 @@ double clambdaj(double *theta,
 
       sig = D * exp(gamma * m[i]);
       r2 = dist2(x[j], y[j], x[i], y[i]);
-      part3 = (q - 1) / (sig * PI) * pow(1 + r2 / sig, - q);
+      part3 = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 
       s += A * part1 * part2 * part3;
     }
@@ -108,7 +108,7 @@ void clambdajGr(double *theta,
 
       sig   = D * exp(gamma * m[i]);
       r2 = dist2(x[j], y[j], x[i], y[i]);
-      part3 = (q - 1)/(sig * PI) * pow(1 + r2/sig, - q);
+      part3 = (q - 1)/(sig * M_PI) * pow(1 + r2/sig, - q);
 
       s    += A * part1 * part2 * part3;
       sg2  += part1 * part2 * part3;
@@ -324,7 +324,7 @@ SEXP clambdax(SEXP rt,
 
       sig = D * exp(gamma * m[i]);
       r2 = dist2(xx, yy, x[i], y[i]);
-      part3 = (q - 1) / (sig * PI) * pow(1 + r2 / sig, - q);
+      part3 = (q - 1) / (sig * M_PI) * pow(1 + r2 / sig, - q);
 
       s += A * part1 * part2 * part3;
       i++;

@@ -1,26 +1,33 @@
+# R / RStudio
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+.httr-oauth
+.DS_Store
+.quarto
 
-autom4te.cache
-config.log
-config.status
+# Build / devtools
+.Rbuildignore
+.Rcheck/
 
 # Binary files
 *.o
 *.so
 *.dll
+*.zip
+*.tar.gz
+
+# Office / temp files
 *.xls*
 *.doc*
 *.ppt*
-*.zip
-*.gz
-*.tar
-
-# Tempfiles
 *.dta
 *.ods
 *.log
 *.out
 *.tex
+
+autom4te.cache
+config.log
+config.status

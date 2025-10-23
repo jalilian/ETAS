@@ -81,7 +81,7 @@ Clustering Coefficient}
 }
 
 \seealso{
-  \code{\link{etas}}
+  \code{\link[ETAS]{etas}}
 }
 \examples{
 

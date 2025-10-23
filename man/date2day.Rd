@@ -23,7 +23,7 @@
 }
 \seealso{
 
-  \code{\link{as.POSIXlt}} and \code{\link{difftime}} for appropriate format of the data
+  \code{\link[base]{as.POSIXlt}} and \code{\link[base]{difftime}} for appropriate format of the data
   to be converted.
 }
 \examples{

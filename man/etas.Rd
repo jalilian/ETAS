@@ -164,7 +164,7 @@
   use the parallel \code{Fortran} code on a server machine.
   The \code{Fortran} code (implemented for
   parallel/non-parallel computing) can be obtained from
-  \url{http://bemlar.ism.ac.jp/zhuang/software.html}.
+  \url{https://bemlar.ism.ac.jp/zhuang/software.html}.
 }
 \references{
   Ogata Y (1988).
@@ -201,9 +201,9 @@
 }
 \seealso{
 
-  \code{\link{catalog}} for constructing data.
-  \code{\link{probs}} for estimated declustering probabilities.
-  \code{\link{resid.etas}} for diagnostic plots.
+  \code{\link[ETAS]{catalog}} for constructing data.
+  \code{\link[ETAS]{probs}} for estimated declustering probabilities.
+  \code{\link[ETAS]{resid.etas}} for diagnostic plots.
 }
 \examples{
   # fitting the ETAS model to an Iranian catalog

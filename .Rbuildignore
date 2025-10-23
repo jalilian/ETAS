@@ -1,11 +1,21 @@
+# RStudio project files
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+
+# Continuous integration / GitHub
 ^\.travis\.yml$
 ^\.gitignore$
-^\.github
+^\.github/
 
-# Binary files
-.*\.tar\.gz
-.*\.zip
-.*\.xls
-.*\.doc
+# Auto-generated / build files
+^src/Makevars$
+
+# Binary files / archives
+^.*\.tar\.gz$
+^.*\.zip$
+^.*\.xls*$
+^.*\.doc*$
+^.*\.ppt*$

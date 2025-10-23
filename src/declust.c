@@ -11,13 +11,13 @@
 // value of the gaussian kernel function at r with bandwidth sig
 double dGauss(double r, double sig)
 {
-  return exp(-(r * r) /(2 * sig * sig)) / (2 * PI * sig * sig);
+  return exp(-(r * r) /(2 * sig * sig)) / (2 * M_PI * sig * sig);
 }
 
 // integral of the gaussian kernel with bandwidth w[0] from 0 to r
 double pGauss(double r, double w[])
 {
-  return (1 - exp(-(r * r) / (2 * w[0] * w[0]))) / (2 * PI);
+  return (1 - exp(-(r * r) / (2 * w[0] * w[0]))) / (2 * M_PI);
 }
 
 // *******************************************************************************
