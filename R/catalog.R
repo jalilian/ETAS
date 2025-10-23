@@ -224,6 +224,9 @@ plot.catalog <- function(x, ...)
   mbk <- seq(0, ceiling(10 * max(x$revents[, 4])) / 10 + 1e-06, 0.1) + x$mag.threshold
   mct <- cut(x$revents[, 4] + x$mag.threshold, mbk, include.lowest=TRUE)
   mcc <- log10(rev(cumsum(rev(table(mct)))))
+  valid <- is.finite(mcc)
+  mcc <- mcc[valid]
+  mbk <- mbk[valid]
   plot(mbk[-length(mbk)], mcc, type="b",
        xlab="mag", ylab=expression(log[10]*N[mag]), axes=FALSE)
   graphics::abline(stats::lm(mcc ~ mbk[-length(mbk)]), col=4, lty=4)
