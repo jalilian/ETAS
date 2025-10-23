@@ -221,8 +221,8 @@ plot.catalog <- function(x, ...)
          cex=2 * (x$revents[ok, 4] + 0.1)/max(x$revents[ok, 4]))
   polygon(x$region.poly$long, x$region.poly$lat, border=2)
   #
-  mbk <- seq(0, ceiling(10 * max(x$revents[, 4])) / 10 , 0.1) + x$mag.threshold
-  mct <- cut(x$revents[, 4] + x$mag.threshold, mbk)
+  mbk <- seq(0, ceiling(10 * max(x$revents[, 4])) / 10 + 1e-06, 0.1) + x$mag.threshold
+  mct <- cut(x$revents[, 4] + x$mag.threshold, mbk, include.lowest=TRUE)
   mcc <- log10(rev(cumsum(rev(table(mct)))))
   plot(mbk[-length(mbk)], mcc, type="b",
        xlab="mag", ylab=expression(log[10]*N[mag]), axes=FALSE)
