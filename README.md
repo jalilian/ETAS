@@ -3,7 +3,7 @@
 [![CRAN_Download_Count](https://cranlogs.r-pkg.org/badges/last-month/ETAS)](https://CRAN.R-project.org/package=ETAS)
 [![R Build Status](https://github.com/jalilian/ETAS/workflows/R-CMD-check/badge.svg)](https://github.com/jalilian/ETAS/actions)
 [![Dependencies](https://img.shields.io/badge/dependencies-view-blue)](https://deps.dev/cran/ETAS)
-[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 [![Last Commit](https://img.shields.io/github/last-commit/jalilian/ETAS)](https://github.com/jalilian/ETAS)
 <!-- badges: end -->
 
