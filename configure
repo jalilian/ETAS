@@ -2088,13 +2088,31 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+# -------------------------------------------------------------------
+# Detect R installation
+# -------------------------------------------------------------------
+## Set R_HOME, respecting an environment variable if one is already set
 : ${R_HOME=$(R RHOME)}
 if test -z "${R_HOME}"; then
   as_fn_error $? "Could not determine R_HOME." "$LINENO" 5
 fi
 
-CXX=$("${R_HOME}/bin/R" CMD config CXX)
+# -------------------------------------------------------------------
+# Detect C++ compiler and flags from R
+# -------------------------------------------------------------------
+## Use R to set the C++ compiler (CXX) and compilation flags (CXXFLAGS)
+CXX=$(${R_HOME}/bin/R CMD config CXX)
 CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXXFLAGS)
+
+# -------------------------------------------------------------------
+# Set language to C++
+# -------------------------------------------------------------------
+## We are using C++ as the primary language
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
@@ -2741,12 +2759,6 @@ esac
 fi
 fi
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2891,65 +2903,95 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
-# OpenMP detection
-# Check whether --enable-openmp was given.
+# -------------------------------------------------------------------
+# Detect OpenMP support (parallelization)
+# -------------------------------------------------------------------
+# The following block is essentially R's m4/openmp.m4 logic.
+# It checks whether the compiler supports OpenMP, and if so,
+# determines the correct compiler flag (e.g. -fopenmp, -qopenmp, etc.).
+# If OpenMP is not supported or explicitly disabled, no flags are added.
+# -------------------------------------------------------------------
+
+  OPENMP_CXXFLAGS=
+  # Check whether --enable-openmp was given.
 if test ${enable_openmp+y}
 then :
   enableval=$enable_openmp;
 fi
 
-if test "x$enable_openmp" != "xno"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for omp_get_num_threads in -lgomp" >&5
-printf %s "checking for omp_get_num_threads in -lgomp... " >&6; }
-if test ${ac_cv_lib_gomp_omp_get_num_threads+y}
+  if test "$enable_openmp" != no; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CXX option to support OpenMP" >&5
+printf %s "checking for $CXX option to support OpenMP... " >&6; }
+if test ${ac_cv_prog_cxx_openmp+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lgomp -fopenmp $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-namespace conftest {
-  extern "C" int omp_get_num_threads ();
-}
-int
-main (void)
-{
-return conftest::omp_get_num_threads ();
-  ;
-  return 0;
-}
+#ifndef _OPENMP
+#error "OpenMP not supported"
+#endif
+#include <omp.h>
+int main (void) { return omp_get_num_threads (); }
+
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"
 then :
-  ac_cv_lib_gomp_omp_get_num_threads=yes
+  ac_cv_prog_cxx_openmp='none needed'
 else case e in #(
-  e) ac_cv_lib_gomp_omp_get_num_threads=no ;;
-esac
+  e) ac_cv_prog_cxx_openmp='unsupported'
+          for ac_option in -fopenmp -xopenmp -qopenmp \
+                           -openmp -mp -omp -qsmp=omp -homp \
+                           -fopenmp=libomp \
+                           -Popenmp --openmp; do
+            ac_save_CXXFLAGS=$CXXFLAGS
+            CXXFLAGS="$CXXFLAGS $ac_option"
+            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifndef _OPENMP
+#error "OpenMP not supported"
+#endif
+#include <omp.h>
+int main (void) { return omp_get_num_threads (); }
+
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"
+then :
+  ac_cv_prog_cxx_openmp=$ac_option
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
+            CXXFLAGS=$ac_save_CXXFLAGS
+            if test "$ac_cv_prog_cxx_openmp" != unsupported; then
+              break
+            fi
+          done ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gomp_omp_get_num_threads" >&5
-printf "%s\n" "$ac_cv_lib_gomp_omp_get_num_threads" >&6; }
-if test "x$ac_cv_lib_gomp_omp_get_num_threads" = xyes
-then :
-  OPENMP_CXXFLAGS="-fopenmp"
-else case e in #(
-  e) OPENMP_CXXFLAGS="" ;;
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext ;;
 esac
 fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cxx_openmp" >&5
+printf "%s\n" "$ac_cv_prog_cxx_openmp" >&6; }
+    case $ac_cv_prog_cxx_openmp in #(
+      "none needed" | unsupported)
+        ;; #(
+      *)
+        OPENMP_CXXFLAGS=$ac_cv_prog_cxx_openmp ;;
+    esac
+  fi
 
-else
-  OPENMP_CXXFLAGS=""
-fi
-
+# -------------------------------------------------------------------
+# Export detected OpenMP flags and generate Makevars
+# -------------------------------------------------------------------
 
 ac_config_files="$ac_config_files src/Makevars"
 
+
+# Generate the final configure script output
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
