@@ -3,7 +3,7 @@
 [![CRAN_Download_Count](https://cranlogs.r-pkg.org/badges/last-month/ETAS)](https://CRAN.R-project.org/package=ETAS)
 [![R Build Status](https://github.com/jalilian/ETAS/workflows/R-CMD-check/badge.svg)](https://github.com/jalilian/ETAS/actions)
 [![Dependencies](https://img.shields.io/badge/dependencies-view-blue)](https://deps.dev/cran/ETAS)
-[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![Last Commit](https://img.shields.io/github/last-commit/jalilian/ETAS)](https://github.com/jalilian/ETAS)
 <!-- badges: end -->
 
@@ -48,11 +48,23 @@ install.packages('remotes')
 
 ## Vignette
 
-Jalilian, A. (2019). [ETAS: An R Package for Fitting the Space-Time ETAS Model to Earthquake Data](https://www.jstatsoft.org/htaccess.php?volume=088&type=c&issue=01&filename=paper). Journal of Statistical Software, 88(CN 1), 1-39. [DOI:10.18637/jss.v088.c01](http://dx.doi.org/10.18637/jss.v088.c01)
+Jalilian, A. (2019). [ETAS: An R Package for Fitting the Space-Time ETAS Model to Earthquake Data](https://www.jstatsoft.org/htaccess.php?volume=088&type=c&issue=01&filename=paper). 
+Journal of Statistical Software, 88(CN 1), 1-39. [DOI:10.18637/jss.v088.c01](https://dx.doi.org/10.18637/jss.v088.c01)
  
 ## Parallel computing
 
-Computations of the conditional intensity function, the log-likelihood function, declustering probabilities and the Davidon-Fletcher-Powell algorithm for optimization are all written in C code. As of version 0.3, a new C++ code is implemented using the [Rcpp](https://www.rcpp.org/) package which allows multi-thread parallel computing on multi-core processors with OpenMP and [suported platforms](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#OpenMP-support). The argument `nthreads` in `etas` function determines the number of threads to be used in the parallel region of the code. If `nthreads = 1` (the default), then a serial version of the C++ code carries out the computations. The `detectCores` function in [parallel](http://stat.ethz.ch/R-manual/R-devel/library/parallel/html/parallel-package.html) package can be consulted to find out the overall number of available threads on a given machine:
+Computations of the conditional intensity function, the log-likelihood function, 
+declustering probabilities and the Davidon-Fletcher-Powell algorithm for 
+optimization are all written in C code. As of version 0.3, a new C++ code is 
+implemented using the [Rcpp](https://www.rcpp.org/) package which allows 
+multi-thread parallel computing on multi-core processors with OpenMP 
+and [suported platforms](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#OpenMP-support). 
+The argument `nthreads` in `etas` function determines the number of threads to 
+be used in the parallel region of the code. If `nthreads = 1` (the default), 
+then a serial version of the C++ code carries out the computations. 
+The `detectCores` function in [parallel](https://stat.ethz.ch/R-manual/R-devel/library/parallel/html/parallel-package.html) 
+package can be consulted to find out the overall number of available threads on 
+a given machine:
 ```R
 parallel::detectCores()
 ```

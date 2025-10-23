@@ -8,12 +8,10 @@ search.isc <- function(start.year=1900, start.month=1, start.day=01,
                        radius=NULL, dist.units="deg",
                        dep.min=0, dep.max=100, nulldep=TRUE,
                        mag.min=4, mag.max=NULL, 
-                       mag.type='MB', mag.agcy=NULL,
-                       mirror=TRUE)
+                       mag.type='MB', mag.agcy=NULL)
 {
-  servers <- c("http://www.isc.ac.uk",
-               "http://isc-mirror.iris.washington.edu")
-  dlink <- ifelse(mirror, servers[2], servers[1])
+  # http://isc-mirror.iris.washington.edu permanently shut down on 19/11/2024
+  dlink <- "http://www.isc.ac.uk"
   dlink <- paste(dlink, "/cgi-bin/web-db-v4?request=COMPREHENSIVE",
                  "&out_format=CATCSV", sep="")
   

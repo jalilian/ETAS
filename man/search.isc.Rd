@@ -15,7 +15,7 @@
              long.ctr=NULL, radius=NULL, dist.units="deg", 
              dep.min=0, dep.max=100, nulldep=TRUE,
              mag.min=4, mag.max=NULL, mag.type='MB', 
-             mag.agcy=NULL, mirror=TRUE)
+             mag.agcy=NULL)
 }
 \arguments{
   \item{start.year}{A single numeric value specifying the start 
@@ -84,8 +84,6 @@
   same author as the prime hypocentre) - i.e. for events with 
   an ISC authored prime hypocentre, selecting 'Prime author', 
   will limit events to those with ISC determined magnitudes.}
-  \item{mirror}{Logical flag indicating whether to use the ISC 
-  mirror server hosted at IRIS DMC (\url{http://isc-mirror.iris.washington.edu}) as it may be faster.}
 }
 \value{
   An object of class \code{"data.frame"} which can be passed to 
@@ -97,7 +95,7 @@
   Any use of data from the ISC by academic or commercial 
   organisations, as well as individuals should always be cited. 
   The correct format for citations may be found on 
-  \url{http://www.isc.ac.uk/citations/}.
+  \url{https://www.isc.ac.uk/citations/}.
 
   The ISC is named as a valid data centre for citations within 
   American Geophysical Union (AGU) publications. As such, please 
@@ -112,19 +110,19 @@
 \references{
   International Seismological Centre (2015). 
   \emph{On-line Bulletin}, 
-  \url{http://www.isc.ac.uk}, 
+  \url{https://www.isc.ac.uk/}, 
   Internatl. Seismol. Cent., 
   Thatcham, United Kingdom.
   
   International Seismological Centre (2015). 
   \emph{Reference Event Bulletin}, 
-  \url{http://www.isc.ac.uk}, 
+  \url{https://www.isc.ac.uk/}, 
   Internatl. Seismol. Cent., 
   Thatcham, United Kingdom.
   
   International Seismological Centre (2015). 
   \emph{EHB Bulletin}, 
-  \url{http://www.isc.ac.uk}, 
+  \url{https://www.isc.ac.uk/}, 
   Internatl. Seismol. Cent., 
   Thatcham, United Kingdom.
 }
